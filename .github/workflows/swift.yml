@@ -16,10 +16,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build
-      run: |  
-        chmod +x setup.sh
-        ./setup.sh
-        swift build -v
-    - name: Run tests
-      run: swift test -v
+    - uses: tuist/tuist-action@0.13.0
+      with: 
+        command: 'build'
+        arguments: ''
