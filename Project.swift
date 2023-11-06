@@ -1,4 +1,4 @@
-    import ProjectDescription
+import ProjectDescription
 import ProjectDescriptionHelpers
 import MyPlugin
 
