@@ -1,5 +1,5 @@
 //
-//  FirstViewController.swift
+//  SettingViewController.swift
 //  Pomodoro
 //
 //  Created by 진세진 on 2023/11/06.
@@ -10,19 +10,19 @@ import UIKit
 import SnapKit
 import Then
 
-class FirstViewController: UIViewController {
+final class SettingViewController: UIViewController {
 
     private let label = UILabel().then { label in
-        label.text = " 1 "
+        label.text = "SettingViewController"
         label.textColor = .black
         
     }
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        labelConstrain()
+        setupLabel()
     }
-    private func labelConstrain(){
+    private func setupLabel(){
         view.addSubview(label)
 
         label.snp.makeConstraints { make in

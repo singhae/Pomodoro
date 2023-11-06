@@ -1,5 +1,5 @@
 //
-//  HomeViewController.swift
+//  MainPageViewController.swift
 //  Pomodoro
 //
 //  Created by 전여훈 on 2023/11/02.
@@ -9,46 +9,33 @@
 import UIKit
 import SnapKit
 
-final class HomeViewController: UIViewController {
-    
-    lazy var navigationView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .lightGray
-
-        return view
-    }()
+final class MainPageViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let firstVC = dataViewControllers.first(where: { $0 is SecondViewController }) {
+        if let firstVC = dataViewControllers.first(where: { $0 is MainViewController }) {
                    pageViewController.setViewControllers([firstVC], direction: .forward, animated: true, completion: nil)
        }
         setupDelegate()
-        configure()
+        setupPageViewController()
     }
     private lazy var dataViewControllers: [UIViewController] = {
-        return [FirstViewController(), SecondViewController(), ThirdViewController()]
+        return [SettingViewController(), MainViewController(), DashBoardViewController()]
     }()
 
-    lazy var pageViewController: UIPageViewController = {
+    private lazy var pageViewController: UIPageViewController = {
        let vc = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
        return vc
     }()
     
-    private func configure() {
-       view.addSubview(navigationView)
+    private func setupPageViewController() {
        addChild(pageViewController)
        view.addSubview(pageViewController.view)
 
-       navigationView.snp.makeConstraints { make in
-           make.width.top.equalToSuperview()
-           make.height.equalTo(72)
-       }
-
+      
        pageViewController.view.snp.makeConstraints { make in
-           make.top.equalTo(navigationView.snp.bottom)
-           make.leading.trailing.bottom.equalToSuperview()
+           make.edges.equalToSuperview()
        }
        pageViewController.didMove(toParent: self)
     }
@@ -58,7 +45,7 @@ final class HomeViewController: UIViewController {
     }
 }
 
-extension HomeViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+extension MainPageViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         guard let index = dataViewControllers.firstIndex(of: viewController) else { return nil }
