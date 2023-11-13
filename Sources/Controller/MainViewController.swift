@@ -7,6 +7,7 @@
 //
 
 import SnapKit
+import Then
 import UIKit
 
 final class MainViewController: UIViewController {
@@ -19,35 +20,26 @@ final class MainViewController: UIViewController {
     private var currentTime = 0
     private var maxTime = 0
 
-    private let timeLabel: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 60, weight: .heavy)
-        return label
-    }()
+    private let timeLabel = UILabel().then {
+        $0.textAlignment = .center
+        $0.font = UIFont.systemFont(ofSize: 60, weight: .heavy)
+    }
 
-    private let tagLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Tag 위치는 여기쯤?"
-        label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 15)
-        return label
-    }()
+    private let tagLabel = UILabel().then {
+        $0.text = "Tag 위치는 여기쯤?"
+        $0.textAlignment = .center
+        $0.font = UIFont.systemFont(ofSize: 15)
+    }
 
-    private let timeButton: UIButton = {
-        let button = UIButton(type: .roundedRect)
-        button.setTitle("시간 설정", for: .normal)
-        button.addTarget(self, action: #selector(timeSetting), for: .touchUpInside)
-        return button
-    }()
+    private let timeButton = UIButton(type: .roundedRect).then {
+        $0.setTitle("시간 설정", for: .normal)
+        $0.addTarget(self, action: #selector(timeSetting), for: .touchUpInside)
+    }
 
-    // 임시
-    private let countButton: UIButton = {
-        let button = UIButton(type: .roundedRect)
-        button.setTitle("카운트 시작", for: .normal)
-        button.addTarget(self, action: #selector(startTimer), for: .touchUpInside)
-        return button
-    }()
+    private let countButton = UIButton(type: .roundedRect).then {
+        $0.setTitle("카운트 시작", for: .normal)
+        $0.addTarget(self, action: #selector(startTimer), for: .touchUpInside)
+    }
 
     @objc private func timeSetting() {
         let alertController = UIAlertController(title: "시간 설정", message: nil, preferredStyle: .alert)
