@@ -26,7 +26,6 @@ final class DayViewController: UIViewController {
         $0.text = dateFormatter.string(from: Date())
         $0.textAlignment = .center
         $0.textColor = .black
-        $0.translatesAutoresizingMaskIntoConstraints = false
     }
     private func setupDateLabel() {
         view.addSubview(dateLabel)
@@ -38,11 +37,9 @@ final class DayViewController: UIViewController {
     
     private let previousButton = UIButton().then {
         $0.setImage(UIImage(systemName: "arrowtriangle.backward")?.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
-        $0.translatesAutoresizingMaskIntoConstraints = false
     }
     private let nextButton = UIButton().then {
         $0.setImage(UIImage(systemName: "arrowtriangle.right")?.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
-        $0.translatesAutoresizingMaskIntoConstraints = false
     }
     private func setupArrowButtons() {
         view.addSubview(previousButton)
@@ -56,8 +53,42 @@ final class DayViewController: UIViewController {
             make.leading.equalTo(dateLabel.snp.trailing).offset(10)
         }
     }
+    static func getLayout() -> UICollectionViewCompositionalLayout {
+        UICollectionViewCompositionalLayout { (section, _) -> NSCollectionLayoutSection? in
+            
+            func makeItem() -> NSCollectionLayoutItem {
+                let itemSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .fractionalHeight(1)
+                )
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                let itemInset: CGFloat = 3.0
+                item.contentInsets = NSDirectionalEdgeInsets(top: itemInset, leading: itemInset, bottom: itemInset, trailing: itemInset)
+                item.contentInsets.leading = 15
+                item.contentInsets.trailing = 15
+                item.contentInsets.top = 15
+                
+                return item
+            }
+            
+            func makeGroup(heightFraction: CGFloat) -> NSCollectionLayoutGroup {
+                let groupSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .fractionalHeight(heightFraction)
+                )
+                return NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [makeItem()])
+            }
+            
+            switch section {
+            case 0:
+                return NSCollectionLayoutSection(group: makeGroup(heightFraction: 1.0 / 3.0))
+            default:
+                return NSCollectionLayoutSection(group: makeGroup(heightFraction: 1.0 / 2.0))
+            }
+        }
+    }
     
-    private lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: getLayout()).then {
+    private lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: DayViewController.getLayout()).then {
         $0.isScrollEnabled = true
         $0.showsHorizontalScrollIndicator = false
         $0.showsVerticalScrollIndicator = true
@@ -65,7 +96,6 @@ final class DayViewController: UIViewController {
         $0.clipsToBounds = true
         $0.register(FirstCell.self, forCellWithReuseIdentifier: "FirstCell")
         $0.register(SecondCell.self, forCellWithReuseIdentifier: "SecondCell")
-        $0.translatesAutoresizingMaskIntoConstraints = false
     }
     private let dataSource: [MySection] = [
         .first([
@@ -102,11 +132,27 @@ extension DayViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch self.dataSource[indexPath.section] {
         case .first(_):
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FirstCell", for: indexPath) as! FirstCell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FirstCell", for: indexPath) as? FirstCell else {
+                return UICollectionViewCell()
+            }
             return cell
         case .second(_):
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SecondCell", for: indexPath) as! SecondCell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SecondCell", for: indexPath) as? SecondCell else {
+                return UICollectionViewCell()
+            }
             return cell
         }
+    }
+}
+
+enum MySection {
+    case first([FirstItem])
+    case second([SecondItem])
+    
+    struct FirstItem {
+        let value: String
+    }
+    struct SecondItem {
+        let value: String
     }
 }

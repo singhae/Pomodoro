@@ -10,16 +10,29 @@ import UIKit
 import SnapKit
 
 final class DashBoardViewController: UIViewController {
+    
+    private enum SegmentItem: Int {
+        case day
+        case week
+        case month
+        case year
+    }
+    
+    private let segmentViewControllers: [SegmentItem: UIViewController] = [
+        .day: DayViewController(),
+        .week: WeekViewController(),
+        .month: MonthViewController(),
+        .year: YearViewController()
+    ]
+    
+    private let containerView = UIView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        setupViewControllers()
         setupSegmentedControl()
         setupContainerView()
         segmentChanged()
-    }
-    private let containerView = UIView().then { view in
-        view.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private func setupContainerView() {
@@ -43,15 +56,9 @@ final class DashBoardViewController: UIViewController {
         ]
         segmentedControl.setTitleTextAttributes(normalTextAttributes, for: .normal)
         segmentedControl.setTitleTextAttributes(selectedTextAttributes, for: .selected)
-        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
         segmentedControl.selectedSegmentIndex = 0
         return segmentedControl
     }()
-    
-    private var dayVC: UIViewController!
-    private var weekVC: UIViewController!
-    private var monthVC: UIViewController!
-    private var yearVC: UIViewController!
     
     private func setupSegmentedControl() {
         view.addSubview(tabBarControl)
@@ -64,57 +71,28 @@ final class DashBoardViewController: UIViewController {
         tabBarControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
     }
     
-    private func setupViewControllers() {
-        dayVC = DayViewController()
-        weekVC = WeekViewController()
-        monthVC = MonthViewController()
-        yearVC = YearViewController()
-        
-        addChild(dayVC)
-        containerView.addSubview(dayVC.view)
-        dayVC.view.frame = containerView.bounds
-        dayVC.didMove(toParent: self)
-        
-        addChild(weekVC)
-        containerView.addSubview(weekVC.view)
-        weekVC.view.frame = containerView.bounds
-        weekVC.didMove(toParent: self)
-        
-        addChild(monthVC)
-        containerView.addSubview(monthVC.view)
-        monthVC.view.frame = containerView.bounds
-        monthVC.didMove(toParent: self)
-        
-        addChild(yearVC)
-        containerView.addSubview(yearVC.view)
-        yearVC.view.frame = containerView.bounds
-        yearVC.didMove(toParent: self)
+    private func displayViewController(_ viewController: UIViewController) {
+        for (_, ViewController) in segmentViewControllers {
+            if ViewController == viewController {
+                addChild(ViewController)
+                containerView.addSubview(ViewController.view)
+                ViewController.view.frame = containerView.bounds
+                ViewController.didMove(toParent: self)
+            } else {
+                ViewController.willMove(toParent: nil)
+                ViewController.view.removeFromSuperview()
+                ViewController.removeFromParent()
+            }
+        }
     }
     
     @objc private func segmentChanged() {
-        switch tabBarControl.selectedSegmentIndex {
-        case 0:
-            dayVC.view.isHidden = false
-            weekVC.view.isHidden = true
-            monthVC.view.isHidden = true
-            yearVC.view.isHidden = true
-        case 1:
-            dayVC.view.isHidden = true
-            weekVC.view.isHidden = false
-            monthVC.view.isHidden = true
-            yearVC.view.isHidden = true
-        case 2:
-            dayVC.view.isHidden = true
-            weekVC.view.isHidden = true
-            monthVC.view.isHidden = false
-            yearVC.view.isHidden = true
-        case 3:
-            dayVC.view.isHidden = true
-            weekVC.view.isHidden = true
-            monthVC.view.isHidden = true
-            yearVC.view.isHidden = false
-        default:
-            break
+        guard let selectedItem = SegmentItem(rawValue: tabBarControl.selectedSegmentIndex) else {
+            return
+        }
+        
+        if let viewController = segmentViewControllers[selectedItem] {
+            displayViewController(viewController)
         }
     }
 }
