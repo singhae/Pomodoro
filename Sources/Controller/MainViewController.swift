@@ -12,6 +12,9 @@ import UIKit
 final class MainViewController: UIViewController {
 
     private var timer: Timer?
+    private var stopLongPress: UILongPressGestureRecognizer!
+
+    private var notificationId: String?
 
     private var currentTime = 0
     private var maxTime = 0
@@ -55,26 +58,34 @@ final class MainViewController: UIViewController {
         }
         let confirm = UIAlertAction(title: "확인", style: .default) { _ in
             if let text = alertController.textFields?.first?.text, let time = Int(text) {
-                print(time)
                 self.maxTime = time
                 self.currentTime = 0
 
                 let minutes = (self.maxTime - self.currentTime) / 60
                 let seconds = (self.maxTime - self.currentTime) % 60
                 self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
-            } else {
-                print("No Time")
-            }
+            } else {}
         }
         alertController.addAction(confirm)
         present(alertController, animated: true)
-        print("alert")
+    }
+
+    @objc private func stopTimer() {
+        timer?.invalidate()
+        currentTime = 0
+        maxTime = 0
+
+        let minutes = (maxTime - currentTime) / 60
+        let seconds = (maxTime - currentTime) % 60
+        timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
+
+        if let id = notificationId {
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id])
+        }
     }
 
     @objc private func startTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-            print("currentTime: " + String(self.currentTime))
-
             let minutes = (self.maxTime - self.currentTime) / 60
             let seconds = (self.maxTime - self.currentTime) % 60
             self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
@@ -87,15 +98,14 @@ final class MainViewController: UIViewController {
         }
         timer?.fire()
 
+        notificationId = UUID().uuidString
+
         let content = UNMutableNotificationContent()
         content.title = "시간 종료!"
         content.body = "시간이 종료되었습니다. 휴식을 취해주세요."
-        content.sound = .default
-        content.badge = 99
-        content.userInfo = ["destination": "dashboard"]
 
         let request = UNNotificationRequest(
-            identifier: UUID().uuidString,
+            identifier: notificationId!,
             content: content,
             trigger: UNTimeIntervalNotificationTrigger(
                 timeInterval: TimeInterval(maxTime),
@@ -121,6 +131,8 @@ final class MainViewController: UIViewController {
         setupTagLabel()
         setupButtons()
 
+        stopLongPress = UILongPressGestureRecognizer(target: self, action: #selector(stopTimer))
+        view.addGestureRecognizer(stopLongPress)
     }
 
     override func viewDidAppear(_ animated: Bool) {
