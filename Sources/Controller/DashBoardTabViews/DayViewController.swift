@@ -53,7 +53,7 @@ final class DayViewController: UIViewController {
             make.leading.equalTo(dateLabel.snp.trailing).offset(10)
         }
     }
-    static func getLayout() -> UICollectionViewCompositionalLayout {
+    private func getLayout() -> UICollectionViewCompositionalLayout {
         UICollectionViewCompositionalLayout { (section, _) -> NSCollectionLayoutSection? in
             
             func makeItem() -> NSCollectionLayoutItem {
@@ -88,7 +88,7 @@ final class DayViewController: UIViewController {
         }
     }
     
-    private lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: DayViewController.getLayout()).then {
+    private lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self.getLayout()).then {
         $0.isScrollEnabled = true
         $0.showsHorizontalScrollIndicator = false
         $0.showsVerticalScrollIndicator = true
