@@ -9,6 +9,6 @@ let project = Project.app(
         .external(name: "Then"),
         .external(name: "SnapKit"),
         .external(name: "Realm"),
-        .external(name: "DPCharts")
+        .external(name: "DGCharts"),
     ]
 )
