@@ -22,6 +22,10 @@ let dependencies = Dependencies(
             url: "https://github.com/SnapKit/SnapKit.git",
             requirement: .upToNextMajor(from: "5.6.0")
         ),
+        .remote( // SnapKit
+            url: "https://github.com/danielgindi/Charts.git",
+            requirement: .upToNextMajor(from: "5.0.0")
+        ),
     ],
     platforms: [.iOS]
 )

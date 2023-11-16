@@ -8,6 +8,7 @@ let project = Project.app(
     additionalTargets: [
         .external(name: "Then"),
         .external(name: "SnapKit"),
-        .external(name: "Realm")
+        .external(name: "Realm"),
+        .external(name: "DGCharts"),
     ]
 )
