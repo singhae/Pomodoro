@@ -10,29 +10,29 @@ import Then
 import UIKit
 
 class TagModalViewController: UIViewController {
-    private let label: UILabel = {
-        let label = UILabel()
-        label.text = "태그"
-        label.font = UIFont.systemFont(ofSize: 40)
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    private let tableView: UITableView = {
-        let view = UITableView()
-        view.allowsSelection = false
-        view.backgroundColor = .clear
-        view.separatorStyle = .none
-        view.contentInset = .zero
-        view.estimatedRowHeight = 34
-        view.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
+    
+    private let label = UILabel().then {
+        $0.text = "태그"
+        $0.font = UIFont.systemFont(ofSize: 40)
+        $0.numberOfLines = 0
+        $0.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    private let tableView = UITableView().then {
+        $0.allowsSelection = false
+        $0.backgroundColor = .clear
+        $0.separatorStyle = .none
+        $0.contentInset = .zero
+        $0.estimatedRowHeight = 34
+        $0.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        $0.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
     var scrollView: UIScrollView {
         tableView
     }
     
+    //이거 말고 다른 방법 사용
     private let items = (0...10).map(String.init)
     
     override func viewDidLoad() {
