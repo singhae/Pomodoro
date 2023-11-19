@@ -5,6 +5,9 @@
 //  Created by SonSinghae on 2023/11/17.
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
+import SnapKit
+import Then
+import UIKit
 
 class TagModalViewController: UIViewController {
     private let label: UILabel = {
@@ -56,7 +59,7 @@ class TagModalViewController: UIViewController {
     }
 }
 
-extension ModalViewController: UITableViewDataSource {
+extension TagModalViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         items.count
     }
