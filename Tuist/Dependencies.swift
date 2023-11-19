@@ -26,6 +26,10 @@ let dependencies = Dependencies(
             url: "https://github.com/danielgindi/Charts.git",
             requirement: .upToNextMajor(from: "5.0.0")
         ),
+        .remote( // PanModal
+            url: "https://github.com/slackhq/PanModal.git",
+            requirement: .upToNextMajor(from: "1.2.6")
+        )
     ],
     platforms: [.iOS]
 )

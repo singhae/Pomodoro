@@ -10,5 +10,6 @@ let project = Project.app(
         .external(name: "SnapKit"),
         .external(name: "Realm"),
         .external(name: "DGCharts"),
+        .external(name: "PanModal")
     ]
 )

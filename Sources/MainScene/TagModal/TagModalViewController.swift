@@ -6,7 +6,7 @@
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
 
-final class TagModalViewController: UIViewController {
+class TagModalViewController: UIViewController {
     private let label: UILabel = {
         let label = UILabel()
         label.text = "태그"

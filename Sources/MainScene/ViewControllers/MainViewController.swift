@@ -171,7 +171,7 @@ final class MainViewController: UIViewController {
 
 extension TagModalViewController: PanModalPresentable {
     var panScrollable: UIScrollView? {
-        scrollView
+        return nil
     }
     
     var shortFormHeight: PanModalHeight {
