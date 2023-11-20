@@ -67,15 +67,15 @@ final class MainViewController: UIViewController {
     private func startTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
             guard let self else { return }
-            updateTimeLabel()
-            currentTimeInSeconds += 1
+            self.updateTimeLabel()
+            self.currentTimeInSeconds += 1
 
-            if currentTimeInSeconds > maxTimeInSeconds {
+            if self.currentTimeInSeconds > self.maxTimeInSeconds {
                 timer.invalidate()
             }
         }
 
-        longPressGuideLabel.isHidden = false
+        self.longPressGuideLabel.isHidden = false
         timer?.fire()
     }
 }
