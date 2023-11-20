@@ -32,6 +32,14 @@ final class MainViewController: UIViewController {
         $0.font = UIFont.systemFont(ofSize: 15)
     }
 
+    private let longPressLabel = UILabel().then {
+        $0.text = "길게 클릭해서 타이머를 정지할 수 있어요"
+        $0.textAlignment = .center
+        $0.textColor = .lightGray
+        $0.font = UIFont.systemFont(ofSize: 16)
+        $0.isHidden = true
+    }
+
     private let timeButton = UIButton(type: .roundedRect).then {
         $0.setTitle("시간 설정", for: .normal)
         $0.addTarget(self, action: #selector(timeSetting), for: .touchUpInside)
@@ -75,6 +83,10 @@ final class MainViewController: UIViewController {
         if let id = notificationId {
             UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id])
         }
+
+        countButton.isHidden = false
+        timeButton.isHidden = false
+        longPressLabel.isHidden = true
     }
 
     @objc private func startTimer() {
@@ -86,8 +98,10 @@ final class MainViewController: UIViewController {
 
             if self.currentTime > self.maxTime {
                 timer.invalidate()
+                self.countButton.isHidden = false
+                self.timeButton.isHidden = false
+                self.longPressLabel.isHidden = true
             }
-
         }
         timer?.fire()
 
@@ -111,6 +125,9 @@ final class MainViewController: UIViewController {
                 guard let error = error else { return }
                 print(error.localizedDescription)
             }
+        countButton.isHidden = true
+        timeButton.isHidden = true
+        longPressLabel.isHidden = false
     }
 
     override func viewDidLoad() {
@@ -118,10 +135,12 @@ final class MainViewController: UIViewController {
         view.backgroundColor = .white
         view.addSubview(timeLabel)
         view.addSubview(tagLabel)
+        view.addSubview(longPressLabel)
         view.addSubview(countButton)
         view.addSubview(timeButton)
         setupTimeLabel()
         setupTagLabel()
+        setupLongPressLabel()
         setupButtons()
 
         stopLongPress = UILongPressGestureRecognizer(target: self, action: #selector(stopTimer))
@@ -154,6 +173,13 @@ final class MainViewController: UIViewController {
         tagLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(timeLabel.snp.bottom).offset(20)
+        }
+    }
+
+    private func setupLongPressLabel() {
+        longPressLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(view.snp.bottom).offset(-30)
         }
     }
 
