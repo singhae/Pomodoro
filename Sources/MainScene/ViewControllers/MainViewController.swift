@@ -9,6 +9,7 @@
 import SnapKit
 import Then
 import UIKit
+import PanModal
 
 final class MainViewController: UIViewController {
 
@@ -133,6 +134,13 @@ final class MainViewController: UIViewController {
         let minutes = (maxTime - currentTime) / 60
         let seconds = (maxTime - currentTime) % 60
         timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
+        
+        // MARK: Modal
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+            let modalViewController = TagModalViewController()
+            modalViewController.modalPresentationStyle = .fullScreen
+            self.presentPanModal(modalViewController)
+        })
     }
 
     private func setupTimeLabel() {
@@ -160,3 +168,14 @@ final class MainViewController: UIViewController {
         }
     }
 }
+
+extension TagModalViewController: PanModalPresentable {
+    var panScrollable: UIScrollView? {
+        return nil
+    }
+    
+    var shortFormHeight: PanModalHeight {
+        .contentHeight(UIScreen.main.bounds.height * 0.4)
+    }
+}
+
