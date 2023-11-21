@@ -24,23 +24,16 @@ class TagModalViewController: UIViewController {
         $0.separatorStyle = .none
         $0.contentInset = .zero
         $0.estimatedRowHeight = 34
-        $0.register(UITableViewCell.self, forCellReuseIdentifier: "Cell") // cell 이름 변경 -> TagitemCell로 변경
+        $0.register(UITableViewCell.self, forCellReuseIdentifier: "TagItemCell") // cell 이름 변경 -> TagitemCell로 변경
         //$0.translatesAutoresizingMaskIntoConstraints = false
-
-        //        redBox.snp.makeConstraints { (make) in
-        //                    make.width.height.equalTo(100)
-        //        // 너비, 높이 모두 100으로
-        //        //            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
-        //        //            make.centerX.equalToSuperview()
-        //        make.center.equalToSuperview()
     }
     
-//    var scrollView: UIScrollView {
-//        tableView
-//    }
+    var scrollView: UIScrollView {
+        tableView
+    }
     
     //이거 말고 다른 방법 사용
-    private let items = (0...10).map(String.init)
+    private let items = (0..<11).map(String.init)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,41 +45,24 @@ class TagModalViewController: UIViewController {
         view.addSubview(tableView)
         
         // snapkit 사용으로 수정
-        NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            label.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            label.topAnchor.constraint(equalTo: view.topAnchor),
-        ])
+//        NSLayoutConstraint.activate([
+//            label.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+//            label.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+//            label.topAnchor.constraint(equalTo: view.topAnchor),
+//        ])
+        label.snp.makeConstraints { (make) in
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.top.equalToSuperview()
+
+        }
         tableView.snp.makeConstraints { (make) in
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
             make.bottom.equalToSuperview()
-
+            
         }
-//        NSLayoutConstraint.activate([
-//            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-//            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-//            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-//            tableView.topAnchor.constraint(equalTo: label.bottomAnchor),
-//        ])
-//        redBox.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//        redBox.widthAnchor.constraint(equalToConstant: 100),
-//        redBox.heightAnchor.constraint(equalToConstant: 100),
-//        redBox.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
-//        redBox.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
-//        ])
-//        redBox.snp.makeConstraints { (make) in
-//                    make.width.height.equalTo(100)
-//        // 너비, 높이 모두 100으로
-//        //            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
-//        //            make.centerX.equalToSuperview()
-//        make.center.equalToSuperview()
-//        // 상위 뷰와 center x,y 같게
-//        }()
-        
-        
     }
 }
 
