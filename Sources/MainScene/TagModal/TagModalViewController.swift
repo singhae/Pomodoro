@@ -43,20 +43,14 @@ class TagModalViewController: UIViewController {
         
         view.addSubview(label)
         view.addSubview(tableView)
-        
-        // snapkit 사용으로 수정
-//        NSLayoutConstraint.activate([
-//            label.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-//            label.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-//            label.topAnchor.constraint(equalTo: view.topAnchor),
-//        ])
-        label.snp.makeConstraints { (make) in
+
+        label.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.top.equalToSuperview()
 
         }
-        tableView.snp.makeConstraints { (make) in
+        tableView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
