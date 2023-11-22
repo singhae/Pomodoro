@@ -15,7 +15,6 @@ class TagModalViewController: UIViewController {
         $0.text = "태그"
         $0.font = UIFont.systemFont(ofSize: 40)
         $0.numberOfLines = 0
-        $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private let tableView = UITableView().then {
@@ -24,8 +23,7 @@ class TagModalViewController: UIViewController {
         $0.separatorStyle = .none
         $0.contentInset = .zero
         $0.estimatedRowHeight = 34
-        $0.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
-        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.register(UITableViewCell.self, forCellReuseIdentifier: "TagItemCell")
     }
     
     var scrollView: UIScrollView {
@@ -33,7 +31,7 @@ class TagModalViewController: UIViewController {
     }
     
     //이거 말고 다른 방법 사용
-    private let items = (0...10).map(String.init)
+    private let items = (0..<11).map(String.init)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,18 +42,17 @@ class TagModalViewController: UIViewController {
         view.addSubview(label)
         view.addSubview(tableView)
         
-        NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            label.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            label.topAnchor.constraint(equalTo: view.topAnchor),
-        ])
+        label.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.top.equalToSuperview()
+        }
         
-        NSLayoutConstraint.activate([
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.topAnchor.constraint(equalTo: label.bottomAnchor),
-        ])
+        tableView.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
     }
 }
 
@@ -63,8 +60,9 @@ extension TagModalViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         items.count
     }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell")
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TagItemCell")
         cell?.textLabel?.text = items[indexPath.row]
         return cell ?? UITableViewCell()
     }
