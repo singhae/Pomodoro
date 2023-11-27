@@ -55,6 +55,7 @@ final class FirstCell: UICollectionViewCell {
     }
     
     private func setupUI() {
+        let statistics = TotalPomodoro(sessions: PomodoroData.dummyData)
         setupLabel(participateLabel, text: "참여일 \(statistics.totalDate)일", topOffset: 70, centerXOffset: -100)
         setupLabel(countLabel, text: "횟수 \(statistics.totalSessions)번", topOffset: 70, centerXOffset: 50)
         setupLabel(achieveLabel, text: "달성 \(statistics.totalSuccesses)번", topOffset: 160, centerXOffset: -100)
@@ -71,13 +72,13 @@ final class FirstCell: UICollectionViewCell {
 final class SecondCell: UICollectionViewCell {
     private func calculateFocusTimePerTag() -> [String: Int] {
         var focusTimePerTag = [String: Int]()
-        for session in pomodoroSessions {
+        for session in PomodoroData.dummyData {
             focusTimePerTag[session.tagId, default: 0] += session.focusTime
         }
         return focusTimePerTag
     }
     
-    func setPieData(pieChartView: PieChartView) {
+    func setPieChartData(pieChartView: PieChartView) {
         var totalSum = 0.0
         let sessionsPerTag = calculateFocusTimePerTag()
         var pieDataEntries: [PieChartDataEntry] = []
@@ -98,8 +99,8 @@ final class SecondCell: UICollectionViewCell {
         pieChartView.centerText = "합계\n\(totalSum)"
     }
     
-    var dayData: [String] = [" "]
-    var priceData: [Double] = [10]
+    private var dayData: [String] = [""]
+    private var priceData: [Double] = [10]
     
     private let pieBackgroundView = UIView().then { view in
         view.layer.cornerRadius = 20
@@ -117,7 +118,6 @@ final class SecondCell: UICollectionViewCell {
         chart.holeRadiusPercent = 0.55
         chart.drawEntryLabelsEnabled = false
         chart.legend.enabled = true
-        chart.highlightPerTapEnabled = true
     }
     
     required init?(coder: NSCoder) {
@@ -131,7 +131,7 @@ final class SecondCell: UICollectionViewCell {
         self.backgroundColor = .systemGray3
         self.layer.cornerRadius = 20
         setupPieChart()
-        setPieData(pieChartView: donutPieChartView)
+        setPieChartData(pieChartView: donutPieChartView)
     }
     
     private func setupPieChart() {
