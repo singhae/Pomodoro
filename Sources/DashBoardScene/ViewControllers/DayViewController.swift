@@ -33,7 +33,7 @@ final class DayViewController: UIViewController {
         $0.textAlignment = .center
         $0.textColor = .black
     }
-
+    
     private lazy var previousButton = UIButton().then {
         $0.setImage(
             UIImage(
@@ -43,7 +43,7 @@ final class DayViewController: UIViewController {
         )
         $0.addTarget(self, action: #selector(goToPreviousDay), for: .touchUpInside)
     }
-
+    
     private lazy var nextButton = UIButton().then {
         $0.setImage(
             UIImage(
@@ -159,16 +159,10 @@ final class DayViewController: UIViewController {
         let currentDate = Date()
         let components = calendar.dateComponents([.year, .month, .day], from: currentDate)
         let targetComponents = calendar.dateComponents([.year, .month, .day], from: selectedDate)
-<<<<<<< HEAD
 
         if components.year == targetComponents.year,
            components.month == targetComponents.month,
            components.day == targetComponents.day {
-=======
-        if components.year == targetComponents.year &&
-            components.month == targetComponents.month &&
-            components.day == targetComponents.day {
->>>>>>> 053e8e3 ([Fix] 대시보드 - 시간 설정 기능)
             dateFormatter.dateFormat = "MM월 dd일, 오늘"
         } else {
             dateFormatter.dateFormat = "MM월 dd일"
@@ -204,13 +198,8 @@ final class DayViewController: UIViewController {
         collectionView.reloadData()
     }
 }
-<<<<<<< HEAD
 
 // MARK: - UICollectionViewDataSource
-
-=======
-//MARK: - UICollectionViewDataSource
->>>>>>> 053e8e3 ([Fix] 대시보드 - 시간 설정 기능)
 extension DayViewController: UICollectionViewDataSource {
     func numberOfSections(in _: UICollectionView) -> Int {
         dataSource.count
