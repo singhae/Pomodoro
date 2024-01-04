@@ -145,7 +145,6 @@ extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDeleg
         guard let centerIndexPathCalculation = collectionView.indexPathForItem(at: center) else {
             return
         }
-        
         let hours = Int(centerIndexPathCalculation.item) / 60
         let minutes = Int(centerIndexPathCalculation.item) % 60
         titleTime.text = String(format: "%02d:%02d", hours, minutes)
