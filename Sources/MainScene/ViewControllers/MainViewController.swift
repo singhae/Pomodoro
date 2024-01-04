@@ -11,7 +11,8 @@ import SnapKit
 import Then
 import UIKit
 
-final class MainViewController: UIViewController {
+final class MainViewController: UIViewController,PomodoroTimePickerDelegate {
+   
     private var timer: Timer?
     private var notificationId: String?
     private var currentTime = 0
@@ -29,7 +30,22 @@ final class MainViewController: UIViewController {
         $0.font = UIFont.systemFont(ofSize: 16)
         $0.isHidden = true
     }
-
+    private lazy var countButton = UIButton(type: .roundedRect).then {
+        $0.setTitle("카운트 시작", for: .normal)
+        $0.addTarget(self, action: #selector(startTimer), for: .touchUpInside)
+    }
+    
+    private lazy var timeButton = UIButton(type: .roundedRect).then {
+        $0.setTitle("시간 설정", for: .normal)
+        $0.addTarget(self, action: #selector(timeSetting), for: .touchUpInside)
+    }
+    
+    @objc private func timeSetting() {
+        
+        let timeSettingviewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
+        self.navigationController?.pushViewController(timeSettingviewController, animated: true)
+        
+    }
     private lazy var tagButton = UIButton().then {
         $0.setTitle("Tag", for: .normal)
         $0.setTitleColor(.black, for: .normal)
@@ -39,16 +55,6 @@ final class MainViewController: UIViewController {
             action: #selector(openTagModal),
             for: .touchUpInside
         )
-    }
-
-    private lazy var countButton = UIButton(type: .roundedRect).then {
-        $0.setTitle("카운트 시작", for: .normal)
-        $0.addTarget(self, action: #selector(startTimer), for: .touchUpInside)
-    }
-
-    private lazy var timeButton = UIButton(type: .roundedRect).then {
-        $0.setTitle("시간 설정", for: .normal)
-        $0.addTarget(self, action: #selector(timeSetting), for: .touchUpInside)
     }
 
     override func viewDidLoad() {
@@ -96,11 +102,6 @@ extension MainViewController {
         currentTime = 0
         maxTime = 0
         updateTimeLabel()
-    }
-
-    @objc private func timeSetting() {
-        let timeSettingviewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
-        navigationController?.pushViewController(timeSettingviewController, animated: true)
     }
 
     @objc private func startTimer() {
