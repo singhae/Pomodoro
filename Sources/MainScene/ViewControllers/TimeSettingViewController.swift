@@ -88,7 +88,7 @@ final class TimeSettingViewController: UIViewController {
         }
 
         titleTime.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(view.bounds.height * 0.2)
+            make.top.equalToSuperview().offset(50)
             make.centerX.equalToSuperview()
         }
 
