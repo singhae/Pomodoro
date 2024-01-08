@@ -40,7 +40,7 @@ struct TotalPomodoro {
     var totalSuccesses: Int
     var totalFailures: Int
     var totalDate: Int
-
+    
     init(sessions: [PomodoroData]) {
         self.totalSessions = sessions.count
         self.totalSuccesses = sessions.filter { $0.success }.count

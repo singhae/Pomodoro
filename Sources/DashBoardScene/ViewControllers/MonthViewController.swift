@@ -40,14 +40,14 @@ final class MonthViewController: UIViewController {
         setupPieView()
         ChangePieCenterText()
         setPieData(pieChartView: donutPieChartView , pieChartDataEntries:
-                            entryData(values: priceData))
+                    entryData(values: priceData))
         
     }
     
     private func ChangePieCenterText() {
         
         let attributeString = NSAttributedString(string: "총합", attributes: [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 25, weight: .bold)
-            ])
+                                                                           ])
         
         donutPieChartView.centerAttributedText = attributeString
     }
@@ -64,9 +64,9 @@ final class MonthViewController: UIViewController {
             make.width.height.equalTo(view.bounds.width * 0.65)
         }
     }
-
+    
     func entryData(values: [Double]) -> [ChartDataEntry] {
-
+        
         var pieDataEntries: [ChartDataEntry] = []
         for i in 0 ..< values.count {
             let pieDataEntry = ChartDataEntry(x: Double(i), y: values[i])
