@@ -55,17 +55,24 @@ final class FirstCell: UICollectionViewCell {
     }
     
     private func setupUI() {
-        let statistics = TotalPomodoro(sessions: PomodoroData.dummyData)
-        setupLabel(participateLabel, text: "참여일 \(statistics.totalDate)일", topOffset: 70, centerXOffset: -100)
-        setupLabel(countLabel, text: "횟수 \(statistics.totalSessions)번", topOffset: 70, centerXOffset: 50)
-        setupLabel(achieveLabel, text: "달성 \(statistics.totalSuccesses)번", topOffset: 160, centerXOffset: -100)
-        setupLabel(failLabel, text: "실패 \(statistics.totalFailures)번", topOffset: 160, centerXOffset: 50)
+        let filteredData = getPomodoroData(forDate: Date())
+        let participateCount = filteredData.count
+        let totalSuccesses = filteredData.filter { $0.success }.count
+        let totalFailures = filteredData.filter { !$0.success }.count
         
+        setupLabel(participateLabel, text: "참여일 \(participateCount)일", topOffset: 70, centerXOffset: -100)
+        setupLabel(countLabel, text: "횟수 \(filteredData.count)번", topOffset: 70, centerXOffset: 50)
+        setupLabel(achieveLabel, text: "달성 \(totalSuccesses)번", topOffset: 160, centerXOffset: -100)
+        setupLabel(failLabel, text: "실패 \(totalFailures)번", topOffset: 160, centerXOffset: 50)
         setupDivider(horizonDivider, isHorizontal: true, length: 325, offset: 130)
         setupDivider(verticalDivider, isHorizontal: false, length: 155, offset: 50)
         
         self.layer.cornerRadius = 20
         self.backgroundColor = .black
+    }
+    
+    func getPomodoroData(forDate date: Date) -> [PomodoroData] {
+        return PomodoroData.dummyData.filter { $0.participateDate <= date }
     }
 }
 

@@ -13,20 +13,24 @@ struct PomodoroData {
     var breakTime: Int
     var focusTime: Int
     var tagId: String
-    var participateDate: Int
+    var participateDate: Date
     var success: Bool
     
     static var dummyData: [PomodoroData] {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let defaultDate = Date()
+        
         return [
-            PomodoroData(breakTime: 5, focusTime: 25, tagId: "공부", participateDate: 2, success: true),
-            PomodoroData(breakTime: 5, focusTime: 30, tagId: "운동", participateDate: 2, success: false),
-            PomodoroData(breakTime: 5, focusTime: 25, tagId: "운동", participateDate: 2, success: false),
-            PomodoroData(breakTime: 5, focusTime: 25, tagId: "운동", participateDate: 2, success: false),
-            PomodoroData(breakTime: 5, focusTime: 25, tagId: "운동", participateDate: 2, success: false),
-            PomodoroData(breakTime: 5, focusTime: 25, tagId: "공부", participateDate: 2, success: true),
-            PomodoroData(breakTime: 5, focusTime: 25, tagId: "공부", participateDate: 2, success: true),
-            PomodoroData(breakTime: 5, focusTime: 25, tagId: "스터디", participateDate: 2, success: true),
-            PomodoroData(breakTime: 5, focusTime: 20, tagId: "스터디", participateDate: 2, success: true),
+            PomodoroData(breakTime: 5, focusTime: 25, tagId: "공부", participateDate: dateFormatter.date(from: "2024-01-01") ?? defaultDate, success: true),
+            PomodoroData(breakTime: 5, focusTime: 30, tagId: "운동", participateDate: dateFormatter.date(from: "2024-01-04") ?? defaultDate, success: false),
+            PomodoroData(breakTime: 5, focusTime: 25, tagId: "운동", participateDate: dateFormatter.date(from: "2024-01-04") ?? defaultDate, success: true),
+            PomodoroData(breakTime: 5, focusTime: 25, tagId: "운동", participateDate: dateFormatter.date(from: "2024-01-08") ?? defaultDate, success: false),
+            PomodoroData(breakTime: 5, focusTime: 25, tagId: "운동", participateDate: dateFormatter.date(from: "2024-01-10") ?? defaultDate, success: false),
+            PomodoroData(breakTime: 5, focusTime: 25, tagId: "공부", participateDate: dateFormatter.date(from: "2024-01-09") ?? defaultDate, success: true),
+            PomodoroData(breakTime: 5, focusTime: 25, tagId: "공부", participateDate: dateFormatter.date(from: "2024-01-02") ?? defaultDate, success: true),
+            PomodoroData(breakTime: 5, focusTime: 25, tagId: "스터디", participateDate: dateFormatter.date(from: "2024-01-02") ?? defaultDate, success: true),
+            PomodoroData(breakTime: 5, focusTime: 20, tagId: "스터디", participateDate: dateFormatter.date(from: "2024-01-01") ?? defaultDate, success: true),
         ]
     }
 }
