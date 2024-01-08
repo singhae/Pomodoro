@@ -88,7 +88,7 @@ final class TimeSettingViewController: UIViewController {
         }
 
         titleTime.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(50)
+            make.top.equalToSuperview().offset(view.bounds.height * 0.2)
             make.centerX.equalToSuperview()
         }
 
@@ -146,6 +146,7 @@ extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDeleg
         guard let centerIndexPathCalculation = collectionView.indexPathForItem(at: center) else {
             return
         }
+        
         let hours = Int(centerIndexPathCalculation.item) / 60
         let minutes = Int(centerIndexPathCalculation.item) % 60
         titleTime.text = String(format: "%02d:%02d", hours, minutes)
