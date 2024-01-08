@@ -97,6 +97,7 @@ final class DayViewController: UIViewController {
         $0.register(FirstCell.self, forCellWithReuseIdentifier: "FirstCell")
         $0.register(SecondCell.self, forCellWithReuseIdentifier: "SecondCell")
     }
+    
     private let dataSource: [MySection] = [
         .first([
             MySection.FirstItem(value: "첫 레이아웃"),
@@ -121,6 +122,7 @@ extension DayViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         self.dataSource.count
     }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch self.dataSource[section] {
         case let .first(items):
@@ -129,6 +131,7 @@ extension DayViewController: UICollectionViewDataSource {
             return items.count
         }
     }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch self.dataSource[indexPath.section] {
         case .first(_):
