@@ -42,9 +42,8 @@ class TagModalViewController: UIViewController {
         $0.spacing = 20
         $0.alignment = .fill
     }
-    
+    // MARK: - TODO
     @objc private func circleButtonTapped() {
-        // TODO
     }
     
     override func viewDidLoad() {
@@ -54,7 +53,7 @@ class TagModalViewController: UIViewController {
         
         registerCollectionView()
         
-        setupCollectionViewDelegate()
+        configureCollectionViewDelegate()
         
         configureLayout()
         
@@ -98,7 +97,7 @@ class TagModalViewController: UIViewController {
         tagCollectionView.register(TagCollectionViewCell.self, forCellWithReuseIdentifier: TagCollectionViewCell.id)
     }
     
-    private func setupCollectionViewDelegate() {
+    private func configureCollectionViewDelegate() {
         tagCollectionView.dataSource = self
         tagCollectionView.delegate = self
     }
