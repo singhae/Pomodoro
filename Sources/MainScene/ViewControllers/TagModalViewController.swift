@@ -29,7 +29,7 @@ class TagModalViewController: UIViewController {
     
     private let circleButton = UIButton().then {
         $0.setImage(UIImage(systemName: "circle"), for: .normal)
-        $0.backgroundColor = .systemGray // 배경색을 systemGray로 설정
+        $0.backgroundColor = .systemGray
         $0.tintColor = .systemGray
         $0.layer.cornerRadius = 8
         $0.layer.masksToBounds = true
