@@ -13,8 +13,8 @@ import Then
 class TagCollectionViewCell: UICollectionViewCell {
     
     let tagLabel = UILabel().then {
-        $0.font = .systemFont(ofSize: 14)
-        $0.textColor = .gray
+        $0.font = .systemFont(ofSize: 10)
+        $0.textColor = .white
     }
     
     var dataLabel = UILabel()
