@@ -120,7 +120,6 @@ extension TagModalViewController: UICollectionViewDelegate, UICollectionViewData
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TagCollectionViewCell.id, for: indexPath) as! TagCollectionViewCell
-        //cell.dataLabel.text = dataSource[indexPath.item]
         cell.tagLabel.text = dataSource[indexPath.item]
         return cell
     }

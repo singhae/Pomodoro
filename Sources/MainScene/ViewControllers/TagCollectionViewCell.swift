@@ -13,12 +13,17 @@ import Then
 class TagCollectionViewCell: UICollectionViewCell {
     
     let tagLabel = UILabel().then {
-       $0.font = .systemFont(ofSize: 14)
-       $0.textColor = .gray
-     }
+        $0.font = .systemFont(ofSize: 14)
+        $0.textColor = .gray
+    }
+    
     
     static var id: String {
-        return NSStringFromClass(Self.self).components(separatedBy: ".").last!
+        if let className = NSStringFromClass(Self.self).components(separatedBy: ".").last {
+            return className
+        } else {
+            return "DefaultClassName"
+        }
     }
     
     var dataLabel: UILabel!
@@ -34,7 +39,7 @@ class TagCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("Not implemented required init?(coder: NSCoder)")
     }
-
+    
     private func configure() {
         dataLabel = UILabel()
         dataLabel.font = UIFont.systemFont(ofSize: 15)
