@@ -24,18 +24,19 @@ final class TagModalViewController: UIViewController {
     private let label = UILabel().then {
         $0.text = "태그선택"
         $0.textColor = .white
-        $0.font = UIFont.systemFont(ofSize: 20)
+        //$0.font = UIFont.systemFont(ofSize: 28)
+        $0.font = UIFont.boldSystemFont(ofSize: 26)
     }
     
     private let circleButton = UIButton().then {
-        $0.setImage(UIImage(systemName: "circle"), for: .normal)
-        $0.backgroundColor = .systemGray
-        $0.tintColor = .systemGray
-        $0.layer.cornerRadius = 8
-        $0.layer.masksToBounds = true
-        $0.addTarget(self, action: #selector(circleButtonTapped), for: .touchUpInside)
-        
-    }
+        $0.setImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
+        $0.contentMode = .scaleAspectFit
+        $0.tintColor = .black
+        $0.backgroundColor = .white
+        $0.layer.cornerRadius = 10
+        $0.clipsToBounds = true
+     }
+
     
     private let mainStackView = UIStackView().then {
         $0.axis = .vertical
