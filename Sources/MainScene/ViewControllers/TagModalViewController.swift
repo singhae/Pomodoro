@@ -9,7 +9,7 @@ import SnapKit
 import Then
 import UIKit
 
-class TagModalViewController: UIViewController {
+final class TagModalViewController: UIViewController {
     
     private var tagCollectionView: TagCollectionView!
     private let dataSource = TagCollectionViewData.data
