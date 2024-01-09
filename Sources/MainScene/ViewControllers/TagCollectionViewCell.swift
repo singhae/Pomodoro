@@ -17,6 +17,7 @@ class TagCollectionViewCell: UICollectionViewCell {
         $0.textColor = .gray
     }
     
+    var dataLabel = UILabel()
     
     static var id: String {
         if let className = NSStringFromClass(Self.self).components(separatedBy: ".").last {
@@ -25,9 +26,7 @@ class TagCollectionViewCell: UICollectionViewCell {
             return "DefaultClassName"
         }
     }
-    
-    var dataLabel: UILabel!
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -48,6 +47,7 @@ class TagCollectionViewCell: UICollectionViewCell {
         dataLabel.backgroundColor = .systemIndigo
         
         contentView.addSubview(dataLabel)
+        
         dataLabel.snp.makeConstraints { make in
             make.edges.equalTo(safeAreaLayoutGuide)
         }
