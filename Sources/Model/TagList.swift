@@ -7,13 +7,16 @@
 //
 
 import Foundation
-//import RealmSwift
+// import RealmSwift
 import UIKit
 
 class TagList {
     var tagList: [Tag] = [
-        Tag(tagName: "집중", tagColor: .red),
-        Tag(tagName: "업무", tagColor: .blue)
+        Tag(tagName: "집중", tagColor: .blue),
+        Tag(tagName: "업무", tagColor: .red),
+        Tag(tagName: "공부", tagColor: .green),
+        Tag(tagName: "운동", tagColor: .purple),
+        Tag(tagName: "스터디", tagColor: .yellow),
     ]
 
     func addTag(tagName: String, tagColor: UIColor) {}
