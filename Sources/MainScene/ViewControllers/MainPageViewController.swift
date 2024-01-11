@@ -47,7 +47,9 @@ final class MainPageViewController: UIViewController {
 extension MainPageViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+        
         guard let index = dataViewControllers.firstIndex(of: viewController) else { return nil }
+        
         let previousIndex = index - 1
         if previousIndex < 0 {
             return nil

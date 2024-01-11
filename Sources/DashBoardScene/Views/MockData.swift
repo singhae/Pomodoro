@@ -26,7 +26,7 @@ struct PomodoroData {
             PomodoroData(breakTime: 5, focusTime: 30, tagId: "운동", participateDate: dateFormatter.date(from: "2024-01-04") ?? defaultDate, success: false),
             PomodoroData(breakTime: 5, focusTime: 25, tagId: "운동", participateDate: dateFormatter.date(from: "2024-01-04") ?? defaultDate, success: true),
             PomodoroData(breakTime: 5, focusTime: 25, tagId: "운동", participateDate: dateFormatter.date(from: "2024-01-08") ?? defaultDate, success: false),
-            PomodoroData(breakTime: 5, focusTime: 25, tagId: "운동", participateDate: dateFormatter.date(from: "2024-01-10") ?? defaultDate, success: false),
+            PomodoroData(breakTime: 5, focusTime: 25, tagId: "운동", participateDate: dateFormatter.date(from: "2024-01-12") ?? defaultDate, success: false),
             PomodoroData(breakTime: 5, focusTime: 25, tagId: "공부", participateDate: dateFormatter.date(from: "2024-01-09") ?? defaultDate, success: true),
             PomodoroData(breakTime: 5, focusTime: 25, tagId: "공부", participateDate: dateFormatter.date(from: "2024-01-02") ?? defaultDate, success: true),
             PomodoroData(breakTime: 5, focusTime: 25, tagId: "스터디", participateDate: dateFormatter.date(from: "2024-01-02") ?? defaultDate, success: true),

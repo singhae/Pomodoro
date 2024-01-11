@@ -10,6 +10,53 @@ import UIKit
 import SnapKit
 
 final class DayViewController: UIViewController {
+    
+    var selectedDate = Date() {
+        didSet{
+            updateSelectedDateFormat()
+        }
+    }
+    private let calendar = Calendar.current
+    private let dateFormatter = DateFormatter().then {
+        $0.dateStyle = .long
+        $0.dateFormat = "MM월-dd일 오늘"
+    }
+    
+    private lazy var dateLabel = UILabel().then {
+        $0.text = dateFormatter.string(from: selectedDate)
+        $0.textAlignment = .center
+        $0.textColor = .black
+    }
+    
+    private lazy var previousButton = UIButton().then {
+        $0.setImage(UIImage(systemName: "arrowtriangle.backward")?.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
+        $0.addTarget(self, action: #selector(goToPreviousDay), for: .touchUpInside)
+    }
+    
+    private lazy var nextButton = UIButton().then {
+        $0.setImage(UIImage(systemName: "arrowtriangle.right")?.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
+        $0.addTarget(self, action: #selector(goToNextDay), for: .touchUpInside)
+    }
+    
+    private lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self.getLayout()).then {
+        $0.isScrollEnabled = true
+        $0.showsHorizontalScrollIndicator = false
+        $0.showsVerticalScrollIndicator = true
+        $0.contentInset = .zero
+        $0.clipsToBounds = true
+        $0.register(FirstCell.self, forCellWithReuseIdentifier: "FirstCell")
+        $0.register(SecondCell.self, forCellWithReuseIdentifier: "SecondCell")
+    }
+    
+    private let dataSource: [MySection] = [
+        .first([
+            MySection.FirstItem(value: "첫 레이아웃"),
+        ]),
+        .second([
+            MySection.SecondItem(value: "두 번째 레이아웃"),
+        ])
+    ]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -18,29 +65,12 @@ final class DayViewController: UIViewController {
         setupCollectionView()
     }
     
-    private let dateLabel = UILabel().then {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .long
-        dateFormatter.dateFormat = .none
-        $0.text = dateFormatter.string(from: Date())
-        $0.textAlignment = .center
-        $0.textColor = .black
-    }
-    
     private func setupDateLabel() {
         view.addSubview(dateLabel)
         dateLabel.snp.makeConstraints{ make in
             make.top.equalToSuperview()
             make.centerX.equalToSuperview()
         }
-    }
-    
-    private let previousButton = UIButton().then {
-        $0.setImage(UIImage(systemName: "arrowtriangle.backward")?.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
-    }
-    
-    private let nextButton = UIButton().then {
-        $0.setImage(UIImage(systemName: "arrowtriangle.right")?.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
     }
     
     private func setupArrowButtons() {
@@ -91,25 +121,6 @@ final class DayViewController: UIViewController {
         }
     }
     
-    private lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self.getLayout()).then {
-        $0.isScrollEnabled = true
-        $0.showsHorizontalScrollIndicator = false
-        $0.showsVerticalScrollIndicator = true
-        $0.contentInset = .zero
-        $0.clipsToBounds = true
-        $0.register(FirstCell.self, forCellWithReuseIdentifier: "FirstCell")
-        $0.register(SecondCell.self, forCellWithReuseIdentifier: "SecondCell")
-    }
-    
-    private let dataSource: [MySection] = [
-        .first([
-            MySection.FirstItem(value: "첫 레이아웃"),
-        ]),
-        .second([
-            MySection.SecondItem(value: "두 번째 레이아웃"),
-        ])
-    ]
-    
     private func setupCollectionView () {
         view.addSubview(collectionView)
         collectionView.backgroundColor = .white
@@ -119,13 +130,48 @@ final class DayViewController: UIViewController {
         }
         self.collectionView.dataSource = self
     }
+    
+    private func updateSelectedDateFormat() {
+        let currentDate = Date()
+        let components = calendar.dateComponents([.year, .month, .day], from: currentDate)
+        let targetComponents = calendar.dateComponents([.year, .month, .day], from: selectedDate)
+        
+        if components.year == targetComponents.year &&
+            components.month == targetComponents.month &&
+            components.day == targetComponents.day {
+            dateFormatter.dateFormat = "MM월 dd일, 오늘"
+        } else {
+            dateFormatter.dateFormat = "MM월 dd일"
+        }
+        dateLabel.text = dateFormatter.string(from: selectedDate)
+    }
+    
+    @objc private func goToNextDay() {
+        let currentDate = Date()
+        guard let nextDay = calendar.date(byAdding: .day, value: 1, to: selectedDate) else {
+            return
+        }
+        
+        if nextDay <= currentDate {
+            selectedDate = nextDay
+            updateSelectedDateFormat()
+        } else{
+            return
+        }
+    }
+    
+    @objc private func goToPreviousDay() {
+        if let previousDay = calendar.date(byAdding: .day, value: -1, to: selectedDate) {
+            selectedDate = previousDay
+            updateSelectedDateFormat()
+        }
+    }
 }
-
+//MARK: - UICollectionViewDataSource
 extension DayViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         self.dataSource.count
     }
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch self.dataSource[section] {
         case let .first(items):
@@ -134,7 +180,6 @@ extension DayViewController: UICollectionViewDataSource {
             return items.count
         }
     }
-    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch self.dataSource[indexPath.section] {
         case .first(_):
