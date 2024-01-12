@@ -10,7 +10,6 @@ import UIKit
 import SnapKit
 
 final class DayViewController: UIViewController {
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -27,6 +26,7 @@ final class DayViewController: UIViewController {
         $0.textAlignment = .center
         $0.textColor = .black
     }
+    
     private func setupDateLabel() {
         view.addSubview(dateLabel)
         dateLabel.snp.makeConstraints{ make in
@@ -38,9 +38,11 @@ final class DayViewController: UIViewController {
     private let previousButton = UIButton().then {
         $0.setImage(UIImage(systemName: "arrowtriangle.backward")?.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
     }
+    
     private let nextButton = UIButton().then {
         $0.setImage(UIImage(systemName: "arrowtriangle.right")?.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
     }
+    
     private func setupArrowButtons() {
         view.addSubview(previousButton)
         view.addSubview(nextButton)
@@ -53,6 +55,7 @@ final class DayViewController: UIViewController {
             make.leading.equalTo(dateLabel.snp.trailing).offset(10)
         }
     }
+    
     private func getLayout() -> UICollectionViewCompositionalLayout {
         UICollectionViewCompositionalLayout { (section, _) -> NSCollectionLayoutSection? in
             

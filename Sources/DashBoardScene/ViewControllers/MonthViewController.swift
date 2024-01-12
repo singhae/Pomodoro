@@ -39,15 +39,25 @@ final class MonthViewController: UIViewController {
         view.backgroundColor = .white
         setupPieView()
         ChangePieCenterText()
-        setPieData(pieChartView: donutPieChartView , pieChartDataEntries:
-                            entryData(values: priceData))
-        
+        setPieData(
+            pieChartView: donutPieChartView ,
+            pieChartDataEntries:
+                entryData(
+                    values: priceData
+                )
+        )
     }
     
     private func ChangePieCenterText() {
         
-        let attributeString = NSAttributedString(string: "총합", attributes: [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 25, weight: .bold)
-            ])
+        let attributeString = NSAttributedString(
+            string: "총합",
+            attributes: [ NSAttributedString.Key.font: UIFont.systemFont(
+                ofSize: 25,
+                weight: .bold
+            )
+                        ]
+        )
         
         donutPieChartView.centerAttributedText = attributeString
     }
@@ -64,9 +74,8 @@ final class MonthViewController: UIViewController {
             make.width.height.equalTo(view.bounds.width * 0.65)
         }
     }
-
+    
     func entryData(values: [Double]) -> [ChartDataEntry] {
-
         var pieDataEntries: [ChartDataEntry] = []
         for i in 0 ..< values.count {
             let pieDataEntry = ChartDataEntry(x: Double(i), y: values[i])
@@ -76,7 +85,10 @@ final class MonthViewController: UIViewController {
     }
     
     func setPieData(pieChartView: PieChartView, pieChartDataEntries: [ChartDataEntry]) {
-        let pieChartdataSet = PieChartDataSet(entries: pieChartDataEntries, label: "")
+        let pieChartdataSet = PieChartDataSet(
+            entries: pieChartDataEntries,
+            label: ""
+        )
         pieChartdataSet.colors = [UIColor.black]
         pieChartdataSet.drawValuesEnabled = false
         
