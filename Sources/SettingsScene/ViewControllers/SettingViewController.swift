@@ -12,8 +12,27 @@ import UIKit
 
 class SettingViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
-    let options =
-        ["짧은 휴식 시간 설정하기", "긴 휴식 시간 설정하기", "뽀모도로 완료 진동", "데이터 초기화하기", "타이머 특수효과", "서비스 평가하러 가기", "오픈 소스 라이센스"]
+    enum SettingOption: CaseIterable {
+        case shortBreak, longBreak, completionVibrate, dataReset, timerEffect, serviceReview, OSLicense
+        var title: String {
+            switch self {
+            case .shortBreak:
+                return "짧은 휴식 설정하기"
+            case .longBreak:
+                return "긴 휴식 설정하기"
+            case .completionVibrate:
+                return "뽀모도로 완료 진동"
+            case .dataReset:
+                return "데이터 초기화하기"
+            case .timerEffect:
+                return "타이머 특수효과"
+            case .serviceReview:
+                return "서비스 평가하러 가기"
+            case .OSLicense:
+                return "오픈 소스 라이센스"
+            }
+        }
+    }
 
     let titleLabel = UILabel().then {
         $0.text = "설정"
@@ -39,62 +58,65 @@ class SettingViewController: UIViewController, UITableViewDataSource, UITableVie
     // MARK: - UITableViewDataSource
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return options.count
+        return SettingOption.allCases.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .value1, reuseIdentifier: "OptionCell")
         var config = cell.defaultContentConfiguration()
-        let option = options[indexPath.row]
+        let option = SettingOption.allCases[indexPath.row]
 
-        config.text = option
-        cell.textLabel?.text = option
+        config.text = option.title
+        cell.textLabel?.text = option.title
 
-        if option == "짧은 휴식 시간 설정하기" {
+        switch SettingOption.allCases[indexPath.row] {
+
+        case .shortBreak:
             cell.accessoryType = .disclosureIndicator
             config.secondaryText = "5min"
             cell.detailTextLabel?.text = config.secondaryText
-        }
-        if option == "긴 휴식 시간 설정하기" {
+        case .longBreak:
             cell.accessoryType = .disclosureIndicator
             config.secondaryText = "30min"
             cell.detailTextLabel?.text = config.secondaryText
-        }
-
-        if option == "뽀모도로 완료 진동" {
+        case .completionVibrate:
             _ = UISwitch(frame: .zero).then {
                 $0.setOn(false, animated: true) // switch 초기설정 지정
                 $0.tag = indexPath.row // tag 지정
 //                $0.addTarget(<#T##target: Any?##Any?#>, action: <#T##Selector#>, for: <#T##UIControl.Event#>) // addTarget 지정
                 cell.accessoryView = $0
             }
-        }
-        if option == "타이머 특수효과" {
+        case .timerEffect:
             _ = UISwitch(frame: .zero).then {
                 $0.setOn(false, animated: true) // switch 초기설정 지정
                 $0.tag = indexPath.row // tag 지정
 //                $0.addTarget(<#T##target: Any?##Any?#>, action: <#T##Selector#>, for: <#T##UIControl.Event#>) // addTarget 지정
                 cell.accessoryView = $0
             }
+        default:
+            return cell
         }
-
         return cell
     }
 
     // MARK: - UITableViewDelegate
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedOption = options[indexPath.row]
-        if selectedOption == "짧은 휴식 시간 설정하기" {
+        let selectedOption = SettingOption.allCases[indexPath.row]
+
+        switch selectedOption {
+
+        case .shortBreak:
             presentModal(modalViewController: ShortBreakModalViewController())
             tableView.deselectRow(at: indexPath, animated: true)
-        }
-        else if selectedOption == "긴 휴식 시간 설정하기" {
+        case .longBreak:
             presentModal(modalViewController: LongBreakModalViewController())
             tableView.deselectRow(at: indexPath, animated: true)
-        }
-        else {
-            let detailViewController = DetailViewController(option: selectedOption)
+        case .dataReset:
+            presentModal(modalViewController: DataResetModalViewController())
+            tableView.deselectRow(at: indexPath, animated: true)
+        default:
+            let detailViewController = DetailViewController(option: selectedOption.title)
             navigationController?.pushViewController(detailViewController, animated: true)
             tableView.deselectRow(at: indexPath, animated: true)
         }
