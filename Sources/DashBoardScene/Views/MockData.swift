@@ -15,7 +15,7 @@ struct PomodoroData {
     var tagId: String
     var participateDate: Date
     var success: Bool
-    
+
     static var dummyData: [PomodoroData] {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -50,16 +50,16 @@ struct TotalPomodoro {
 }
 
 // FIXME: - 임시로 사용하는 MockData입니다.
-struct Tag {
+struct TempTag {
     var uid: String
     var tagName: String
     var tagDescription: String
-    
-    static var dummyData: [Tag] {
+
+    static var dummyData: [TempTag] {
         return [
-            Tag(uid: "1", tagName: "공부", tagDescription: "이산수학 공부"),
-            Tag(uid: "2", tagName: "운동", tagDescription: "필라테스"),
-            Tag(uid: "3", tagName: "스터디", tagDescription: "iOS 스터디"),
+            TempTag(uid: "1", tagName: "공부", tagDescription: "이산수학 공부"),
+            TempTag(uid: "2", tagName: "운동", tagDescription: "필라테스"),
+            TempTag(uid: "3", tagName: "스터디", tagDescription: "iOS 스터디"),
         ]
     }
 }

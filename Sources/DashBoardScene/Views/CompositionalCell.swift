@@ -6,10 +6,10 @@
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
 
-import UIKit
+import DGCharts
 import SnapKit
 import Then
-import DGCharts
+import UIKit
 
 final class FirstCell: UICollectionViewCell, DayViewControllerDelegate {
     
@@ -35,7 +35,7 @@ final class FirstCell: UICollectionViewCell, DayViewControllerDelegate {
     private func setupLabel(_ label: UILabel, text: String, topOffset: CGFloat, centerXOffset: CGFloat) {
         label.textColor = .white
         label.text = text
-        self.contentView.addSubview(label)
+        contentView.addSubview(label)
         label.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(topOffset)
             make.centerX.equalToSuperview().offset(centerXOffset)
@@ -44,7 +44,7 @@ final class FirstCell: UICollectionViewCell, DayViewControllerDelegate {
     
     private func setupDivider(_ divider: UIView, isHorizontal: Bool, length: CGFloat, offset: CGFloat) {
         divider.backgroundColor = .white
-        self.contentView.addSubview(divider)
+        contentView.addSubview(divider)
         divider.snp.makeConstraints { make in
             if isHorizontal {
                 make.width.equalTo(length)
@@ -58,6 +58,7 @@ final class FirstCell: UICollectionViewCell, DayViewControllerDelegate {
         }
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("이 생성자를 사용하려면 스토리보드를 구현해주세요.")
     }
@@ -80,8 +81,8 @@ final class FirstCell: UICollectionViewCell, DayViewControllerDelegate {
         setupDivider(horizonDivider, isHorizontal: true, length: 325, offset: 130)
         setupDivider(verticalDivider, isHorizontal: false, length: 155, offset: 50)
         
-        self.layer.cornerRadius = 20
-        self.backgroundColor = .black
+        layer.cornerRadius = 20
+        backgroundColor = .black
     }
     
     func sendSelectedDate(data: Date) {
@@ -131,7 +132,7 @@ final class SecondCell: UICollectionViewCell {
         view.backgroundColor = .systemGray3
     }
     
-    private let donutPieChartView = PieChartView().then{ chart in
+    private let donutPieChartView = PieChartView().then { chart in
         chart.noDataText = "출력 데이터가 없습니다."
         chart.noDataFont = .systemFont(ofSize: 20)
         chart.noDataTextColor = .black
@@ -144,16 +145,17 @@ final class SecondCell: UICollectionViewCell {
         chart.legend.enabled = true
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError()
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.contentView.addSubview(pieBackgroundView)
+        contentView.addSubview(pieBackgroundView)
         pieBackgroundView.addSubview(donutPieChartView)
         self.backgroundColor = .systemGray3
-        self.layer.cornerRadius = 20
+        layer.cornerRadius = 20
         setupPieChart()
         setPieChartData(pieChartView: donutPieChartView)
     }
