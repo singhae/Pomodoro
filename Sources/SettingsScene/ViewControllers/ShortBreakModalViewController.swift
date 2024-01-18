@@ -9,23 +9,64 @@
 import Foundation
 import UIKit
 
-class ShortBreakModalViewController: UIViewController {
+class ShortBreakModalViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
 
     let label = UILabel().then {
-        $0.text = "Short Break"
+        $0.text = "짧은 휴식"
     }
+
+    var textField = UITextField().then {
+        $0.text = ""
+    }
+
+    var minutePicker: UIPickerView = .init()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+
         view.addSubview(label)
+        view.addSubview(minutePicker)
+        view.addSubview(textField)
+
+        minutePicker.sizeToFit()
+        minutePicker.delegate = self
+        minutePicker.dataSource = self
 
         setupConstraints()
     }
 
     private func setupConstraints() {
         label.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.top.equalToSuperview().offset(50)
+        }
+
+        minutePicker.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(label.snp.bottom).offset(10)
+        }
+
+        textField.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(minutePicker.snp.bottom).offset(10)
         }
     }
+
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return 20
+    }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return String(row + 1) + "분"
+    }
+
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        textField.text = (String(row + 1) + "분")
+    }
+
 }
