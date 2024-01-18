@@ -108,7 +108,7 @@ class SettingViewController: UIViewController, UITableViewDataSource, UITableVie
         nav.modalPresentationStyle = .pageSheet
 
         if let sheet = nav.sheetPresentationController {
-            sheet.detents = [.medium(), .large()]
+            sheet.detents = [.medium()]
             sheet.prefersGrabberVisible = true
         }
 
