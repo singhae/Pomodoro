@@ -105,16 +105,22 @@ final class TagModalViewController: UIViewController {
     
 }
 
-extension TagModalViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension TagModalViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        let width: CGFloat = (collectionView.frame.width / 3) - 0.5
-        
-        return CGSize(width: width, height: width)
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let padding: CGFloat = 10
+        let totalPadding = padding * (2 - 1)
+        let individualPadding = totalPadding / 2
+        let width = (collectionView.bounds.width - totalPadding) / 2
+        let height: CGFloat = 70 
+        return CGSize(width: width - individualPadding, height: height)
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView,
+                        numberOfItemsInSection section: Int) -> Int {
+        
         return dataSource.count
     }
     
