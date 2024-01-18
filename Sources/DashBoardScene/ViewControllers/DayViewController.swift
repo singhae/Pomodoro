@@ -9,13 +9,14 @@
 import UIKit
 import SnapKit
 
+protocol DayViewControllerDelegate {
+    func sendSelectedDate(data: Date)
+}
+
 final class DayViewController: UIViewController {
-    
-    var selectedDate = Date() {
-        didSet{
-            updateSelectedDateFormat()
-        }
-    }
+    private var delegate : DayViewControllerDelegate?
+    private let firstCell = FirstCell()
+    private var selectedDate = Date()
     private let calendar = Calendar.current
     private let dateFormatter = DateFormatter().then {
         $0.dateStyle = .long
@@ -151,20 +152,25 @@ final class DayViewController: UIViewController {
         guard let nextDay = calendar.date(byAdding: .day, value: 1, to: selectedDate) else {
             return
         }
-        
         if nextDay <= currentDate {
             selectedDate = nextDay
             updateSelectedDateFormat()
+            delegate?.sendSelectedDate(data: selectedDate)
         } else{
             return
         }
+        firstCell.sendSelectedDate(data: selectedDate)
+        self.collectionView.reloadData()
     }
     
     @objc private func goToPreviousDay() {
         if let previousDay = calendar.date(byAdding: .day, value: -1, to: selectedDate) {
             selectedDate = previousDay
             updateSelectedDateFormat()
+            delegate?.sendSelectedDate(data: selectedDate)
         }
+        firstCell.sendSelectedDate(data: selectedDate)
+        self.collectionView.reloadData()
     }
 }
 //MARK: - UICollectionViewDataSource
@@ -186,6 +192,8 @@ extension DayViewController: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FirstCell", for: indexPath) as? FirstCell else {
                 return UICollectionViewCell()
             }
+            cell.updateUI(for: selectedDate)
+            
             return cell
         case .second(_):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SecondCell", for: indexPath) as? SecondCell else {

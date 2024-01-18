@@ -11,13 +11,26 @@ import SnapKit
 import Then
 import DGCharts
 
-final class FirstCell: UICollectionViewCell {
+final class FirstCell: UICollectionViewCell, DayViewControllerDelegate {
+    
     let horizonDivider = UIView()
     let verticalDivider = UIView()
     let participateLabel = UILabel()
     let countLabel = UILabel()
     let achieveLabel = UILabel()
     let failLabel = UILabel()
+    var getSelectedDate: Date = Date()
+    
+    func updateUI(for date: Date) {
+        let filteredData = getPomodoroData(forDate: date)
+        let participateCount = filteredData.count
+        let totalSuccessCount = filteredData.filter { $0.success }.count
+        let totalFailureCount = filteredData.filter { !$0.success }.count
+        participateLabel.text = "참여일  \(participateCount)"
+        countLabel.text = "횟수 \(filteredData.count)"
+        achieveLabel.text = "달성 \(totalSuccessCount)"
+        failLabel.text = "실패 \(totalFailureCount)"
+    }
     
     private func setupLabel(_ label: UILabel, text: String, topOffset: CGFloat, centerXOffset: CGFloat) {
         label.textColor = .white
@@ -55,12 +68,12 @@ final class FirstCell: UICollectionViewCell {
     }
     
     private func setupUI() {
-        let filteredData = getPomodoroData(forDate: Date())
+        let filteredData = getPomodoroData(forDate: getSelectedDate)
         let participateCount = filteredData.count
         let totalSuccessCount = filteredData.filter { $0.success }.count
         let totalFailureCount = filteredData.filter { !$0.success }.count
         
-        setupLabel(participateLabel, text: "참여일 \(participateCount)일", topOffset: 70, centerXOffset: -100)
+        setupLabel(participateLabel, text: "참여일 \(participateCount)", topOffset: 70, centerXOffset: -100)
         setupLabel(countLabel, text: "횟수 \(filteredData.count)번", topOffset: 70, centerXOffset: 50)
         setupLabel(achieveLabel, text: "달성 \(totalSuccessCount)번", topOffset: 160, centerXOffset: -100)
         setupLabel(failLabel, text: "실패 \(totalFailureCount)번", topOffset: 160, centerXOffset: 50)
@@ -69,6 +82,10 @@ final class FirstCell: UICollectionViewCell {
         
         self.layer.cornerRadius = 20
         self.backgroundColor = .black
+    }
+    
+    func sendSelectedDate(data: Date) {
+        getSelectedDate = data
     }
     
     func getPomodoroData(forDate date: Date) -> [PomodoroData] {
