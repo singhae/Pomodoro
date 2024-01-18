@@ -115,6 +115,7 @@ extension TagModalViewController: UICollectionViewDelegate, UICollectionViewData
         let individualPadding = totalPadding / 2
         let width = (collectionView.bounds.width - totalPadding) / 2
         let height: CGFloat = 70 
+
         return CGSize(width: width - individualPadding, height: height)
     }
     
@@ -124,8 +125,11 @@ extension TagModalViewController: UICollectionViewDelegate, UICollectionViewData
         return dataSource.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TagCollectionViewCell.id, for: indexPath) as! TagCollectionViewCell
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier:
+                TagCollectionViewCell.id, for: indexPath) as! TagCollectionViewCell
         cell.tagLabel.text = dataSource[indexPath.item]
         return cell
     }
