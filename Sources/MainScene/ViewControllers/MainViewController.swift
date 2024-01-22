@@ -11,7 +11,7 @@ import SnapKit
 import Then
 import UIKit
 
-final class MainViewController: UIViewController,PomodoroTimePickerDelegate {
+final class MainViewController: UIViewController {
    
     private var timer: Timer?
     private var notificationId: String?
@@ -108,7 +108,6 @@ extension MainViewController {
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             let minutes = (self.maxTime - self.currentTime) / 60
             let seconds = (self.maxTime - self.currentTime) % 60
-
             self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
             self.currentTime += 1
 
