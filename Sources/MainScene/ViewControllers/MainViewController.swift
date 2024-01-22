@@ -108,6 +108,7 @@ extension MainViewController {
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             let minutes = (self.maxTime - self.currentTime) / 60
             let seconds = (self.maxTime - self.currentTime) % 60
+            
             self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
             self.currentTime += 1
 
