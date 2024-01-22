@@ -10,9 +10,9 @@ import SnapKit
 import Then
 import UIKit
 
-class SettingViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+final class SettingViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
-    enum SettingOption: CaseIterable {
+    private enum SettingOption: CaseIterable {
         case shortBreak, longBreak, completionVibrate, dataReset, timerEffect, serviceReview, OSLicense
         var title: String {
             switch self {
@@ -34,12 +34,12 @@ class SettingViewController: UIViewController, UITableViewDataSource, UITableVie
         }
     }
 
-    let titleLabel = UILabel().then {
+    private let titleLabel = UILabel().then {
         $0.text = "설정"
         $0.font = UIFont.systemFont(ofSize: 30, weight: .bold)
     }
 
-    lazy var tableView = UITableView(frame: .zero, style: .plain).then {
+    private lazy var tableView = UITableView(frame: .zero, style: .plain).then {
         $0.dataSource = self
         $0.delegate = self
         $0.register(UITableViewCell.self, forCellReuseIdentifier: "OptionCell")
@@ -86,6 +86,7 @@ class SettingViewController: UIViewController, UITableViewDataSource, UITableVie
 //                $0.addTarget(<#T##target: Any?##Any?#>, action: <#T##Selector#>, for: <#T##UIControl.Event#>) // addTarget 지정
                 cell.accessoryView = $0
             }
+            cell.selectionStyle = .none
         case .timerEffect:
             _ = UISwitch(frame: .zero).then {
                 $0.setOn(false, animated: true) // switch 초기설정 지정
@@ -93,6 +94,7 @@ class SettingViewController: UIViewController, UITableViewDataSource, UITableVie
 //                $0.addTarget(<#T##target: Any?##Any?#>, action: <#T##Selector#>, for: <#T##UIControl.Event#>) // addTarget 지정
                 cell.accessoryView = $0
             }
+            cell.selectionStyle = .none
         default:
             return cell
         }
@@ -115,6 +117,10 @@ class SettingViewController: UIViewController, UITableViewDataSource, UITableVie
         case .dataReset:
             presentModal(modalViewController: DataResetModalViewController())
             tableView.deselectRow(at: indexPath, animated: true)
+        case .completionVibrate:
+            tableView.cellForRow(at: indexPath)?.selectionStyle = .none
+        case .timerEffect:
+            tableView.cellForRow(at: indexPath)?.selectionStyle = .none
         default:
             let detailViewController = DetailViewController(option: selectedOption.title)
             navigationController?.pushViewController(detailViewController, animated: true)
@@ -162,9 +168,9 @@ extension SettingViewController {
     }
 }
 
-class DetailViewController: UIViewController {
+final class DetailViewController: UIViewController {
 
-    let optionLabel = UILabel().then {
+    private let optionLabel = UILabel().then {
         $0.numberOfLines = 0
     }
 

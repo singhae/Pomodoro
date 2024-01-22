@@ -9,14 +9,14 @@
 import Foundation
 import UIKit
 
-class DataResetModalViewController: UIViewController {
+final class DataResetModalViewController: UIViewController {
 
-    let titleLabel = UILabel().then {
+    private let titleLabel = UILabel().then {
         $0.text = "데이터 초기화 하기"
         $0.font = UIFont.systemFont(ofSize: 25, weight: .bold)
     }
 
-    let contentLabel = UILabel().then {
+    private let contentLabel = UILabel().then {
         $0.text = "데이터를 초기화 하시겠습니까? 태그, 뽀모도로 기록 등 모든 데이터와 설정이 초기화됩니다."
         $0.font = UIFont.systemFont(ofSize: 15)
         $0.textAlignment = .center
@@ -24,17 +24,17 @@ class DataResetModalViewController: UIViewController {
         $0.lineBreakMode = .byWordWrapping
     }
 
-    let yesButton = UIButton().then {
+    private let yesButton = UIButton().then {
         $0.setTitle("예", for: .normal)
         $0.backgroundColor = .systemBlue
     }
 
-    let noButton = UIButton().then {
+    private let noButton = UIButton().then {
         $0.setTitle("아니오", for: .normal)
         $0.backgroundColor = .systemRed
     }
 
-    var buttonsStack = UIStackView()
+    private var buttonsStack = UIStackView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
