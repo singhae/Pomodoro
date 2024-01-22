@@ -61,7 +61,6 @@ final class TimeSettingViewController: UIViewController {
         $0.showsHorizontalScrollIndicator = true
         $0.register(TimerCollectionViewCell.self, forCellWithReuseIdentifier: colletionViewIdentifier)
         $0.showsHorizontalScrollIndicator = false
-
         let padding = view.bounds.width / 2 - collectionFlowlayout.itemSize.width / 2
         $0.contentInset = UIEdgeInsets(top: 0, left: padding, bottom: 0, right: padding)
     }
@@ -156,7 +155,7 @@ extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDeleg
             collectionView.reloadData()
         }
     }
-
+    
     func collectionView(
         _: UICollectionView,
         layout _: UICollectionViewLayout,

@@ -104,33 +104,32 @@ class TimerCollectionViewCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        let diameter = min(self.bounds.width, self.bounds.height) * 0.6
-        timeCircleView.layer.cornerRadius = diameter / 2
-
-
-        timeCircleView.snp.remakeConstraints { make in
-           make.center.equalToSuperview()
-           make.width.height.equalTo(diameter)
-        }
+        timeCircleView.layer.cornerRadius = timeCircleView.bounds.width / 2
     }
     
     private func setupViews() {
-      
         addSubview(timeLabel)
         addSubview(timeSelectionImage)
         addSubview(timeCircleView)
         
         timeLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(self.snp.top).offset(9)
+            make.bottom.equalTo(self.snp.top).offset(9.0)
         }
         
         timeSelectionImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(self.snp.bottom).offset(15)
+            make.bottom.equalTo(self.snp.bottom).offset(15.0)
         }
-
+        
+        timeCircleView.snp.makeConstraints { make in
+            make.centerX.centerY.equalToSuperview()
+            make.width.height.equalTo(self.snp.width).multipliedBy(0.7)
+        }
     }
+<<<<<<< HEAD
     
 >>>>>>> fddb350 ([Feat] 타이머 수평스크롤에 대한 TimerCollectionViewCell 생성)
+=======
+>>>>>>> 73ba712 ([Fix] 시간 설정 페이지 - 코드 수정 및 추가)
 }
