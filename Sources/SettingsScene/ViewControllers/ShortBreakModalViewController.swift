@@ -9,17 +9,17 @@
 import Foundation
 import UIKit
 
-class ShortBreakModalViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+final class ShortBreakModalViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
 
-    let label = UILabel().then {
+    private let label = UILabel().then {
         $0.text = "짧은 휴식"
     }
 
-    var textField = UITextField().then {
+    private var textField = UITextField().then {
         $0.text = ""
     }
 
-    var minutePicker: UIPickerView = .init()
+    private var minutePicker: UIPickerView = .init()
 
     override func viewDidLoad() {
         super.viewDidLoad()

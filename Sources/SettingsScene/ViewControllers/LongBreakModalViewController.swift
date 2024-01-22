@@ -9,17 +9,17 @@
 import Foundation
 import UIKit
 
-class LongBreakModalViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
 
-    let label = UILabel().then {
+    private let label = UILabel().then {
         $0.text = "긴 휴식"
     }
 
-    var textField = UITextField().then {
+    private var textField = UITextField().then {
         $0.text = ""
     }
 
-    var minutePicker: UIPickerView = .init()
+    private var minutePicker: UIPickerView = .init()
 
     override func viewDidLoad() {
         super.viewDidLoad()
