@@ -48,18 +48,3 @@ struct TotalPomodoro {
         self.totalDate = 1
     }
 }
-
-// FIXME: - 임시로 사용하는 MockData입니다.
-struct TempTag {
-    var uid: String
-    var tagName: String
-    var tagDescription: String
-
-    static var dummyData: [TempTag] {
-        return [
-            TempTag(uid: "1", tagName: "공부", tagDescription: "이산수학 공부"),
-            TempTag(uid: "2", tagName: "운동", tagDescription: "필라테스"),
-            TempTag(uid: "3", tagName: "스터디", tagDescription: "iOS 스터디"),
-        ]
-    }
-}
