@@ -16,6 +16,7 @@ protocol DayViewControllerDelegate {
 final class DayViewController: UIViewController {
     private var delegate : DayViewControllerDelegate?
     private let firstCell = FirstCell()
+    private let secondCell = SecondCell()
     private var selectedDate = Date()
     private let calendar = Calendar.current
     private let dateFormatter = DateFormatter().then {
@@ -160,6 +161,7 @@ final class DayViewController: UIViewController {
             return
         }
         firstCell.sendSelectedDate(data: selectedDate)
+        secondCell.sendSelectedDate(data: selectedDate)
         self.collectionView.reloadData()
     }
     
@@ -170,6 +172,7 @@ final class DayViewController: UIViewController {
             delegate?.sendSelectedDate(data: selectedDate)
         }
         firstCell.sendSelectedDate(data: selectedDate)
+        secondCell.sendSelectedDate(data: selectedDate)
         self.collectionView.reloadData()
     }
 }
@@ -199,6 +202,7 @@ extension DayViewController: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SecondCell", for: indexPath) as? SecondCell else {
                 return UICollectionViewCell()
             }
+            cell.updatePieChartData(for: selectedDate)
             return cell
         }
     }

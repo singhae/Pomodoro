@@ -91,10 +91,10 @@ final class FirstCell: UICollectionViewCell, DayViewControllerDelegate {
         getSelectedDate = data
     }
     
-    func getTotalParticipateDate(forDate date: Date) -> [PomodoroData] {
+    private func getTotalParticipateDate(forDate date: Date) -> [PomodoroData] {
         PomodoroData.dummyData.filter { $0.participateDate <= date }
     }
-    func getPomodoroData(forDate date: Date) -> [PomodoroData] {
+    private func getPomodoroData(forDate date: Date) -> [PomodoroData] {
         let calendar = Calendar.current
         return PomodoroData.dummyData.filter {
             calendar.isDate($0.participateDate, inSameDayAs: date)
@@ -102,18 +102,29 @@ final class FirstCell: UICollectionViewCell, DayViewControllerDelegate {
     }
 }
 
-final class SecondCell: UICollectionViewCell {
-    private func calculateFocusTimePerTag() -> [String: Int] {
+final class SecondCell: UICollectionViewCell, DayViewControllerDelegate {
+    private var getSelectedDate: Date = Date()
+    
+    func sendSelectedDate(data: Date) {
+        getSelectedDate = data
+    }
+    
+    private func calculateFocusTimePerTag(for selectedDate: Date) -> [String: Int] {
+        let calendar = Calendar.current
         var focusTimePerTag = [String: Int]()
-        for session in PomodoroData.dummyData {
+        
+        let filteredSessions = PomodoroData.dummyData.filter { session in
+            return calendar.isDate(session.participateDate, inSameDayAs: selectedDate)
+        }
+        for session in filteredSessions {
             focusTimePerTag[session.tagId, default: 0] += session.focusTime
         }
         return focusTimePerTag
     }
     
-    func setPieChartData(pieChartView: PieChartView) {
+    private func setPieChartData(pieChartView: PieChartView) {
         var totalSum = 0.0
-        let sessionsPerTag = calculateFocusTimePerTag()
+        let sessionsPerTag = calculateFocusTimePerTag(for: Date())
         var pieDataEntries: [PieChartDataEntry] = []
         let colors: [UIColor] = [.systemTeal, .systemPink, .systemIndigo]
         
@@ -130,6 +141,27 @@ final class SecondCell: UICollectionViewCell {
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
         pieChartView.data = pieChartData
         pieChartView.centerText = "합계\n\(totalSum)"
+    }
+    
+    func updatePieChartData(for date: Date) {
+        var totalSum = 0.0
+        let sessionsPerTag = calculateFocusTimePerTag(for: date)
+        var pieDataEntries: [PieChartDataEntry] = []
+        let colors: [UIColor] = [.systemTeal, .systemPink, .systemIndigo]
+        
+        for (tag, count) in sessionsPerTag {
+            let entry = PieChartDataEntry(value: Double(count), label: tag)
+            pieDataEntries.append(entry)
+            totalSum += Double(count)
+        }
+        
+        let pieChartDataSet = PieChartDataSet(entries: pieDataEntries, label: "")
+        pieChartDataSet.colors = colors
+        pieChartDataSet.drawValuesEnabled = true
+        
+        let pieChartData = PieChartData(dataSet: pieChartDataSet)
+        donutPieChartView.data = pieChartData
+        donutPieChartView.centerText = "합계\n\(totalSum)"
     }
     
     private var dayData: [String] = [""]
@@ -179,7 +211,7 @@ final class SecondCell: UICollectionViewCell {
         }
     }
     
-    func entryData(values: [Double]) -> [ChartDataEntry] {
+    private func entryData(values: [Double]) -> [ChartDataEntry] {
         var pieDataEntries: [ChartDataEntry] = []
         for i in 0 ..< values.count {
             let pieDataEntry = ChartDataEntry(x: Double(i), y: values[i])
