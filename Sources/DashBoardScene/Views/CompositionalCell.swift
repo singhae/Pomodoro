@@ -23,7 +23,8 @@ final class FirstCell: UICollectionViewCell, DayViewControllerDelegate {
     
     func updateUI(for date: Date) {
         let filteredData = getPomodoroData(forDate: date)
-        let participateCount = filteredData.count
+        let totalParticipate = getTotalParticipateDate(forDate: date)
+        let participateCount = totalParticipate.count
         let totalSuccessCount = filteredData.filter { $0.success }.count
         let totalFailureCount = filteredData.filter { !$0.success }.count
         participateLabel.text = "참여일  \(participateCount)"
@@ -70,7 +71,8 @@ final class FirstCell: UICollectionViewCell, DayViewControllerDelegate {
     
     private func setupUI() {
         let filteredData = getPomodoroData(forDate: getSelectedDate)
-        let participateCount = filteredData.count
+        let totalParticipate = getTotalParticipateDate(forDate: getSelectedDate)
+        let participateCount = totalParticipate.count
         let totalSuccessCount = filteredData.filter { $0.success }.count
         let totalFailureCount = filteredData.filter { !$0.success }.count
         
@@ -89,8 +91,14 @@ final class FirstCell: UICollectionViewCell, DayViewControllerDelegate {
         getSelectedDate = data
     }
     
-    func getPomodoroData(forDate date: Date) -> [PomodoroData] {
+    func getTotalParticipateDate(forDate date: Date) -> [PomodoroData] {
         PomodoroData.dummyData.filter { $0.participateDate <= date }
+    }
+    func getPomodoroData(forDate date: Date) -> [PomodoroData] {
+        let calendar = Calendar.current
+        return PomodoroData.dummyData.filter {
+            calendar.isDate($0.participateDate, inSameDayAs: date)
+        }
     }
 }
 
