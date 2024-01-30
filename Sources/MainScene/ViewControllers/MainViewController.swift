@@ -114,20 +114,15 @@ extension MainViewController {
                 timer.invalidate()
             }
         }
-        timer?.fire()
 
-        notificationId = UUID().uuidString
-
-        let content = UNMutableNotificationContent()
-        content.title = "시간 종료!"
-        content.body = "시간이 종료되었습니다. 휴식을 취해주세요."
-
-        let request = UNNotificationRequest(
-            identifier: notificationId!,
-            content: content,
-            trigger: UNTimeIntervalNotificationTrigger(
-                timeInterval: TimeInterval(maxTime),
-                repeats: false
+        private lazy var tagButton = UIButton().then {
+            $0.setTitle("Tag", for: .normal)
+            $0.setTitleColor(.black, for: .normal)
+            $0.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+            $0.addTarget(
+                self,
+                action: #selector(openTagModal),
+                for: .touchUpInside
             )
         )
 

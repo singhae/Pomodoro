@@ -456,6 +456,7 @@
 			files = (
 				CEDCA1192B67D015005C18EA /* DashBoard.swift in Sources */,
 				CEDCA1172B67D015005C18EA /* TagList.swift in Sources */,
+				0DF629682B692E2200BFE39F /* DashboardPieChartCell.swift in Sources */,
 				CEDCA10C2B67D015005C18EA /* TagCollectionViewData.swift in Sources */,
 				CEDCA1182B67D015005C18EA /* Option.swift in Sources */,
 				CEDCA1052B67D015005C18EA /* AppDelegate.swift in Sources */,
@@ -467,6 +468,7 @@
 				CEDCA1032B67D015005C18EA /* LongBreakModalViewController.swift in Sources */,
 				CEDCA1122B67D015005C18EA /* YearViewController.swift in Sources */,
 				CEDCA1022B67D015005C18EA /* ShortBreakModalViewController.swift in Sources */,
+				0DF6296A2B692E5C00BFE39F /* DashboardStatusCell.swift in Sources */,
 				CEDCA1162B67D015005C18EA /* Pomodoro.swift in Sources */,
 				CEDCA1082B67D015005C18EA /* MainViewController.swift in Sources */,
 				CEDCA1132B67D015005C18EA /* DayViewController.swift in Sources */,
