@@ -10,13 +10,13 @@ import UIKit
 import SnapKit
 
 protocol DayViewControllerDelegate {
-    func sendSelectedDate(data: Date)
+    func dateArrowButtonDidTap(data: Date)
 }
 
 final class DayViewController: UIViewController {
     private var delegate : DayViewControllerDelegate?
-    private let firstCell = FirstCell()
-    private let secondCell = SecondCell()
+    private let dashboardStatusCell = DashboardStatusCell()
+    private let dashboardPieChartCell = DashboardPieChartCell()
     private var selectedDate = Date()
     private let calendar = Calendar.current
     private let dateFormatter = DateFormatter().then {
@@ -46,8 +46,8 @@ final class DayViewController: UIViewController {
         $0.showsVerticalScrollIndicator = true
         $0.contentInset = .zero
         $0.clipsToBounds = true
-        $0.register(FirstCell.self, forCellWithReuseIdentifier: "FirstCell")
-        $0.register(SecondCell.self, forCellWithReuseIdentifier: "SecondCell")
+        $0.register(DashboardStatusCell.self, forCellWithReuseIdentifier: "DashboardStatusCell")
+        $0.register(DashboardPieChartCell.self, forCellWithReuseIdentifier: "DashboardPieChartCell")
     }
     
     private let dataSource: [MySection] = [
@@ -156,12 +156,12 @@ final class DayViewController: UIViewController {
         if nextDay <= currentDate {
             selectedDate = nextDay
             updateSelectedDateFormat()
-            delegate?.sendSelectedDate(data: selectedDate)
+            delegate?.dateArrowButtonDidTap(data: selectedDate)
         } else{
             return
         }
-        firstCell.sendSelectedDate(data: selectedDate)
-        secondCell.sendSelectedDate(data: selectedDate)
+        dashboardStatusCell.dateArrowButtonDidTap(data: selectedDate)
+        dashboardPieChartCell.dateArrowButtonDidTap(data: selectedDate)
         self.collectionView.reloadData()
     }
     
@@ -169,10 +169,10 @@ final class DayViewController: UIViewController {
         if let previousDay = calendar.date(byAdding: .day, value: -1, to: selectedDate) {
             selectedDate = previousDay
             updateSelectedDateFormat()
-            delegate?.sendSelectedDate(data: selectedDate)
+            delegate?.dateArrowButtonDidTap(data: selectedDate)
         }
-        firstCell.sendSelectedDate(data: selectedDate)
-        secondCell.sendSelectedDate(data: selectedDate)
+        dashboardStatusCell.dateArrowButtonDidTap(data: selectedDate)
+        dashboardPieChartCell.dateArrowButtonDidTap(data: selectedDate)
         self.collectionView.reloadData()
     }
 }
@@ -192,17 +192,17 @@ extension DayViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch self.dataSource[indexPath.section] {
         case .first(_):
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FirstCell", for: indexPath) as? FirstCell else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DashboardStatusCell", for: indexPath) as? DashboardStatusCell else {
                 return UICollectionViewCell()
             }
             cell.updateUI(for: selectedDate)
             
             return cell
         case .second(_):
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SecondCell", for: indexPath) as? SecondCell else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DashboardPieChartCell", for: indexPath) as? DashboardPieChartCell else {
                 return UICollectionViewCell()
             }
-            cell.updatePieChartData(for: selectedDate)
+            cell.setPieChartData(for: selectedDate)
             return cell
         }
     }
