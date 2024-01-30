@@ -22,7 +22,7 @@ struct PomodoroData {
         let defaultDate = Date()
         
         return [
-            PomodoroData(breakTime: 5, focusTime: 25, tagId: "공부", participateDate: dateFormatter.date(from: "2024-01-01") ?? defaultDate, success: true),
+            PomodoroData(breakTime: 5, focusTime: 25, tagId: "공부", participateDate: dateFormatter.date(from: "2024-01-30") ?? defaultDate, success: true),
             PomodoroData(breakTime: 5, focusTime: 30, tagId: "운동", participateDate: dateFormatter.date(from: "2024-01-28") ?? defaultDate, success: false),
             PomodoroData(breakTime: 5, focusTime: 25, tagId: "스터디", participateDate: dateFormatter.date(from: "2024-01-28") ?? defaultDate, success: true),
             PomodoroData(breakTime: 5, focusTime: 25, tagId: "스터디", participateDate: dateFormatter.date(from: "2024-01-08") ?? defaultDate, success: false),
