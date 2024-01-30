@@ -13,14 +13,16 @@ import UIKit
 
 final class MainViewController: UIViewController {
     private var timer: Timer?
+    private var stopLongPress: UILongPressGestureRecognizer!
     private var notificationId: String?
     private var currentTime = 0
     private var maxTime = 0
+
     private let timeLabel = UILabel().then {
         $0.textAlignment = .center
         $0.font = UIFont.systemFont(ofSize: 60, weight: .heavy)
     }
-
+    
     private let longPressGuideLabel = UILabel().then {
         $0.text = "길게 클릭해서 타이머를 정지할 수 있어요"
         $0.textAlignment = .center
@@ -28,6 +30,7 @@ final class MainViewController: UIViewController {
         $0.font = UIFont.systemFont(ofSize: 16)
         $0.isHidden = true
     }
+
     private lazy var countButton = UIButton(type: .roundedRect).then {
         $0.setTitle("카운트 시작", for: .normal)
         $0.addTarget(self, action: #selector(startTimer), for: .touchUpInside)
@@ -44,6 +47,7 @@ final class MainViewController: UIViewController {
         self.navigationController?.pushViewController(timeSettingviewController, animated: true)
         
     }
+    
     private lazy var tagButton = UIButton().then {
         $0.setTitle("Tag", for: .normal)
         $0.setTitleColor(.black, for: .normal)
@@ -74,7 +78,7 @@ final class MainViewController: UIViewController {
         updateTimeLabel()
         // FIXME: Remove startTimer() after implementing time setup
     }
-
+    
     private func updateTimeLabel() {
         let minutes = (maxTime - currentTime) / 60
         let seconds = (maxTime - currentTime) % 60
@@ -132,6 +136,50 @@ extension MainViewController {
                 print(error.localizedDescription)
             }
     }
+
+     @objc private func timeSetting() {
+
+         let timeSettingviewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
+         self.navigationController?.pushViewController(timeSettingviewController, animated: true)
+
+     }
+    
+    @objc private func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            let minutes = (self.maxTime - self.currentTime) / 60
+            let seconds = (self.maxTime - self.currentTime) % 60
+            
+            self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
+            self.currentTime += 1
+
+            if self.currentTime > self.maxTime {
+                timer.invalidate()
+            }
+        }
+        timer?.fire()
+
+        notificationId = UUID().uuidString
+
+        let content = UNMutableNotificationContent()
+        content.title = "시간 종료!"
+        content.body = "시간이 종료되었습니다. 휴식을 취해주세요."
+
+        let request = UNNotificationRequest(
+            identifier: notificationId!,
+            content: content,
+            trigger: UNTimeIntervalNotificationTrigger(
+                timeInterval: TimeInterval(maxTime),
+                repeats: false
+            )
+        )
+
+        UNUserNotificationCenter.current()
+            .add(request) { error in
+                guard let error = error else { return }
+                print(error.localizedDescription)
+            }
+    }
+
 }
 
 // MARK: - UI
