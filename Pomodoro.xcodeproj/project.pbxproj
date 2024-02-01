@@ -7,8 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+
 		213F30532B6BE72300FAF5F2 /* DashboardPieChartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */; };
 		213F30552B6BE73900FAF5F2 /* DashboardStatusCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */; };
+
+		0DF629662B691ABA00BFE39F /* TimerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */; };
+
 		CEDCA0FD2B67D015005C18EA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEDCA0D32B67D015005C18EA /* LaunchScreen.storyboard */; };
 		CEDCA0FE2B67D015005C18EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEDCA0D42B67D015005C18EA /* Assets.xcassets */; };
 		CEDCA0FF2B67D015005C18EA /* PomodoroTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0D62B67D015005C18EA /* PomodoroTests.swift */; };
@@ -41,15 +45,17 @@
 		CEDCA11E2B67D0AB005C18EA /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA11D2B67D0AB005C18EA /* RealmSwift */; };
 		CEDCA1212B67D131005C18EA /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA1202B67D131005C18EA /* Then */; };
 		CEDCA1242B67D18C005C18EA /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA1232B67D18C005C18EA /* SnapKit */; };
-		CEDCA1262B67D18C005C18EA /* SnapKit-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA1252B67D18C005C18EA /* SnapKit-Dynamic */; };
 		CEDCA1292B67D1E4005C18EA /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA1282B67D1E4005C18EA /* DGCharts */; };
-		CEDCA12B2B67D1E4005C18EA /* DGChartsDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA12A2B67D1E4005C18EA /* DGChartsDynamic */; };
 		CEDCA12E2B67D263005C18EA /* PanModal in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA12D2B67D263005C18EA /* PanModal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+
 		213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardPieChartCell.swift; sourceTree = "<group>"; };
 		213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStatusCell.swift; sourceTree = "<group>"; };
+
+		0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerCollectionViewCell.swift; sourceTree = "<group>"; };
+
 		CEDCA0BB2B67CFD8005C18EA /* Pomodoro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pomodoro.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDCA0D32B67D015005C18EA /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CEDCA0D42B67D015005C18EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -87,13 +93,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEDCA1262B67D18C005C18EA /* SnapKit-Dynamic in Frameworks */,
 				CEDCA11E2B67D0AB005C18EA /* RealmSwift in Frameworks */,
 				CEDCA1242B67D18C005C18EA /* SnapKit in Frameworks */,
 				CEDCA1212B67D131005C18EA /* Then in Frameworks */,
 				CEDCA12E2B67D263005C18EA /* PanModal in Frameworks */,
 				CEDCA1292B67D1E4005C18EA /* DGCharts in Frameworks */,
-				CEDCA12B2B67D1E4005C18EA /* DGChartsDynamic in Frameworks */,
 				CEDCA11C2B67D0AB005C18EA /* Realm in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -101,6 +105,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0DF629642B691A7100BFE39F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		CEDCA0B22B67CFD8005C18EA = {
 			isa = PBXGroup;
 			children = (
@@ -182,6 +194,7 @@
 		CEDCA0E22B67D015005C18EA /* MainScene */ = {
 			isa = PBXGroup;
 			children = (
+				0DF629642B691A7100BFE39F /* Views */,
 				CEDCA0E32B67D015005C18EA /* ViewControllers */,
 			);
 			path = MainScene;
@@ -241,6 +254,7 @@
 		CEDCA0F52B67D015005C18EA /* Views */ = {
 			isa = PBXGroup;
 			children = (
+
 				CEDCA0F62B67D015005C18EA /* MockData.swift */,
 				213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */,
 				213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */,
@@ -280,9 +294,7 @@
 				CEDCA11D2B67D0AB005C18EA /* RealmSwift */,
 				CEDCA1202B67D131005C18EA /* Then */,
 				CEDCA1232B67D18C005C18EA /* SnapKit */,
-				CEDCA1252B67D18C005C18EA /* SnapKit-Dynamic */,
 				CEDCA1282B67D1E4005C18EA /* DGCharts */,
-				CEDCA12A2B67D1E4005C18EA /* DGChartsDynamic */,
 				CEDCA12D2B67D263005C18EA /* PanModal */,
 			);
 			productName = Pomodoro;
@@ -349,6 +361,7 @@
 			files = (
 				CEDCA1192B67D015005C18EA /* DashBoard.swift in Sources */,
 				CEDCA1172B67D015005C18EA /* TagList.swift in Sources */,
+				0DF629682B692E2200BFE39F /* DashboardPieChartCell.swift in Sources */,
 				CEDCA10C2B67D015005C18EA /* TagCollectionViewData.swift in Sources */,
 				CEDCA1182B67D015005C18EA /* Option.swift in Sources */,
 				CEDCA1052B67D015005C18EA /* AppDelegate.swift in Sources */,
@@ -361,6 +374,7 @@
 				CEDCA1032B67D015005C18EA /* LongBreakModalViewController.swift in Sources */,
 				CEDCA1122B67D015005C18EA /* YearViewController.swift in Sources */,
 				CEDCA1022B67D015005C18EA /* ShortBreakModalViewController.swift in Sources */,
+				0DF6296A2B692E5C00BFE39F /* DashboardStatusCell.swift in Sources */,
 				CEDCA1162B67D015005C18EA /* Pomodoro.swift in Sources */,
 				CEDCA1082B67D015005C18EA /* MainViewController.swift in Sources */,
 				CEDCA1132B67D015005C18EA /* DayViewController.swift in Sources */,
@@ -369,6 +383,7 @@
 				CEDCA10A2B67D015005C18EA /* TagModalViewController.swift in Sources */,
 				CEDCA1092B67D015005C18EA /* TagCollectionView.swift in Sources */,
 				CEDCA10B2B67D015005C18EA /* TagCollectionViewCell.swift in Sources */,
+				0DF629662B691ABA00BFE39F /* TimerCollectionViewCell.swift in Sources */,
 				CEDCA1072B67D015005C18EA /* TimeSettingViewController.swift in Sources */,
 				213F30552B6BE73900FAF5F2 /* DashboardStatusCell.swift in Sources */,
 				CEDCA1042B67D015005C18EA /* DataResetModalViewController.swift in Sources */,
@@ -508,7 +523,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = CH6R3C4FBD;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -536,7 +551,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = CH6R3C4FBD;
+				DEVELOPMENT_TEAM = M3U3F43AYT;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -644,20 +659,10 @@
 			package = CEDCA1222B67D18C005C18EA /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
 		};
-		CEDCA1252B67D18C005C18EA /* SnapKit-Dynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CEDCA1222B67D18C005C18EA /* XCRemoteSwiftPackageReference "SnapKit" */;
-			productName = "SnapKit-Dynamic";
-		};
 		CEDCA1282B67D1E4005C18EA /* DGCharts */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CEDCA1272B67D1E4005C18EA /* XCRemoteSwiftPackageReference "Charts" */;
 			productName = DGCharts;
-		};
-		CEDCA12A2B67D1E4005C18EA /* DGChartsDynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CEDCA1272B67D1E4005C18EA /* XCRemoteSwiftPackageReference "Charts" */;
-			productName = DGChartsDynamic;
 		};
 		CEDCA12D2B67D263005C18EA /* PanModal */ = {
 			isa = XCSwiftPackageProductDependency;
