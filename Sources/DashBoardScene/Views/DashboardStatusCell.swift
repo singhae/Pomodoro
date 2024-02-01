@@ -110,7 +110,7 @@ final class DashboardStatusCell: UICollectionViewCell {
 
 // MARK: - DayViewControllerDelegate
 
-extension DashboardStatusCell: TabViewControllerDelegate {
+extension DashboardStatusCell: DashboardTabDelegate {
     
     func dateArrowButtonDidTap(data date: Date) {
         selectedDate = date

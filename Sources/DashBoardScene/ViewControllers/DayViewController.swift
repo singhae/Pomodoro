@@ -9,12 +9,12 @@
 import UIKit
 import SnapKit
 
-protocol TabViewControllerDelegate {
+protocol DashboardTabDelegate {
     func dateArrowButtonDidTap(data: Date)
 }
 
 final class DayViewController: UIViewController {
-    private var delegate : TabViewControllerDelegate?
+    private var delegate : DashboardTabDelegate?
     private let dashboardStatusCell = DashboardStatusCell()
     private let dashboardPieChartCell = DashboardPieChartCell()
     private var selectedDate = Date()

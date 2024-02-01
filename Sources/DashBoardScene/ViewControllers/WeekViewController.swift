@@ -11,7 +11,7 @@ import SnapKit
 
 final class WeekViewController: UIViewController {
 
-    private var delegate : TabViewControllerDelegate?
+    private var delegate : DashboardTabDelegate?
 
     private let dashboardStatusCell = DashboardStatusCell()
     private let dashboardPieChartCell = DashboardPieChartCell()

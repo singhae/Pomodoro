@@ -131,7 +131,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
     }
 }
 
-extension DashboardPieChartCell: TabViewControllerDelegate {
+extension DashboardPieChartCell: DashboardTabDelegate {
     func dateArrowButtonDidTap(data date: Date) {
         selectedDate = date
     }
