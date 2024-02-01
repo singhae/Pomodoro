@@ -10,9 +10,7 @@ import UIKit
 import SnapKit
 
 final class WeekViewController: UIViewController {
-
-    private var delegate : DashboardTabDelegate?
-
+    private weak var delegate : DashboardTabDelegate?
     private let dashboardStatusCell = DashboardStatusCell()
     private let dashboardPieChartCell = DashboardPieChartCell()
     private var selectedDate = Date()
