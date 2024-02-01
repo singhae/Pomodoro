@@ -65,18 +65,44 @@ final class DashboardStatusCell: UICollectionViewCell {
         backgroundColor = .black
     }
     
-    func updateUI(for date: Date) {
-        let totalParticipate = PomodoroData.dummyData.filter { $0.participateDate <= date }
-        let participateCount = totalParticipate.count
-        
-        let filteredData = PomodoroData.dummyData.filter {
-            Calendar.current.isDate($0.participateDate, inSameDayAs: date)
+    private func getStartAndEndDateOfWeek(for date: Date) -> (start: Date, end: Date) {
+        let calendar = Calendar.current
+        guard let weekInterval = calendar.dateInterval(of: .weekOfYear, for: date) else {
+            return (date, date)
         }
-        let totalSuccessCount = filteredData.filter { $0.success }.count
-        let totalFailureCount = filteredData.filter { !$0.success }.count
+        let startDate = weekInterval.start
+        let endDate = weekInterval.end
+        return (startDate, endDate)
+    }
+    
+    func updateUI(for date: Date, isWeek: Bool = false) {
+        var totalParticipateCount: Int = 0
+        var filteredDataCount: Int = 0
+        var totalSuccessCount: Int = 0
+        var totalFailureCount: Int = 0
+        let calendar = Calendar.current
         
-        participateLabel.text = "참여일  \(participateCount)"
-        countLabel.text = "횟수 \(filteredData.count)"
+        if isWeek {
+            let weekDates = getStartAndEndDateOfWeek(for: date)
+            let startDate = weekDates.start
+            let endDate = weekDates.end
+            let weekData = PomodoroData.dummyData.filter { $0.participateDate >= startDate && $0.participateDate < endDate }
+            let calculateParticipateCount = Set(PomodoroData.dummyData.filter { $0.participateDate >= startDate && $0.participateDate < endDate }.map { calendar.startOfDay(for: $0.participateDate) })
+            
+            totalParticipateCount = calculateParticipateCount.count
+            filteredDataCount = weekData.count
+            totalSuccessCount = weekData.filter { $0.success }.count
+            totalFailureCount = weekData.filter { !$0.success }.count
+        } else {
+            totalParticipateCount = PomodoroData.dummyData.filter { $0.participateDate <= date }.count
+            let sameDayData = PomodoroData.dummyData.filter { Calendar.current.isDate($0.participateDate, inSameDayAs: date) }
+            filteredDataCount = sameDayData.count
+            totalSuccessCount = sameDayData.filter { $0.success }.count
+            totalFailureCount = sameDayData.filter { !$0.success }.count
+        }
+        
+        participateLabel.text = "참여일 \(totalParticipateCount)"
+        countLabel.text = "횟수 \(filteredDataCount)"
         achieveLabel.text = "달성 \(totalSuccessCount)"
         failLabel.text = "실패 \(totalFailureCount)"
     }
