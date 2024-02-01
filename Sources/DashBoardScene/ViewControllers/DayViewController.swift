@@ -9,12 +9,12 @@
 import UIKit
 import SnapKit
 
-protocol DayViewControllerDelegate {
+protocol TabViewControllerDelegate {
     func dateArrowButtonDidTap(data: Date)
 }
 
 final class DayViewController: UIViewController {
-    private var delegate : DayViewControllerDelegate?
+    private var delegate : TabViewControllerDelegate?
     private let dashboardStatusCell = DashboardStatusCell()
     private let dashboardPieChartCell = DashboardPieChartCell()
     private var selectedDate = Date()
@@ -195,14 +195,14 @@ extension DayViewController: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DashboardStatusCell", for: indexPath) as? DashboardStatusCell else {
                 return UICollectionViewCell()
             }
-            cell.updateUI(for: selectedDate)
-            
+            cell.updateUI(for: selectedDate, isWeek: false)
             return cell
+            
         case .second(_):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DashboardPieChartCell", for: indexPath) as? DashboardPieChartCell else {
                 return UICollectionViewCell()
             }
-            cell.setPieChartData(for: selectedDate)
+            cell.setPieChartData(for: selectedDate, isWeek: false)
             return cell
         }
     }

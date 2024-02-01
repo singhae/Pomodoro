@@ -10,7 +10,7 @@ import UIKit
 import SnapKit
 
 final class WeekViewController: UIViewController {
-    private var delegate : DayViewControllerDelegate?
+    private var delegate : TabViewControllerDelegate?
     private let dashboardStatusCell = DashboardStatusCell()
     private let dashboardPieChartCell = DashboardPieChartCell()
     private var selectedDate = Date()
@@ -147,12 +147,12 @@ final class WeekViewController: UIViewController {
     }
     
     @objc private func goToNextWeek() {
-        guard let nextDay = calendar.date(byAdding: .day, value: 7, to: selectedDate) else {
+        guard let nextWeek = calendar.date(byAdding: .day, value: 7, to: selectedDate) else {
             return
         }
         let currentDate = Date()
-        if nextDay <= currentDate {
-            selectedDate = nextDay
+        if nextWeek <= currentDate {
+            selectedDate = nextWeek
             updateSelectedDateFormat()
             delegate?.dateArrowButtonDidTap(data: selectedDate)
             dashboardStatusCell.dateArrowButtonDidTap(data: selectedDate)
@@ -162,8 +162,8 @@ final class WeekViewController: UIViewController {
     }
     
     @objc private func goToPreviousWeek() {
-        if let previousDay = calendar.date(byAdding: .day, value: -7, to: selectedDate) {
-            selectedDate = previousDay
+        if let previousWeek = calendar.date(byAdding: .day, value: -7, to: selectedDate) {
+            selectedDate = previousWeek
             updateSelectedDateFormat()
             delegate?.dateArrowButtonDidTap(data: selectedDate)
             dashboardStatusCell.dateArrowButtonDidTap(data: selectedDate)
@@ -192,13 +192,13 @@ extension WeekViewController: UICollectionViewDataSource {
                 return UICollectionViewCell()
             }
             cell.updateUI(for: selectedDate, isWeek: true)
-            
             return cell
+            
         case .second(_):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DashboardPieChartCell", for: indexPath) as? DashboardPieChartCell else {
                 return UICollectionViewCell()
             }
-            cell.setPieChartData(for: selectedDate)
+            cell.setPieChartData(for: selectedDate, isWeek: true)
             return cell
         }
     }
