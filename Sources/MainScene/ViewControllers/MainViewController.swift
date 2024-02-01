@@ -13,8 +13,10 @@ import PanModal
 
 final class MainViewController: UIViewController {
     private var timer: Timer?
-    private var currentTimeInSeconds = 0
-    private var maxTimeInSeconds = 10 // FIXME: 설정된 값으로 초기화 필요
+    private var stopLongPress: UILongPressGestureRecognizer!
+    private var notificationId: String?
+    private var currentTime = 0
+    private var maxTime = 0
 
     private let timeLabel = UILabel().then {
         $0.textAlignment = .center
@@ -29,7 +31,7 @@ final class MainViewController: UIViewController {
         $0.isHidden = true
     }
 
-    private let tagButton = UIButton().then {
+    private lazy var tagButton = UIButton().then {
         $0.setTitle("Tag", for: .normal)
         $0.setTitleColor(.black, for: .normal)
         $0.titleLabel?.font = UIFont.systemFont(ofSize: 15)
@@ -38,6 +40,15 @@ final class MainViewController: UIViewController {
             action: #selector(openTagModal),
             for: .touchUpInside
         )
+    }
+    private lazy var countButton = UIButton(type: .roundedRect).then {
+        $0.setTitle("카운트 시작", for: .normal)
+        $0.addTarget(self, action: #selector(startTimer), for: .touchUpInside)
+    }
+
+    private lazy var timeButton = UIButton(type: .roundedRect).then {
+        $0.setTitle("시간 설정", for: .normal)
+        $0.addTarget(self, action: #selector(timeSetting), for: .touchUpInside)
     }
 
     override func viewDidLoad() {
@@ -55,30 +66,20 @@ final class MainViewController: UIViewController {
         super.viewDidAppear(animated)
         updateTimeLabel()
         // FIXME: Remove startTimer() after implementing time setup
-        startTimer()
     }
 
     private func updateTimeLabel() {
-        let minutes = (maxTimeInSeconds - currentTimeInSeconds) / 60
-        let seconds = (maxTimeInSeconds - currentTimeInSeconds) % 60
+        let minutes = (maxTime - currentTime) / 60
+        let seconds = (maxTime - currentTime) % 60
         timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
-    }
 
-    private func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
-            guard let self else { return }
-            self.updateTimeLabel()
-            self.currentTimeInSeconds += 1
-
-            if self.currentTimeInSeconds > self.maxTimeInSeconds {
-                timer.invalidate()
-            }
+        if let id = notificationId {
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id])
         }
-
-        self.longPressGuideLabel.isHidden = false
-        timer?.fire()
     }
 }
+
+
 
 // MARK: - Action
 
@@ -91,19 +92,64 @@ extension MainViewController {
 
     @objc private func stopTimer() {
         timer?.invalidate()
-        currentTimeInSeconds = 0
-        maxTimeInSeconds = 0
+        currentTime = 0
+        maxTime = 0
         updateTimeLabel()
-        longPressGuideLabel.isHidden = true
     }
+
+     @objc private func timeSetting() {
+
+         let timeSettingviewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
+         self.navigationController?.pushViewController(timeSettingviewController, animated: true)
+
+     }
+    
+    @objc private func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            let minutes = (self.maxTime - self.currentTime) / 60
+            let seconds = (self.maxTime - self.currentTime) % 60
+            
+            self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
+            self.currentTime += 1
+
+            if self.currentTime > self.maxTime {
+                timer.invalidate()
+            }
+        }
+        timer?.fire()
+
+        notificationId = UUID().uuidString
+
+        let content = UNMutableNotificationContent()
+        content.title = "시간 종료!"
+        content.body = "시간이 종료되었습니다. 휴식을 취해주세요."
+
+        let request = UNNotificationRequest(
+            identifier: notificationId!,
+            content: content,
+            trigger: UNTimeIntervalNotificationTrigger(
+                timeInterval: TimeInterval(maxTime),
+                repeats: false
+            )
+        )
+
+        UNUserNotificationCenter.current()
+            .add(request) { error in
+                guard let error = error else { return }
+                print(error.localizedDescription)
+            }
+    }
+
 }
 
 // MARK: - UI
 
 extension MainViewController {
     private func addSubviews() {
+        view.addSubview(countButton)
         view.addSubview(timeLabel)
         view.addSubview(tagButton)
+        view.addSubview(timeButton)
         view.addSubview(longPressGuideLabel)
     }
 
@@ -122,6 +168,14 @@ extension MainViewController {
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().multipliedBy(0.67)
         }
+        timeButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(view.snp.bottom).offset(-50)
+        }
+        countButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(timeButton.snp.top).offset(-50)
+        }
     }
 }
 
@@ -135,3 +189,8 @@ extension TagModalViewController: PanModalPresentable {
     }
 }
 
+extension MainViewController : TimeSettingViewControllerDelegate {
+    func didSelectTime(time: Int) {
+        maxTime = time * 60
+    }
+}
