@@ -80,9 +80,37 @@ final class DashboardPieChartCell: UICollectionViewCell {
         return pieDataEntries
     }
     
-    func setPieChartData(for date: Date) {
+    private func calculateFocusTimePerTag(from startDate: Date, to endDate: Date) -> [String: Int] {
+        let calendar = Calendar.current
+        var focusTimePerTag = [String: Int]()
+        
+        let filteredSessions = PomodoroData.dummyData.filter { session in
+            return session.participateDate >= startDate && session.participateDate < endDate
+        }
+        for session in filteredSessions {
+            focusTimePerTag[session.tagId, default: 0] += session.focusTime
+        }
+        return focusTimePerTag
+    }
+    
+    func setPieChartData(for date: Date, isWeek: Bool = false) {
         var totalSum = 0.0
-        let sessionsPerTag = calculateFocusTimePerTag(for: date)
+        var sessionsPerTag: [String: Int] = [:]
+        
+        let calendar = Calendar.current
+        
+        if isWeek {
+            if let weekStartDate = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)),
+               let weekEndDate = calendar.date(byAdding: .day, value: 7, to: weekStartDate) {
+                sessionsPerTag = calculateFocusTimePerTag(from: weekStartDate, to: weekEndDate)
+            }
+        } else {
+            let startOfDay = calendar.startOfDay(for: date)
+            if let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) {
+                sessionsPerTag = calculateFocusTimePerTag(from: startOfDay, to: endOfDay)
+            }
+        }
+        
         var pieDataEntries: [PieChartDataEntry] = []
         let colors: [UIColor] = [.systemTeal, .systemPink, .systemIndigo]
         
@@ -103,7 +131,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
     }
 }
 
-extension DashboardPieChartCell: DayViewControllerDelegate {
+extension DashboardPieChartCell: DashboardTabDelegate {
     func dateArrowButtonDidTap(data date: Date) {
         selectedDate = date
     }

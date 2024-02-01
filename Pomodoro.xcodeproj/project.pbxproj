@@ -7,9 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+
+		213F30532B6BE72300FAF5F2 /* DashboardPieChartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */; };
+		213F30552B6BE73900FAF5F2 /* DashboardStatusCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */; };
+
 		0DF629662B691ABA00BFE39F /* TimerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */; };
-		0DF629682B692E2200BFE39F /* DashboardPieChartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF629672B692E2200BFE39F /* DashboardPieChartCell.swift */; };
-		0DF6296A2B692E5C00BFE39F /* DashboardStatusCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF629692B692E5C00BFE39F /* DashboardStatusCell.swift */; };
+
 		CEDCA0FD2B67D015005C18EA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEDCA0D32B67D015005C18EA /* LaunchScreen.storyboard */; };
 		CEDCA0FE2B67D015005C18EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEDCA0D42B67D015005C18EA /* Assets.xcassets */; };
 		CEDCA0FF2B67D015005C18EA /* PomodoroTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0D62B67D015005C18EA /* PomodoroTests.swift */; };
@@ -47,9 +50,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+
+		213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardPieChartCell.swift; sourceTree = "<group>"; };
+		213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStatusCell.swift; sourceTree = "<group>"; };
+
 		0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerCollectionViewCell.swift; sourceTree = "<group>"; };
-		0DF629672B692E2200BFE39F /* DashboardPieChartCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardPieChartCell.swift; sourceTree = "<group>"; };
-		0DF629692B692E5C00BFE39F /* DashboardStatusCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardStatusCell.swift; sourceTree = "<group>"; };
+
 		CEDCA0BB2B67CFD8005C18EA /* Pomodoro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pomodoro.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDCA0D32B67D015005C18EA /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CEDCA0D42B67D015005C18EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -248,9 +254,10 @@
 		CEDCA0F52B67D015005C18EA /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				0DF629672B692E2200BFE39F /* DashboardPieChartCell.swift */,
-				0DF629692B692E5C00BFE39F /* DashboardStatusCell.swift */,
+
 				CEDCA0F62B67D015005C18EA /* MockData.swift */,
+				213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */,
+				213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -361,6 +368,7 @@
 				CEDCA1062B67D015005C18EA /* SceneDelegate.swift in Sources */,
 				CEDCA10E2B67D015005C18EA /* UIColor+HexCode.swift in Sources */,
 				CEDCA0FF2B67D015005C18EA /* PomodoroTests.swift in Sources */,
+				213F30532B6BE72300FAF5F2 /* DashboardPieChartCell.swift in Sources */,
 				CEDCA1012B67D015005C18EA /* SettingViewController.swift in Sources */,
 				CEDCA1112B67D015005C18EA /* WeekViewController.swift in Sources */,
 				CEDCA1032B67D015005C18EA /* LongBreakModalViewController.swift in Sources */,
@@ -377,6 +385,7 @@
 				CEDCA10B2B67D015005C18EA /* TagCollectionViewCell.swift in Sources */,
 				0DF629662B691ABA00BFE39F /* TimerCollectionViewCell.swift in Sources */,
 				CEDCA1072B67D015005C18EA /* TimeSettingViewController.swift in Sources */,
+				213F30552B6BE73900FAF5F2 /* DashboardStatusCell.swift in Sources */,
 				CEDCA1042B67D015005C18EA /* DataResetModalViewController.swift in Sources */,
 				CEDCA1142B67D015005C18EA /* MockData.swift in Sources */,
 				CEDCA1102B67D015005C18EA /* DashBoardViewController.swift in Sources */,
