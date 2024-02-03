@@ -113,7 +113,7 @@ struct TotalPomodoro {
 
     init(sessions: [PomodoroData]) {
         totalSessions = sessions.count
-        totalSuccesses = sessions.filter { $0.success }.count
+        totalSuccesses = sessions.filter(\.success).count
         totalFailures = sessions.filter { !$0.success }.count
         totalDate = 1
     }

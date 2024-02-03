@@ -48,7 +48,7 @@ final class WeekViewController: UIViewController {
         $0.addTarget(self, action: #selector(goToNextWeek), for: .touchUpInside)
     }
 
-    private lazy var collectionView: UICollectionView = UICollectionView(
+    private lazy var collectionView: UICollectionView = .init(
         frame: .zero,
         collectionViewLayout: self.getLayout()
     ).then {

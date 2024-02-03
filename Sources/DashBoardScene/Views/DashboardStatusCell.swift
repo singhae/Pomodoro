@@ -97,7 +97,7 @@ final class DashboardStatusCell: UICollectionViewCell {
 
             totalParticipateCount = calculateParticipateCount.count
             filteredDataCount = weekData.count
-            totalSuccessCount = weekData.filter { $0.success }.count
+            totalSuccessCount = weekData.filter(\.success).count
             totalFailureCount = weekData.filter { !$0.success }.count
         } else {
             totalParticipateCount = PomodoroData.dummyData.filter { $0.participateDate <= date }.count
@@ -108,7 +108,7 @@ final class DashboardStatusCell: UICollectionViewCell {
                 )
             }
             filteredDataCount = sameDayData.count
-            totalSuccessCount = sameDayData.filter { $0.success }.count
+            totalSuccessCount = sameDayData.filter(\.success).count
             totalFailureCount = sameDayData.filter { !$0.success }.count
         }
         participateLabel.text = "참여일 \(totalParticipateCount)"

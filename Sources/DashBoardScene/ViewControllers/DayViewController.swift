@@ -50,7 +50,7 @@ final class DayViewController: UIViewController {
         $0.addTarget(self, action: #selector(goToNextDay), for: .touchUpInside)
     }
 
-    private lazy var collectionView: UICollectionView = UICollectionView(
+    private lazy var collectionView: UICollectionView = .init(
         frame: .zero,
         collectionViewLayout: self.getLayout()
     ).then {
@@ -156,9 +156,9 @@ final class DayViewController: UIViewController {
         let components = calendar.dateComponents([.year, .month, .day], from: currentDate)
         let targetComponents = calendar.dateComponents([.year, .month, .day], from: selectedDate)
 
-        if components.year == targetComponents.year &&
-            components.month == targetComponents.month &&
-            components.day == targetComponents.day {
+        if components.year == targetComponents.year,
+           components.month == targetComponents.month,
+           components.day == targetComponents.day {
             dateFormatter.dateFormat = "MM월 dd일, 오늘"
         } else {
             dateFormatter.dateFormat = "MM월 dd일"
