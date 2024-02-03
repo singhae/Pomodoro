@@ -25,7 +25,11 @@ final class MainPageViewController: UIViewController {
         setupPageViewController()
     }
 
-    private lazy var dataViewControllers: [UIViewController] = [SettingViewController(), MainViewController(), DashBoardViewController()]
+    private lazy var dataViewControllers: [UIViewController] = [
+        SettingViewController(),
+        MainViewController(),
+        DashBoardViewController()
+    ]
 
     private lazy var pageViewController: UIPageViewController = .init(
         transitionStyle: .scroll,
