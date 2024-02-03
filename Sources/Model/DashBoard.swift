@@ -7,7 +7,7 @@
 //
 
 import Foundation
-//import RealmSwift
+// import RealmSwift
 import UIKit
 
 class DashBoard {
@@ -17,7 +17,13 @@ class DashBoard {
     var success: Int
     var failure: Int
 
-    init(pomodoroList: [Pomodoro], participateDateCount: Int = 0, totalCount: Int = 0, success: Int = 0, failure: Int = 0) {
+    init(
+        pomodoroList: [Pomodoro],
+        participateDateCount: Int = 0,
+        totalCount: Int = 0,
+        success: Int = 0,
+        failure: Int = 0
+    ) {
         self.pomodoroList = pomodoroList
         self.participateDateCount = participateDateCount
         self.totalCount = totalCount

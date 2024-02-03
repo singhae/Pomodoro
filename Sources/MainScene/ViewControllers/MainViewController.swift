@@ -6,14 +6,13 @@
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
 
+import PanModal
 import SnapKit
 import Then
 import UIKit
-import PanModal
 
 final class MainViewController: UIViewController {
     private var timer: Timer?
-    private var stopLongPress: UILongPressGestureRecognizer!
     private var notificationId: String?
     private var currentTime = 0
     private var maxTime = 0
@@ -57,7 +56,10 @@ final class MainViewController: UIViewController {
         addSubviews()
         setupConstraints()
 
-        let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(stopTimer))
+        let longPressGestureRecognizer = UILongPressGestureRecognizer(
+            target: self,
+            action: #selector(stopTimer)
+        )
         longPressGestureRecognizer.minimumPressDuration = 3
         view.addGestureRecognizer(longPressGestureRecognizer)
     }
@@ -78,8 +80,6 @@ final class MainViewController: UIViewController {
         }
     }
 }
-
-
 
 // MARK: - Action
 
@@ -103,12 +103,12 @@ extension MainViewController {
          self.navigationController?.pushViewController(timeSettingviewController, animated: true)
 
      }
-    
+
     @objc private func startTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             let minutes = (self.maxTime - self.currentTime) / 60
             let seconds = (self.maxTime - self.currentTime) % 60
-            
+
             self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
             self.currentTime += 1
 
@@ -135,7 +135,7 @@ extension MainViewController {
 
         UNUserNotificationCenter.current()
             .add(request) { error in
-                guard let error = error else { return }
+                guard let error else { return }
                 print(error.localizedDescription)
             }
     }
@@ -181,7 +181,7 @@ extension MainViewController {
 
 extension TagModalViewController: PanModalPresentable {
     var panScrollable: UIScrollView? {
-        return nil
+        nil
     }
 
     var shortFormHeight: PanModalHeight {
@@ -189,7 +189,7 @@ extension TagModalViewController: PanModalPresentable {
     }
 }
 
-extension MainViewController : TimeSettingViewControllerDelegate {
+extension MainViewController: TimeSettingViewControllerDelegate {
     func didSelectTime(time: Int) {
         maxTime = time * 60
     }

@@ -6,19 +6,19 @@
 //  Copyright © 2024 io.hgu. All rights reserved.
 //
 
-import UIKit
 import DGCharts
+import UIKit
 
 final class DashboardPieChartCell: UICollectionViewCell {
     private var selectedDate: Date = Date()
     private var dayData: [String] = []
     private var priceData: [Double] = [10]
-    
+
     private let pieBackgroundView = UIView().then { view in
         view.layer.cornerRadius = 20
         view.backgroundColor = .systemGray3
     }
-    
+
     private let donutPieChartView = PieChartView().then { chart in
         chart.noDataText = "출력 데이터가 없습니다."
         chart.noDataFont = .systemFont(ofSize: 20)
@@ -31,12 +31,12 @@ final class DashboardPieChartCell: UICollectionViewCell {
         chart.drawEntryLabelsEnabled = false
         chart.legend.enabled = true
     }
-    
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError()
     }
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(pieBackgroundView)
@@ -46,20 +46,20 @@ final class DashboardPieChartCell: UICollectionViewCell {
         setupPieChart()
         setPieChartData(for: Date())
     }
-    
+
     private func calculateFocusTimePerTag(for selectedDate: Date) -> [String: Int] {
         let calendar = Calendar.current
         var focusTimePerTag = [String: Int]()
-        
+
         let filteredSessions = PomodoroData.dummyData.filter { session in
-            return calendar.isDate(session.participateDate, inSameDayAs: selectedDate)
+            calendar.isDate(session.participateDate, inSameDayAs: selectedDate)
         }
         for session in filteredSessions {
             focusTimePerTag[session.tagId, default: 0] += session.focusTime
         }
         return focusTimePerTag
     }
-    
+
     private func setupPieChart() {
         pieBackgroundView.snp.makeConstraints { make in
             make.centerX.centerY.equalToSuperview()
@@ -70,37 +70,41 @@ final class DashboardPieChartCell: UICollectionViewCell {
             make.width.height.equalToSuperview().multipliedBy(1.1)
         }
     }
-    
+
     private func entryData(values: [Double]) -> [ChartDataEntry] {
         var pieDataEntries: [ChartDataEntry] = []
-        for i in 0 ..< values.count {
-            let pieDataEntry = ChartDataEntry(x: Double(i), y: values[i])
+        for index in 0 ..< values.count {
+            let pieDataEntry = ChartDataEntry(x: Double(index), y: values[index])
             pieDataEntries.append(pieDataEntry)
         }
         return pieDataEntries
     }
-    
+
     private func calculateFocusTimePerTag(from startDate: Date, to endDate: Date) -> [String: Int] {
-        let calendar = Calendar.current
         var focusTimePerTag = [String: Int]()
-        
+
         let filteredSessions = PomodoroData.dummyData.filter { session in
-            return session.participateDate >= startDate && session.participateDate < endDate
+            session.participateDate >= startDate && session.participateDate < endDate
         }
         for session in filteredSessions {
             focusTimePerTag[session.tagId, default: 0] += session.focusTime
         }
         return focusTimePerTag
     }
-    
+
     func setPieChartData(for date: Date, isWeek: Bool = false) {
         var totalSum = 0.0
         var sessionsPerTag: [String: Int] = [:]
-        
+
         let calendar = Calendar.current
-        
+
         if isWeek {
-            if let weekStartDate = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)),
+            if let weekStartDate = calendar.date(
+                from: calendar.dateComponents(
+                    [.yearForWeekOfYear, .weekOfYear],
+                    from: date
+                )
+            ),
                let weekEndDate = calendar.date(byAdding: .day, value: 7, to: weekStartDate) {
                 sessionsPerTag = calculateFocusTimePerTag(from: weekStartDate, to: weekEndDate)
             }
@@ -110,22 +114,22 @@ final class DashboardPieChartCell: UICollectionViewCell {
                 sessionsPerTag = calculateFocusTimePerTag(from: startOfDay, to: endOfDay)
             }
         }
-        
+
         var pieDataEntries: [PieChartDataEntry] = []
         let colors: [UIColor] = [.systemTeal, .systemPink, .systemIndigo]
-        
+
         for (tag, count) in sessionsPerTag {
             let entry = PieChartDataEntry(value: Double(count), label: tag)
             pieDataEntries.append(entry)
             totalSum += Double(count)
         }
-        
+
         let pieChartDataSet = PieChartDataSet(entries: pieDataEntries, label: "")
         pieChartDataSet.colors = colors
         pieChartDataSet.drawValuesEnabled = true
-        
+
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
-        
+
         donutPieChartView.data = pieChartData
         donutPieChartView.centerText = "합계\n\(totalSum)"
     }

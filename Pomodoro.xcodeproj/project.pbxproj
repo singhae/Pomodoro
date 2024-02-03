@@ -7,12 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-
+		0DF629662B691ABA00BFE39F /* TimerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */; };
 		213F30532B6BE72300FAF5F2 /* DashboardPieChartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */; };
 		213F30552B6BE73900FAF5F2 /* DashboardStatusCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */; };
-
-		0DF629662B691ABA00BFE39F /* TimerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */; };
-
+		CE4F2B032B6DE0D7000E5420 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = CE4F2B022B6DE0D7000E5420 /* .swiftlint.yml */; };
 		CEDCA0FD2B67D015005C18EA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEDCA0D32B67D015005C18EA /* LaunchScreen.storyboard */; };
 		CEDCA0FE2B67D015005C18EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEDCA0D42B67D015005C18EA /* Assets.xcassets */; };
 		CEDCA0FF2B67D015005C18EA /* PomodoroTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0D62B67D015005C18EA /* PomodoroTests.swift */; };
@@ -50,12 +48,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-
+		0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerCollectionViewCell.swift; sourceTree = "<group>"; };
 		213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardPieChartCell.swift; sourceTree = "<group>"; };
 		213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStatusCell.swift; sourceTree = "<group>"; };
-
-		0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerCollectionViewCell.swift; sourceTree = "<group>"; };
-
+		CE4F2B022B6DE0D7000E5420 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		CEDCA0BB2B67CFD8005C18EA /* Pomodoro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pomodoro.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDCA0D32B67D015005C18EA /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CEDCA0D42B67D015005C18EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -116,6 +112,7 @@
 		CEDCA0B22B67CFD8005C18EA = {
 			isa = PBXGroup;
 			children = (
+				CE4F2B022B6DE0D7000E5420 /* .swiftlint.yml */,
 				CEDCA0D72B67D015005C18EA /* README.md */,
 				CEDCA0D22B67D015005C18EA /* Resources */,
 				CEDCA0D82B67D015005C18EA /* Sources */,
@@ -254,7 +251,6 @@
 		CEDCA0F52B67D015005C18EA /* Views */ = {
 			isa = PBXGroup;
 			children = (
-
 				CEDCA0F62B67D015005C18EA /* MockData.swift */,
 				213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */,
 				213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */,
@@ -280,6 +276,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CEDCA0CF2B67CFD9005C18EA /* Build configuration list for PBXNativeTarget "Pomodoro" */;
 			buildPhases = (
+				CE4F2AFF2B6DD919000E5420 /* ShellScript */,
 				CEDCA0B72B67CFD8005C18EA /* Sources */,
 				CEDCA0B82B67CFD8005C18EA /* Frameworks */,
 				CEDCA0B92B67CFD8005C18EA /* Resources */,
@@ -346,6 +343,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE4F2B032B6DE0D7000E5420 /* .swiftlint.yml in Resources */,
 				CEDCA1002B67D015005C18EA /* README.md in Resources */,
 				CEDCA0FE2B67D015005C18EA /* Assets.xcassets in Resources */,
 				CEDCA0FD2B67D015005C18EA /* LaunchScreen.storyboard in Resources */,
@@ -354,6 +352,26 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		CE4F2AFF2B6DD919000E5420 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif which swiftlint > /dev/null; then\n  swiftlint --fix\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		CEDCA0B72B67CFD8005C18EA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -361,7 +379,6 @@
 			files = (
 				CEDCA1192B67D015005C18EA /* DashBoard.swift in Sources */,
 				CEDCA1172B67D015005C18EA /* TagList.swift in Sources */,
-				0DF629682B692E2200BFE39F /* DashboardPieChartCell.swift in Sources */,
 				CEDCA10C2B67D015005C18EA /* TagCollectionViewData.swift in Sources */,
 				CEDCA1182B67D015005C18EA /* Option.swift in Sources */,
 				CEDCA1052B67D015005C18EA /* AppDelegate.swift in Sources */,
@@ -374,7 +391,6 @@
 				CEDCA1032B67D015005C18EA /* LongBreakModalViewController.swift in Sources */,
 				CEDCA1122B67D015005C18EA /* YearViewController.swift in Sources */,
 				CEDCA1022B67D015005C18EA /* ShortBreakModalViewController.swift in Sources */,
-				0DF6296A2B692E5C00BFE39F /* DashboardStatusCell.swift in Sources */,
 				CEDCA1162B67D015005C18EA /* Pomodoro.swift in Sources */,
 				CEDCA1082B67D015005C18EA /* MainViewController.swift in Sources */,
 				CEDCA1132B67D015005C18EA /* DayViewController.swift in Sources */,
@@ -524,6 +540,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -552,6 +569,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M3U3F43AYT;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

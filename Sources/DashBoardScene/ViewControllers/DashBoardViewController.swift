@@ -6,27 +6,27 @@
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
 
-import UIKit
 import SnapKit
+import UIKit
 
 final class DashBoardViewController: UIViewController {
-    
+
     private enum SegmentItem: Int {
         case day
         case week
         case month
         case year
     }
-    
+
     private let segmentViewControllers: [SegmentItem: UIViewController] = [
         .day: DayViewController(),
         .week: WeekViewController(),
         .month: MonthViewController(),
         .year: YearViewController()
     ]
-    
+
     private let containerView = UIView()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -34,7 +34,7 @@ final class DashBoardViewController: UIViewController {
         setupContainerView()
         segmentChanged()
     }
-    
+
     private func setupContainerView() {
         view.addSubview(containerView)
         containerView.snp.makeConstraints { make in
@@ -42,7 +42,7 @@ final class DashBoardViewController: UIViewController {
             make.left.right.bottom.equalToSuperview()
         }
     }
-    
+
     private let tabBarControl: UISegmentedControl = {
         let segmentedControl = UISegmentedControl(items: ["일", "주", "월", "년"])
         segmentedControl.backgroundColor = .white
@@ -59,7 +59,7 @@ final class DashBoardViewController: UIViewController {
         segmentedControl.selectedSegmentIndex = 0
         return segmentedControl
     }()
-    
+
     private func setupSegmentedControl() {
         view.addSubview(tabBarControl)
         tabBarControl.snp.makeConstraints { make in
@@ -70,27 +70,27 @@ final class DashBoardViewController: UIViewController {
         }
         tabBarControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
     }
-    
+
     private func displayViewController(_ viewController: UIViewController) {
-        for (_, ViewController) in segmentViewControllers {
-            if ViewController == viewController {
-                addChild(ViewController)
-                containerView.addSubview(ViewController.view)
-                ViewController.view.frame = containerView.bounds
-                ViewController.didMove(toParent: self)
+        for (_, viewController) in segmentViewControllers {
+            if viewController == viewController {
+                addChild(viewController)
+                containerView.addSubview(viewController.view)
+                viewController.view.frame = containerView.bounds
+                viewController.didMove(toParent: self)
             } else {
-                ViewController.willMove(toParent: nil)
-                ViewController.view.removeFromSuperview()
-                ViewController.removeFromParent()
+                viewController.willMove(toParent: nil)
+                viewController.view.removeFromSuperview()
+                viewController.removeFromParent()
             }
         }
     }
-    
+
     @objc private func segmentChanged() {
         guard let selectedItem = SegmentItem(rawValue: tabBarControl.selectedSegmentIndex) else {
             return
         }
-        
+
         if let viewController = segmentViewControllers[selectedItem] {
             displayViewController(viewController)
         }

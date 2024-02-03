@@ -14,6 +14,7 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
 
     private enum SettingOption: CaseIterable {
         case shortBreak, longBreak, completionVibrate, dataReset, timerEffect, serviceReview, OSLicense
+
         var title: String {
             switch self {
             case .shortBreak:
@@ -58,7 +59,7 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
     // MARK: - UITableViewDataSource
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return SettingOption.allCases.count
+        SettingOption.allCases.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -83,15 +84,12 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
             _ = UISwitch(frame: .zero).then {
                 $0.setOn(false, animated: true) // switch 초기설정 지정
                 $0.tag = indexPath.row // tag 지정
-//                $0.addTarget(<#T##target: Any?##Any?#>, action: <#T##Selector#>, for: <#T##UIControl.Event#>) // addTarget 지정
                 cell.accessoryView = $0
             }
             cell.selectionStyle = .none
         case .timerEffect:
             _ = UISwitch(frame: .zero).then {
                 $0.setOn(false, animated: true) // switch 초기설정 지정
-                $0.tag = indexPath.row // tag 지정
-//                $0.addTarget(<#T##target: Any?##Any?#>, action: <#T##Selector#>, for: <#T##UIControl.Event#>) // addTarget 지정
                 cell.accessoryView = $0
             }
             cell.selectionStyle = .none

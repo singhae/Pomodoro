@@ -6,8 +6,8 @@
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
 
-import UIKit
 import SnapKit
+import UIKit
 
 protocol DashboardTabDelegate: AnyObject {
     func dateArrowButtonDidTap(data: Date)
@@ -23,24 +23,37 @@ final class DayViewController: UIViewController {
         $0.dateStyle = .long
         $0.dateFormat = "MM월-dd일 오늘"
     }
-    
+
     private lazy var dateLabel = UILabel().then {
         $0.text = dateFormatter.string(from: selectedDate)
         $0.textAlignment = .center
         $0.textColor = .black
     }
-    
+
     private lazy var previousButton = UIButton().then {
-        $0.setImage(UIImage(systemName: "arrowtriangle.backward")?.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
+        $0.setImage(
+            UIImage(
+                systemName: "arrowtriangle.backward"
+            )?.withTintColor(.black, renderingMode: .alwaysOriginal),
+            for: .normal
+        )
         $0.addTarget(self, action: #selector(goToPreviousDay), for: .touchUpInside)
     }
-    
+
     private lazy var nextButton = UIButton().then {
-        $0.setImage(UIImage(systemName: "arrowtriangle.right")?.withTintColor(.black, renderingMode: .alwaysOriginal), for: .normal)
+        $0.setImage(
+            UIImage(
+                systemName: "arrowtriangle.right"
+            )?.withTintColor(.black, renderingMode: .alwaysOriginal),
+            for: .normal
+        )
         $0.addTarget(self, action: #selector(goToNextDay), for: .touchUpInside)
     }
-    
-    private lazy var collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: self.getLayout()).then {
+
+    private lazy var collectionView: UICollectionView = UICollectionView(
+        frame: .zero,
+        collectionViewLayout: self.getLayout()
+    ).then {
         $0.isScrollEnabled = true
         $0.showsHorizontalScrollIndicator = false
         $0.showsVerticalScrollIndicator = true
@@ -49,16 +62,16 @@ final class DayViewController: UIViewController {
         $0.register(DashboardStatusCell.self, forCellWithReuseIdentifier: "DashboardStatusCell")
         $0.register(DashboardPieChartCell.self, forCellWithReuseIdentifier: "DashboardPieChartCell")
     }
-    
+
     private let dataSource: [MySection] = [
         .first([
-            MySection.FirstItem(value: "첫 레이아웃"),
+            MySection.FirstItem(value: "첫 레이아웃")
         ]),
         .second([
-            MySection.SecondItem(value: "두 번째 레이아웃"),
+            MySection.SecondItem(value: "두 번째 레이아웃")
         ])
     ]
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -66,31 +79,31 @@ final class DayViewController: UIViewController {
         setupArrowButtons()
         setupCollectionView()
     }
-    
+
     private func setupDateLabel() {
         view.addSubview(dateLabel)
-        dateLabel.snp.makeConstraints{ make in
+        dateLabel.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.centerX.equalToSuperview()
         }
     }
-    
+
     private func setupArrowButtons() {
         view.addSubview(previousButton)
         view.addSubview(nextButton)
-        previousButton.snp.makeConstraints{ make in
+        previousButton.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.trailing.equalTo(dateLabel.snp.leading).offset(-10)
         }
-        nextButton.snp.makeConstraints{ make in
+        nextButton.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.equalTo(dateLabel.snp.trailing).offset(10)
         }
     }
-    
+
     private func getLayout() -> UICollectionViewCompositionalLayout {
         UICollectionViewCompositionalLayout { (section, _) -> NSCollectionLayoutSection? in
-            
+
             func makeItem() -> NSCollectionLayoutItem {
                 let itemSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
@@ -98,14 +111,19 @@ final class DayViewController: UIViewController {
                 )
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 let itemInset: CGFloat = 3.0
-                item.contentInsets = NSDirectionalEdgeInsets(top: itemInset, leading: itemInset, bottom: itemInset, trailing: itemInset)
+                item.contentInsets = NSDirectionalEdgeInsets(
+                    top: itemInset,
+                    leading: itemInset,
+                    bottom: itemInset,
+                    trailing: itemInset
+                )
                 item.contentInsets.leading = 15
                 item.contentInsets.trailing = 15
                 item.contentInsets.top = 15
-                
+
                 return item
             }
-            
+
             func makeGroup(heightFraction: CGFloat) -> NSCollectionLayoutGroup {
                 let groupSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1),
@@ -113,7 +131,7 @@ final class DayViewController: UIViewController {
                 )
                 return NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [makeItem()])
             }
-            
+
             switch section {
             case 0:
                 return NSCollectionLayoutSection(group: makeGroup(heightFraction: 1.0 / 3.0))
@@ -122,7 +140,7 @@ final class DayViewController: UIViewController {
             }
         }
     }
-    
+
     private func setupCollectionView () {
         view.addSubview(collectionView)
         collectionView.backgroundColor = .white
@@ -132,12 +150,12 @@ final class DayViewController: UIViewController {
         }
         self.collectionView.dataSource = self
     }
-    
+
     private func updateSelectedDateFormat() {
         let currentDate = Date()
         let components = calendar.dateComponents([.year, .month, .day], from: currentDate)
         let targetComponents = calendar.dateComponents([.year, .month, .day], from: selectedDate)
-        
+
         if components.year == targetComponents.year &&
             components.month == targetComponents.month &&
             components.day == targetComponents.day {
@@ -147,7 +165,7 @@ final class DayViewController: UIViewController {
         }
         dateLabel.text = dateFormatter.string(from: selectedDate)
     }
-    
+
     @objc private func goToNextDay() {
         let currentDate = Date()
         guard let nextDay = calendar.date(byAdding: .day, value: 1, to: selectedDate) else {
@@ -157,14 +175,14 @@ final class DayViewController: UIViewController {
             selectedDate = nextDay
             updateSelectedDateFormat()
             delegate?.dateArrowButtonDidTap(data: selectedDate)
-        } else{
+        } else {
             return
         }
         dashboardStatusCell.dateArrowButtonDidTap(data: selectedDate)
         dashboardPieChartCell.dateArrowButtonDidTap(data: selectedDate)
         self.collectionView.reloadData()
     }
-    
+
     @objc private func goToPreviousDay() {
         if let previousDay = calendar.date(byAdding: .day, value: -1, to: selectedDate) {
             selectedDate = previousDay
@@ -176,7 +194,7 @@ final class DayViewController: UIViewController {
         self.collectionView.reloadData()
     }
 }
-//MARK: - UICollectionViewDataSource
+// MARK: - UICollectionViewDataSource
 extension DayViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         self.dataSource.count
@@ -189,17 +207,26 @@ extension DayViewController: UICollectionViewDataSource {
             return items.count
         }
     }
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         switch self.dataSource[indexPath.section] {
-        case .first(_):
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DashboardStatusCell", for: indexPath) as? DashboardStatusCell else {
+        case .first:
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "DashboardStatusCell",
+                for: indexPath
+            ) as? DashboardStatusCell else {
                 return UICollectionViewCell()
             }
             cell.updateUI(for: selectedDate, isWeek: false)
             return cell
-            
-        case .second(_):
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DashboardPieChartCell", for: indexPath) as? DashboardPieChartCell else {
+
+        case .second:
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "DashboardPieChartCell",
+                for: indexPath
+            ) as? DashboardPieChartCell else {
                 return UICollectionViewCell()
             }
             cell.setPieChartData(for: selectedDate, isWeek: false)
@@ -211,7 +238,7 @@ extension DayViewController: UICollectionViewDataSource {
 enum MySection {
     case first([FirstItem])
     case second([SecondItem])
-    
+
     struct FirstItem {
         let value: String
     }

@@ -54,15 +54,19 @@ final class ShortBreakModalViewController: UIViewController, UIPickerViewDelegat
     }
 
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
+        1
     }
 
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return 20
+        20
     }
 
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return String(row + 1) + "분"
+    func pickerView(
+        _ pickerView: UIPickerView,
+        titleForRow row: Int,
+        forComponent component: Int
+    ) -> String? {
+        String(row + 1) + "분"
     }
 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {

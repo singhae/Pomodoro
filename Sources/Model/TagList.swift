@@ -16,7 +16,7 @@ class TagList {
         Tag(tagName: "업무", tagColor: .red),
         Tag(tagName: "공부", tagColor: .green),
         Tag(tagName: "운동", tagColor: .purple),
-        Tag(tagName: "스터디", tagColor: .yellow),
+        Tag(tagName: "스터디", tagColor: .yellow)
     ]
 
     func addTag(tagName: String, tagColor: UIColor) {}
