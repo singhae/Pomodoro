@@ -17,7 +17,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build
-      run: |
-        xcodebuild clean test -project Pomodoro.xcodeproj \
-        -scheme Pomodoro \
-        -destination 'platform=iOS Simulator,name=iPhone 13,OS=latest'
+      run: swift build -v
