@@ -19,5 +19,5 @@ jobs:
     - name: Build
       run: |
         xcodebuild clean test -project Pomodoro.xcodeproj \
-        -scheme PomodoroTests \
-        -destination 'platform=iOS Simulator,name=iPhone 13,OS=latest'
+        -scheme Pomodoro \
+        -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest'
