@@ -29,6 +29,20 @@
                ReferencedContainer = "container:Pomodoro.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "CEB721902B6DECC7001AB9C1"
+               BuildableName = "PomodoroTests.xctest"
+               BlueprintName = "PomodoroTests"
+               ReferencedContainer = "container:Pomodoro.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
