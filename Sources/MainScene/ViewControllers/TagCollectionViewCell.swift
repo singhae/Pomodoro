@@ -11,7 +11,6 @@ import Then
 import UIKit
 
 class TagCollectionViewCell: UICollectionViewCell {
-
     let tagLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 10)
         $0.textColor = .white
@@ -35,7 +34,8 @@ class TagCollectionViewCell: UICollectionViewCell {
         configure()
     }
 
-    required init?(coder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("Not implemented required init?(coder: NSCoder)")
     }
 

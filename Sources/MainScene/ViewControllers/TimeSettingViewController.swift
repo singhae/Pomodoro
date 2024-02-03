@@ -23,7 +23,7 @@ final class TimeSettingViewController: UIViewController {
 
     init(
         isSelectedTime: Bool,
-        heightProportionForMajorCell: CGFloat? = nil,
+        heightProportionForMajorCell _: CGFloat? = nil,
         centerIndexPath: IndexPath? = nil,
         delegate: TimeSettingViewControllerDelegate? = nil
     ) {
@@ -33,18 +33,18 @@ final class TimeSettingViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     private lazy var timeSettingbutton = UIButton().then {
         $0.setTitle("설정 완료", for: .normal)
-        $0.setTitleColor( .black, for: .normal)
+        $0.setTitleColor(.black, for: .normal)
         $0.addTarget(self, action: #selector(onClick), for: .touchUpInside)
     }
 
     private var titleTime = UILabel().then {
-
         $0.font = UIFont.systemFont(ofSize: 40.0, weight: .bold)
         $0.textAlignment = .center
     }
@@ -94,19 +94,18 @@ final class TimeSettingViewController: UIViewController {
 
         timeSettingbutton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo( -(view.bounds.height * 0.2))
+            make.bottom.equalTo(-(view.bounds.height * 0.2))
         }
     }
 
     @objc private func onClick() {
-        self.delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
+        delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
         navigationController?.popViewController(animated: true)
     }
 }
 
 extension TimeSettingViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
         100
     }
 
@@ -118,7 +117,7 @@ extension TimeSettingViewController: UICollectionViewDelegate, UICollectionViewD
             withReuseIdentifier: colletionViewIdentifier,
             for: indexPath
         ) as? TimerCollectionViewCell else {
-            return  UICollectionViewCell()
+            return UICollectionViewCell()
         }
 
         if indexPath.item % 5 == 0 {
@@ -138,11 +137,10 @@ extension TimeSettingViewController: UICollectionViewDelegate, UICollectionViewD
 }
 
 extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDelegateFlowLayout {
-
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let center = CGPoint(
             x: scrollView.contentOffset.x + (scrollView.bounds.width / 2),
-            y: (scrollView.bounds.height / 2)
+            y: scrollView.bounds.height / 2
         )
 
         guard let centerIndexPathCalculation = collectionView.indexPathForItem(at: center) else {
@@ -157,15 +155,16 @@ extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDeleg
             collectionView.reloadData()
         }
     }
+
     func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
+        _: UICollectionView,
+        layout _: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
         if indexPath.item % 5 == 0 {
-           return CGSize(width: 75, height: 75)
+            return CGSize(width: 75, height: 75)
         } else {
-           return CGSize(width: 50, height: 50)
+            return CGSize(width: 50, height: 50)
         }
     }
 }

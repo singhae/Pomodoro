@@ -1,5 +1,5 @@
 //
-//  DashBoardTabView.swift
+//  DayViewController.swift
 //  Pomodoro
 //
 //  Created by 김하람 on 2023/11/13.
@@ -102,7 +102,7 @@ final class DayViewController: UIViewController {
     }
 
     private func getLayout() -> UICollectionViewCompositionalLayout {
-        UICollectionViewCompositionalLayout { (section, _) -> NSCollectionLayoutSection? in
+        UICollectionViewCompositionalLayout { section, _ -> NSCollectionLayoutSection? in
 
             func makeItem() -> NSCollectionLayoutItem {
                 let itemSize = NSCollectionLayoutSize(
@@ -141,14 +141,14 @@ final class DayViewController: UIViewController {
         }
     }
 
-    private func setupCollectionView () {
+    private func setupCollectionView() {
         view.addSubview(collectionView)
         collectionView.backgroundColor = .white
         collectionView.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
             make.top.equalTo(dateLabel.snp.bottom)
         }
-        self.collectionView.dataSource = self
+        collectionView.dataSource = self
     }
 
     private func updateSelectedDateFormat() {
@@ -180,7 +180,7 @@ final class DayViewController: UIViewController {
         }
         dashboardStatusCell.dateArrowButtonDidTap(data: selectedDate)
         dashboardPieChartCell.dateArrowButtonDidTap(data: selectedDate)
-        self.collectionView.reloadData()
+        collectionView.reloadData()
     }
 
     @objc private func goToPreviousDay() {
@@ -191,27 +191,31 @@ final class DayViewController: UIViewController {
         }
         dashboardStatusCell.dateArrowButtonDidTap(data: selectedDate)
         dashboardPieChartCell.dateArrowButtonDidTap(data: selectedDate)
-        self.collectionView.reloadData()
+        collectionView.reloadData()
     }
 }
+
 // MARK: - UICollectionViewDataSource
+
 extension DayViewController: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        self.dataSource.count
+    func numberOfSections(in _: UICollectionView) -> Int {
+        dataSource.count
     }
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch self.dataSource[section] {
+
+    func collectionView(_: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        switch dataSource[section] {
         case let .first(items):
             return items.count
         case let .second(items):
             return items.count
         }
     }
+
     func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
-        switch self.dataSource[indexPath.section] {
+        switch dataSource[indexPath.section] {
         case .first:
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "DashboardStatusCell",
@@ -242,6 +246,7 @@ enum MySection {
     struct FirstItem {
         let value: String
     }
+
     struct SecondItem {
         let value: String
     }

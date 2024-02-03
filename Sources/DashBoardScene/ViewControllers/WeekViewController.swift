@@ -102,7 +102,7 @@ final class WeekViewController: UIViewController {
     }
 
     private func getLayout() -> UICollectionViewCompositionalLayout {
-        UICollectionViewCompositionalLayout { (section, _) -> NSCollectionLayoutSection? in
+        UICollectionViewCompositionalLayout { section, _ -> NSCollectionLayoutSection? in
 
             func makeItem() -> NSCollectionLayoutItem {
                 let itemSize = NSCollectionLayoutSize(
@@ -141,14 +141,14 @@ final class WeekViewController: UIViewController {
         }
     }
 
-    private func setupCollectionView () {
+    private func setupCollectionView() {
         view.addSubview(collectionView)
         collectionView.backgroundColor = .white
         collectionView.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
             make.top.equalTo(dateLabel.snp.bottom)
         }
-        self.collectionView.dataSource = self
+        collectionView.dataSource = self
     }
 
     private func updateSelectedDateFormat() {
@@ -167,7 +167,6 @@ final class WeekViewController: UIViewController {
     }
 
     @objc private func goToNextWeek() {
-
         guard let nextWeek = calendar.date(byAdding: .day, value: 7, to: selectedDate) else {
             return
         }
@@ -179,12 +178,11 @@ final class WeekViewController: UIViewController {
             delegate?.dateArrowButtonDidTap(data: selectedDate)
             dashboardStatusCell.dateArrowButtonDidTap(data: selectedDate)
             dashboardPieChartCell.dateArrowButtonDidTap(data: selectedDate)
-            self.collectionView.reloadData()
+            collectionView.reloadData()
         }
     }
 
     @objc private func goToPreviousWeek() {
-
         if let previousWeek = calendar.date(byAdding: .day, value: -7, to: selectedDate) {
             selectedDate = previousWeek
 
@@ -192,28 +190,30 @@ final class WeekViewController: UIViewController {
             delegate?.dateArrowButtonDidTap(data: selectedDate)
             dashboardStatusCell.dateArrowButtonDidTap(data: selectedDate)
             dashboardPieChartCell.dateArrowButtonDidTap(data: selectedDate)
-            self.collectionView.reloadData()
+            collectionView.reloadData()
         }
     }
 }
 
 extension WeekViewController: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        self.dataSource.count
+    func numberOfSections(in _: UICollectionView) -> Int {
+        dataSource.count
     }
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch self.dataSource[section] {
+
+    func collectionView(_: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        switch dataSource[section] {
         case let .first(items):
             return items.count
         case let .second(items):
             return items.count
         }
     }
+
     func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
-        switch self.dataSource[indexPath.section] {
+        switch dataSource[indexPath.section] {
         case .first:
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "DashboardStatusCell",

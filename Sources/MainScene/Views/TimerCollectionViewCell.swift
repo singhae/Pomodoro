@@ -11,7 +11,6 @@ import Then
 import UIKit
 
 class TimerCollectionViewCell: UICollectionViewCell {
-
     let timeLabel = UILabel().then {
         $0.textColor = .black
         $0.textAlignment = .center
@@ -30,19 +29,20 @@ class TimerCollectionViewCell: UICollectionViewCell {
     }
 
     var isSelectedTime: Bool = false {
-       didSet {
-           timeSelectionImage.isHidden = !isSelectedTime
-           timeCircleView.backgroundColor = isSelectedTime ? .black : .systemGray
-       }
+        didSet {
+            timeSelectionImage.isHidden = !isSelectedTime
+            timeCircleView.backgroundColor = isSelectedTime ? .black : .systemGray
+        }
     }
 
     override init(frame: CGRect) {
-       super.init(frame: frame)
-       setupViews()
+        super.init(frame: frame)
+        setupViews()
     }
 
-    required init?(coder: NSCoder) {
-       fatalError("init(coder:) has not been implemented")
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func layoutSubviews() {

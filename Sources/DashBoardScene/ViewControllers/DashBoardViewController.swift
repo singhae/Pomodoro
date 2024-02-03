@@ -10,7 +10,6 @@ import SnapKit
 import UIKit
 
 final class DashBoardViewController: UIViewController {
-
     private enum SegmentItem: Int {
         case day
         case week
@@ -71,7 +70,7 @@ final class DashBoardViewController: UIViewController {
         tabBarControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
     }
 
-    private func displayViewController(_ viewController: UIViewController) {
+    private func displayViewController(_: UIViewController) {
         for (_, viewController) in segmentViewControllers {
             if viewController == viewController {
                 addChild(viewController)

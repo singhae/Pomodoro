@@ -17,4 +17,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build
-      run: swift build -v
+      run: |
+        xcodebuild clean test -project Pomodoro.xcodeproj \
+        -scheme Pomodoro \
+        -destination 'platform=iOS Simulator,name=iPhone 13,OS=latest'
+    - name: swift-format-lint
+      uses: Iron-Ham/swift-format-linter-action@v5
+

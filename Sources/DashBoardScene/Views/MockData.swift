@@ -112,9 +112,9 @@ struct TotalPomodoro {
     var totalDate: Int
 
     init(sessions: [PomodoroData]) {
-        self.totalSessions = sessions.count
-        self.totalSuccesses = sessions.filter { $0.success }.count
-        self.totalFailures = sessions.filter { !$0.success }.count
-        self.totalDate = 1
+        totalSessions = sessions.count
+        totalSuccesses = sessions.filter { $0.success }.count
+        totalFailures = sessions.filter { !$0.success }.count
+        totalDate = 1
     }
 }

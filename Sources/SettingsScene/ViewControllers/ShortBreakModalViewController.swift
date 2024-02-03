@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 
 final class ShortBreakModalViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
-
     private let label = UILabel().then {
         $0.text = "짧은 휴식"
     }
@@ -53,24 +52,23 @@ final class ShortBreakModalViewController: UIViewController, UIPickerViewDelegat
         }
     }
 
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+    func numberOfComponents(in _: UIPickerView) -> Int {
         1
     }
 
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(_: UIPickerView, numberOfRowsInComponent _: Int) -> Int {
         20
     }
 
     func pickerView(
-        _ pickerView: UIPickerView,
+        _: UIPickerView,
         titleForRow row: Int,
-        forComponent component: Int
+        forComponent _: Int
     ) -> String? {
         String(row + 1) + "분"
     }
 
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    func pickerView(_: UIPickerView, didSelectRow row: Int, inComponent _: Int) {
         textField.text = (String(row + 1) + "분")
     }
-
 }

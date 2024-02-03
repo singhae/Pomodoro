@@ -10,7 +10,6 @@ import SnapKit
 import UIKit
 
 final class MainPageViewController: UIViewController {
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -26,17 +25,13 @@ final class MainPageViewController: UIViewController {
         setupPageViewController()
     }
 
-    private lazy var dataViewControllers: [UIViewController] = {
-        [SettingViewController(), MainViewController(), DashBoardViewController()]
-    }()
+    private lazy var dataViewControllers: [UIViewController] = [SettingViewController(), MainViewController(), DashBoardViewController()]
 
-    private lazy var pageViewController: UIPageViewController = {
-        UIPageViewController(
-            transitionStyle: .scroll,
-            navigationOrientation: .horizontal,
-            options: nil
-        )
-    }()
+    private lazy var pageViewController: UIPageViewController = .init(
+        transitionStyle: .scroll,
+        navigationOrientation: .horizontal,
+        options: nil
+    )
 
     private func setupPageViewController() {
         addChild(pageViewController)
@@ -47,6 +42,7 @@ final class MainPageViewController: UIViewController {
         }
         pageViewController.didMove(toParent: self)
     }
+
     private func setupDelegate() {
         pageViewController.dataSource = self
         pageViewController.delegate = self
@@ -54,9 +50,8 @@ final class MainPageViewController: UIViewController {
 }
 
 extension MainPageViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
-
     func pageViewController(
-        _ pageViewController: UIPageViewController,
+        _: UIPageViewController,
         viewControllerBefore viewController: UIViewController
     ) -> UIViewController? {
         guard let index = dataViewControllers.firstIndex(of: viewController) else { return nil }
@@ -68,7 +63,7 @@ extension MainPageViewController: UIPageViewControllerDataSource, UIPageViewCont
     }
 
     func pageViewController(
-        _ pageViewController: UIPageViewController,
+        _: UIPageViewController,
         viewControllerAfter viewController: UIViewController
     ) -> UIViewController? {
         guard let index = dataViewControllers.firstIndex(of: viewController) else { return nil }

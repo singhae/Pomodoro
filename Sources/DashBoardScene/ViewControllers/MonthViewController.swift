@@ -11,7 +11,6 @@ import Then
 import UIKit
 
 final class MonthViewController: UIViewController {
-
     var dayData: [String] = []
     var totalData: [Double] = [10]
 
@@ -39,16 +38,14 @@ final class MonthViewController: UIViewController {
         view.backgroundColor = .white
         setupPieView()
         changePieCenterTextFont()
-        let pieChartDataEntries = totalData.enumerated().map { (index, value) in
+        let pieChartDataEntries = totalData.enumerated().map { index, value in
             ChartDataEntry(x: Double(index), y: value)
         }
         setPieData(pieChartView: donutPieChartView, pieChartDataEntries:
-                    pieChartDataEntries)
-
+            pieChartDataEntries)
     }
 
     private func changePieCenterTextFont() {
-
         let attributeString = NSAttributedString(
             string: "총합",
             attributes: [
@@ -58,6 +55,7 @@ final class MonthViewController: UIViewController {
 
         donutPieChartView.centerAttributedText = attributeString
     }
+
     private func setupPieView() {
         view.addSubview(pieBackgroundView)
         pieBackgroundView.addSubview(donutPieChartView)
@@ -73,7 +71,7 @@ final class MonthViewController: UIViewController {
     }
 
     func entryData(values: [Double]) -> [ChartDataEntry] {
-        values.enumerated().map { (index, value) in
+        values.enumerated().map { index, value in
             ChartDataEntry(x: Double(index), y: value)
         }
     }

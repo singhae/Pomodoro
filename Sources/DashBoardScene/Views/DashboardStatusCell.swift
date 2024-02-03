@@ -16,10 +16,10 @@ final class DashboardStatusCell: UICollectionViewCell {
     private let countLabel = UILabel()
     private let achieveLabel = UILabel()
     private let failLabel = UILabel()
-    private var selectedDate: Date = Date()
+    private var selectedDate: Date = .init()
 
     @available(*, unavailable)
-    required init?(coder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError("이 생성자를 사용하려면 스토리보드를 구현해주세요.")
     }
 
@@ -76,10 +76,10 @@ final class DashboardStatusCell: UICollectionViewCell {
     }
 
     func updateUI(for date: Date, isWeek: Bool = false) {
-        var totalParticipateCount: Int = 0
-        var filteredDataCount: Int = 0
-        var totalSuccessCount: Int = 0
-        var totalFailureCount: Int = 0
+        var totalParticipateCount = 0
+        var filteredDataCount = 0
+        var totalSuccessCount = 0
+        var totalFailureCount = 0
         let calendar = Calendar.current
 
         if isWeek {
@@ -121,7 +121,6 @@ final class DashboardStatusCell: UICollectionViewCell {
 // MARK: - DayViewControllerDelegate
 
 extension DashboardStatusCell: DashboardTabDelegate {
-
     func dateArrowButtonDidTap(data date: Date) {
         selectedDate = date
     }

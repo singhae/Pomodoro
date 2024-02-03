@@ -10,7 +10,7 @@ import DGCharts
 import UIKit
 
 final class DashboardPieChartCell: UICollectionViewCell {
-    private var selectedDate: Date = Date()
+    private var selectedDate: Date = .init()
     private var dayData: [String] = []
     private var priceData: [Double] = [10]
 
@@ -33,7 +33,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
     }
 
     @available(*, unavailable)
-    required init?(coder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError()
     }
 
@@ -41,7 +41,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         super.init(frame: frame)
         contentView.addSubview(pieBackgroundView)
         pieBackgroundView.addSubview(donutPieChartView)
-        self.backgroundColor = .systemGray3
+        backgroundColor = .systemGray3
         layer.cornerRadius = 20
         setupPieChart()
         setPieChartData(for: Date())
@@ -105,7 +105,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
                     from: date
                 )
             ),
-               let weekEndDate = calendar.date(byAdding: .day, value: 7, to: weekStartDate) {
+                let weekEndDate = calendar.date(byAdding: .day, value: 7, to: weekStartDate) {
                 sessionsPerTag = calculateFocusTimePerTag(from: weekStartDate, to: weekEndDate)
             }
         } else {

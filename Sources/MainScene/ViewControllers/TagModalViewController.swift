@@ -34,16 +34,17 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 10
         $0.clipsToBounds = true
-     }
+    }
 
     private let mainStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 20
         $0.alignment = .fill
     }
+
     // MARK: - TODO
-    @objc private func circleButtonTapped() {
-    }
+
+    @objc private func circleButtonTapped() {}
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,11 +56,9 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         configureCollectionViewDelegate()
 
         configureLayout()
-
     }
 
     private func configureLayout() {
-
         horizontalStackView.addArrangedSubview(label)
         horizontalStackView.addArrangedSubview(circleButton)
 
@@ -76,7 +75,6 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     }
 
     private func configureCollectionView() {
-
         let collectionViewLayer = UICollectionViewFlowLayout()
         collectionViewLayer.sectionInset = UIEdgeInsets(top: 5.0, left: 7.0, bottom: 5.0, right: 7.0)
         collectionViewLayer.minimumLineSpacing = 5
@@ -104,14 +102,13 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         tagCollectionView?.dataSource = self
         tagCollectionView?.delegate = self
     }
-
 }
 
 extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(
         _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        sizeForItemAt indexPath: IndexPath
+        layout _: UICollectionViewLayout,
+        sizeForItemAt _: IndexPath
     ) -> CGSize {
         let padding: CGFloat = 10
         let totalPadding = padding * (2 - 1)
@@ -123,10 +120,9 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 
     func collectionView(
-        _ collectionView: UICollectionView,
-        numberOfItemsInSection section: Int
+        _: UICollectionView,
+        numberOfItemsInSection _: Int
     ) -> Int {
-
         dataSource.count
     }
 

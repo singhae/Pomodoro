@@ -40,6 +40,7 @@ final class MainViewController: UIViewController {
             for: .touchUpInside
         )
     }
+
     private lazy var countButton = UIButton(type: .roundedRect).then {
         $0.setTitle("카운트 시작", for: .normal)
         $0.addTarget(self, action: #selector(startTimer), for: .touchUpInside)
@@ -87,7 +88,7 @@ extension MainViewController {
     @objc private func openTagModal() {
         let modalViewController = TagModalViewController()
         modalViewController.modalPresentationStyle = .fullScreen
-        self.presentPanModal(modalViewController)
+        presentPanModal(modalViewController)
     }
 
     @objc private func stopTimer() {
@@ -97,12 +98,10 @@ extension MainViewController {
         updateTimeLabel()
     }
 
-     @objc private func timeSetting() {
-
-         let timeSettingviewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
-         self.navigationController?.pushViewController(timeSettingviewController, animated: true)
-
-     }
+    @objc private func timeSetting() {
+        let timeSettingviewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
+        navigationController?.pushViewController(timeSettingviewController, animated: true)
+    }
 
     @objc private func startTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
@@ -139,7 +138,6 @@ extension MainViewController {
                 print(error.localizedDescription)
             }
     }
-
 }
 
 // MARK: - UI
@@ -160,8 +158,8 @@ extension MainViewController {
         }
 
         longPressGuideLabel.snp.makeConstraints { make in
-           make.centerX.equalToSuperview()
-           make.bottom.equalTo(view.snp.bottom).offset(-30)
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(view.snp.bottom).offset(-30)
         }
 
         timeLabel.snp.makeConstraints { make in
