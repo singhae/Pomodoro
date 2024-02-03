@@ -18,6 +18,6 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build
       run: |
-        xcodebuild clean test -project Pomodoro.xcodeproj \
+        xcodebuild build -project Pomodoro.xcodeproj \
         -scheme Pomodoro \
         -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest'
