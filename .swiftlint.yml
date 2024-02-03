@@ -1,0 +1,67 @@
+opt_in_rules:
+  - empty_count
+  - weak_delegate
+  - private_subject
+  - implicitly_unwrapped_optional
+  - let_var_whitespace
+  - contains_over_filter_count
+  - contains_over_first_not_nil
+  - direct_return
+  - empty_string
+  - function_default_parameter_at_end
+  - implicit_return
+  - lower_acl_than_parent
+  - multiline_parameters
+  - operator_usage_whitespace
+  - redundant_nil_coalescing
+  - redundant_self_in_closure
+  - shorthand_optional_binding
+  - sorted_imports
+  - switch_case_on_newline
+  - yoda_condition
+
+disabled_rules:
+  - todo
+
+included:
+  - Sources
+
+excluded:
+  - Resources
+
+trailing_newline: error
+trailing_semicolon: error
+force_cast: error
+force_try: error
+line_length: 110
+private_subject: error
+leading_whitespace: error
+class_delegate_protocol: error
+closure_parameter_position: error
+
+type_body_length:
+  - 300
+  - 400
+
+file_length:
+  warning: 500
+  error: 1200
+
+type_name:
+  min_length: 3
+  max_length:
+    warning: 40
+    error: 50
+
+function_body_length:
+  warning: 40
+  error: 100
+
+identifier_name:
+  min_length:
+    error: 3
+  excluded:
+    - id
+    - URL
+    - GlobalAPIKey
+reporter: "xcode"

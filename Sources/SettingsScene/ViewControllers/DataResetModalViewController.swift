@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 
 final class DataResetModalViewController: UIViewController {
-
     private let titleLabel = UILabel().then {
         $0.text = "데이터 초기화 하기"
         $0.font = UIFont.systemFont(ofSize: 25, weight: .bold)

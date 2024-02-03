@@ -6,12 +6,11 @@
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
 
-import UIKit
-import Then
 import SnapKit
+import Then
+import UIKit
 
 class TimerCollectionViewCell: UICollectionViewCell {
-    
     let timeLabel = UILabel().then {
         $0.textColor = .black
         $0.textAlignment = .center
@@ -23,48 +22,49 @@ class TimerCollectionViewCell: UICollectionViewCell {
         $0.image = UIImage(systemName: "arrowtriangle.up.fill")
         $0.tintColor = .black
     }
-    
+
     private let timeCircleView = UIView().then {
         $0.backgroundColor = .gray
         $0.layer.masksToBounds = true
     }
-       
-    public var isSelectedTime : Bool = false {
-       didSet {
-           timeSelectionImage.isHidden = !isSelectedTime
-           timeCircleView.backgroundColor = isSelectedTime ? .black : .systemGray
-       }
+
+    var isSelectedTime: Bool = false {
+        didSet {
+            timeSelectionImage.isHidden = !isSelectedTime
+            timeCircleView.backgroundColor = isSelectedTime ? .black : .systemGray
+        }
     }
 
     override init(frame: CGRect) {
-       super.init(frame: frame)
-       setupViews()
+        super.init(frame: frame)
+        setupViews()
     }
 
-    required init?(coder: NSCoder) {
-       fatalError("init(coder:) has not been implemented")
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         timeCircleView.layer.cornerRadius = timeCircleView.bounds.width / 2
     }
-    
+
     private func setupViews() {
         addSubview(timeLabel)
         addSubview(timeSelectionImage)
         addSubview(timeCircleView)
-        
+
         timeLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalTo(self.snp.top).offset(9.0)
         }
-        
+
         timeSelectionImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalTo(self.snp.bottom).offset(15.0)
         }
-        
+
         timeCircleView.snp.makeConstraints { make in
             make.centerX.centerY.equalToSuperview()
             make.width.height.equalTo(self.snp.width).multipliedBy(0.7)

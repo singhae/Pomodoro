@@ -11,9 +11,9 @@ import Then
 import UIKit
 
 final class SettingViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-
     private enum SettingOption: CaseIterable {
         case shortBreak, longBreak, completionVibrate, dataReset, timerEffect, serviceReview, OSLicense
+
         var title: String {
             switch self {
             case .shortBreak:
@@ -52,16 +52,15 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
 
         addSubViews()
         setupConstraints()
-
     }
 
     // MARK: - UITableViewDataSource
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return SettingOption.allCases.count
+    func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
+        SettingOption.allCases.count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .value1, reuseIdentifier: "OptionCell")
         var config = cell.defaultContentConfiguration()
         let option = SettingOption.allCases[indexPath.row]
@@ -70,7 +69,6 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
         cell.textLabel?.text = option.title
 
         switch SettingOption.allCases[indexPath.row] {
-
         case .shortBreak:
             cell.accessoryType = .disclosureIndicator
             config.secondaryText = "5min"
@@ -83,15 +81,12 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
             _ = UISwitch(frame: .zero).then {
                 $0.setOn(false, animated: true) // switch 초기설정 지정
                 $0.tag = indexPath.row // tag 지정
-//                $0.addTarget(<#T##target: Any?##Any?#>, action: <#T##Selector#>, for: <#T##UIControl.Event#>) // addTarget 지정
                 cell.accessoryView = $0
             }
             cell.selectionStyle = .none
         case .timerEffect:
             _ = UISwitch(frame: .zero).then {
                 $0.setOn(false, animated: true) // switch 초기설정 지정
-                $0.tag = indexPath.row // tag 지정
-//                $0.addTarget(<#T##target: Any?##Any?#>, action: <#T##Selector#>, for: <#T##UIControl.Event#>) // addTarget 지정
                 cell.accessoryView = $0
             }
             cell.selectionStyle = .none
@@ -107,7 +102,6 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
         let selectedOption = SettingOption.allCases[indexPath.row]
 
         switch selectedOption {
-
         case .shortBreak:
             presentModal(modalViewController: ShortBreakModalViewController())
             tableView.deselectRow(at: indexPath, animated: true)
@@ -126,7 +120,6 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
             navigationController?.pushViewController(detailViewController, animated: true)
             tableView.deselectRow(at: indexPath, animated: true)
         }
-
     }
 
     private func presentModal(modalViewController: UIViewController) {
@@ -169,7 +162,6 @@ extension SettingViewController {
 }
 
 final class DetailViewController: UIViewController {
-
     private let optionLabel = UILabel().then {
         $0.numberOfLines = 0
     }
@@ -180,7 +172,7 @@ final class DetailViewController: UIViewController {
     }
 
     @available(*, unavailable)
-    required init?(coder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
