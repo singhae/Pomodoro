@@ -22,7 +22,7 @@ class TimerCollectionViewCell: UICollectionViewCell {
         $0.image = UIImage(systemName: "arrowtriangle.up.fill")
         $0.tintColor = .black
     }
-    
+
     private let timeCircleView = UIView().then {
         $0.backgroundColor = .gray
         $0.layer.masksToBounds = true
@@ -49,22 +49,22 @@ class TimerCollectionViewCell: UICollectionViewCell {
         super.layoutSubviews()
         timeCircleView.layer.cornerRadius = timeCircleView.bounds.width / 2
     }
-    
+
     private func setupViews() {
         addSubview(timeLabel)
         addSubview(timeSelectionImage)
         addSubview(timeCircleView)
-        
+
         timeLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalTo(self.snp.top).offset(9.0)
         }
-        
+
         timeSelectionImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalTo(self.snp.bottom).offset(15.0)
         }
-        
+
         timeCircleView.snp.makeConstraints { make in
             make.centerX.centerY.equalToSuperview()
             make.width.height.equalTo(self.snp.width).multipliedBy(0.7)

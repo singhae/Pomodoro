@@ -29,7 +29,7 @@ final class DayViewController: UIViewController {
         $0.textAlignment = .center
         $0.textColor = .black
     }
-    
+
     private lazy var previousButton = UIButton().then {
         $0.setImage(
             UIImage(
@@ -39,7 +39,7 @@ final class DayViewController: UIViewController {
         )
         $0.addTarget(self, action: #selector(goToPreviousDay), for: .touchUpInside)
     }
-    
+
     private lazy var nextButton = UIButton().then {
         $0.setImage(
             UIImage(
@@ -71,7 +71,7 @@ final class DayViewController: UIViewController {
             MySection.SecondItem(value: "두 번째 레이아웃")
         ])
     ]
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -175,7 +175,7 @@ final class DayViewController: UIViewController {
             selectedDate = nextDay
             updateSelectedDateFormat()
             delegate?.dateArrowButtonDidTap(data: selectedDate)
-        } else{
+        } else {
             return
         }
         dashboardStatusCell.dateArrowButtonDidTap(data: selectedDate)
@@ -196,6 +196,7 @@ final class DayViewController: UIViewController {
 }
 
 // MARK: - UICollectionViewDataSource
+
 extension DayViewController: UICollectionViewDataSource {
     func numberOfSections(in _: UICollectionView) -> Int {
         dataSource.count
