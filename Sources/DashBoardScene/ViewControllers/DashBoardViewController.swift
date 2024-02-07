@@ -70,9 +70,9 @@ final class DashBoardViewController: UIViewController {
         tabBarControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
     }
 
-    private func displayViewController(_: UIViewController) {
+    private func displayViewController(_ targetViewController: UIViewController) {
         for (_, viewController) in segmentViewControllers {
-            if viewController == viewController {
+            if viewController == targetViewController {
                 addChild(viewController)
                 containerView.addSubview(viewController.view)
                 viewController.view.frame = containerView.bounds
