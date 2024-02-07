@@ -1,5 +1,5 @@
 //
-//  DashboardContentViewController.swift
+//  DashboardBaseViewController.swift
 //  Pomodoro
 //
 //  Created by 김하람 on 2/8/24.
@@ -12,7 +12,7 @@ protocol DashboardTabDelegate: AnyObject {
     func dateArrowButtonDidTap(data: Date)
 }
 
-class DashboardContentViewController: UIViewController {
+class DashboardBaseViewController: UIViewController {
     enum DashboardDateType: Int, CaseIterable {
         case day
         case week
@@ -229,7 +229,7 @@ class DashboardContentViewController: UIViewController {
 
 // MARK: - UICollectionViewDataSource
 
-extension DashboardContentViewController: UICollectionViewDataSource {
+extension DashboardBaseViewController: UICollectionViewDataSource {
     func numberOfSections(in _: UICollectionView) -> Int {
         Section.allCases.count
     }

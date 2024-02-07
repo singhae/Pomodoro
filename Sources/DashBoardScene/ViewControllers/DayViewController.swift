@@ -9,31 +9,25 @@
 import SnapKit
 import UIKit
 
-final class DayViewController: DashboardContentViewController {
+final class DayViewController: DashboardBaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        setupDateLabel()
+        updateSelectedDateFormat()
     }
 
-    private func setupDateLabel() {
-        view.addSubview(dateLabel)
-        dateLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.centerX.equalToSuperview()
+    override func updateSelectedDateFormat() {
+        let currentDate = Date()
+        let components = calendar.dateComponents([.year, .month, .day], from: currentDate)
+        let targetComponents = calendar.dateComponents([.year, .month, .day], from: selectedDate)
+
+        if components.year == targetComponents.year,
+           components.month == targetComponents.month,
+           components.day == targetComponents.day {
+            dateFormatter.dateFormat = "MM월 dd일, 오늘"
+        } else {
+            dateFormatter.dateFormat = "MM월 dd일"
         }
-    }
-}
-
-enum MySection {
-    case first([FirstItem])
-    case second([SecondItem])
-
-    struct FirstItem {
-        let value: String
-    }
-
-    struct SecondItem {
-        let value: String
+        dateLabel.text = dateFormatter.string(from: selectedDate)
     }
 }
