@@ -17,13 +17,6 @@ final class DashBoardViewController: UIViewController {
         case year
     }
 
-    private let segmentViewControllers: [SegmentItem: UIViewController] = [
-        .day: DayViewController(),
-        .week: WeekViewController(),
-        .month: MonthViewController(),
-        .year: YearViewController()
-    ]
-
     private let containerView = UIView()
 
     override func viewDidLoad() {
@@ -70,28 +63,23 @@ final class DashBoardViewController: UIViewController {
         tabBarControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
     }
 
-    private func displayViewController(_: UIViewController) {
-        for (_, viewController) in segmentViewControllers {
-            if viewController == viewController {
-                addChild(viewController)
-                containerView.addSubview(viewController.view)
-                viewController.view.frame = containerView.bounds
-                viewController.didMove(toParent: self)
-            } else {
-                viewController.willMove(toParent: nil)
-                viewController.view.removeFromSuperview()
-                viewController.removeFromParent()
-            }
+    private func displayViewController(_ currentViewType: DashboardBaseViewController.DashboardDateType) {
+        for subview in containerView.subviews {
+            subview.removeFromSuperview()
         }
+
+        let viewController = DashboardBaseViewController()
+        viewController.dashboardDateType = currentViewType
+        addChild(viewController)
+        containerView.addSubview(viewController.view)
+        viewController.view.frame = containerView.bounds
+        viewController.didMove(toParent: self)
     }
 
     @objc private func segmentChanged() {
-        guard let selectedItem = SegmentItem(rawValue: tabBarControl.selectedSegmentIndex) else {
-            return
-        }
-
-        if let viewController = segmentViewControllers[selectedItem] {
-            displayViewController(viewController)
+        if let selectedViewController = DashboardBaseViewController.DashboardDateType(
+            rawValue: tabBarControl.selectedSegmentIndex) {
+            displayViewController(selectedViewController)
         }
     }
 }
