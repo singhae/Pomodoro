@@ -19,19 +19,19 @@ class DashboardBaseViewController: UIViewController {
         case month
         case year
     }
-    
+
     enum Section: Int, CaseIterable {
         case status
         case chart
     }
-    
+
     var dashboardDateType: DashboardDateType = .day
     weak var delegate: DashboardTabDelegate?
     let dashboardStatusCell = DashboardStatusCell()
     let dashboardPieChartCell = DashboardPieChartCell()
     var selectedDate = Date()
     let calendar = Calendar.current
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -39,11 +39,11 @@ class DashboardBaseViewController: UIViewController {
         setupArrowButtons()
         setupCollectionView()
     }
-    
+
     let dateFormatter = DateFormatter().then {
         $0.dateStyle = .long
     }
-    
+
     var dateRange: Int {
         switch dashboardDateType {
         case .day:
@@ -56,13 +56,13 @@ class DashboardBaseViewController: UIViewController {
             365
         }
     }
-    
+
     lazy var dateLabel = UILabel().then {
         $0.text = dateFormatter.string(from: selectedDate)
         $0.textAlignment = .center
         $0.textColor = .black
     }
-    
+
     private lazy var previousButton = UIButton().then {
         $0.setImage(
             UIImage(
@@ -72,7 +72,7 @@ class DashboardBaseViewController: UIViewController {
         )
         $0.addTarget(self, action: #selector(goToPreviousDate), for: .touchUpInside)
     }
-    
+
     private lazy var nextButton = UIButton().then {
         $0.setImage(
             UIImage(
@@ -80,17 +80,17 @@ class DashboardBaseViewController: UIViewController {
             )?.withTintColor(.black, renderingMode: .alwaysOriginal),
             for: .normal
         )
-        
+
         $0.addTarget(self, action: #selector(goToNextDate), for: .touchUpInside)
     }
-    
+
     @objc func goToNextDate() {
         guard let nextDate = calendar.date(byAdding: .day, value: dateRange, to: selectedDate),
               nextDate <= .now
         else {
             return
         }
-        
+
         selectedDate = nextDate
         updateSelectedDateFormat()
         delegate?.dateArrowButtonDidTap(data: selectedDate)
@@ -98,20 +98,20 @@ class DashboardBaseViewController: UIViewController {
         dashboardPieChartCell.dateArrowButtonDidTap(data: selectedDate)
         collectionView.reloadData()
     }
-    
+
     @objc func goToPreviousDate() {
         guard let previousDate = calendar.date(byAdding: .day, value: -dateRange, to: selectedDate) else {
             return
         }
         selectedDate = previousDate
-        
+
         updateSelectedDateFormat()
         delegate?.dateArrowButtonDidTap(data: selectedDate)
         dashboardStatusCell.dateArrowButtonDidTap(data: selectedDate)
         dashboardPieChartCell.dateArrowButtonDidTap(data: selectedDate)
         collectionView.reloadData()
     }
-    
+
     lazy var collectionView: UICollectionView = .init(
         frame: .zero,
         collectionViewLayout: self.getLayout()
@@ -124,7 +124,7 @@ class DashboardBaseViewController: UIViewController {
         $0.register(DashboardStatusCell.self, forCellWithReuseIdentifier: "DashboardStatusCell")
         $0.register(DashboardPieChartCell.self, forCellWithReuseIdentifier: "DashboardPieChartCell")
     }
-    
+
     private func setupDateLabel() {
         view.addSubview(dateLabel)
         dateLabel.snp.makeConstraints { make in
@@ -132,7 +132,7 @@ class DashboardBaseViewController: UIViewController {
             make.centerX.equalToSuperview()
         }
     }
-    
+
     private func setupArrowButtons() {
         view.addSubview(previousButton)
         view.addSubview(nextButton)
@@ -145,10 +145,10 @@ class DashboardBaseViewController: UIViewController {
             make.leading.equalTo(dateLabel.snp.trailing).offset(10)
         }
     }
-    
+
     private func getLayout() -> UICollectionViewCompositionalLayout {
         UICollectionViewCompositionalLayout { section, _ -> NSCollectionLayoutSection? in
-            
+
             func makeItem() -> NSCollectionLayoutItem {
                 let itemSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
@@ -165,10 +165,10 @@ class DashboardBaseViewController: UIViewController {
                 item.contentInsets.leading = 15
                 item.contentInsets.trailing = 15
                 item.contentInsets.top = 15
-                
+
                 return item
             }
-            
+
             func makeGroup(heightFraction: CGFloat) -> NSCollectionLayoutGroup {
                 let groupSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1),
@@ -176,7 +176,7 @@ class DashboardBaseViewController: UIViewController {
                 )
                 return NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [makeItem()])
             }
-            
+
             switch section {
             case 0:
                 return NSCollectionLayoutSection(group: makeGroup(heightFraction: 1.0 / 3.0))
@@ -185,7 +185,7 @@ class DashboardBaseViewController: UIViewController {
             }
         }
     }
-    
+
     private func setupCollectionView() {
         view.addSubview(collectionView)
         collectionView.backgroundColor = .white
@@ -195,12 +195,12 @@ class DashboardBaseViewController: UIViewController {
         }
         collectionView.dataSource = self
     }
-    
+
     func updateSelectedDateFormat() {
         let currentDate = Date()
         let components = calendar.dateComponents([.year, .month, .day], from: currentDate)
         let targetComponents = calendar.dateComponents([.year, .month, .day], from: selectedDate)
-        
+
         if dashboardDateType == .day {
             if components.year == targetComponents.year,
                components.month == targetComponents.month,
@@ -214,7 +214,7 @@ class DashboardBaseViewController: UIViewController {
             let calendar = Calendar.current
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "MM월 dd일"
-            
+
             if let weekInterval = calendar.dateInterval(of: .weekOfMonth, for: selectedDate) {
                 let startDate = weekInterval.start
                 let endDate = calendar.date(
@@ -222,7 +222,7 @@ class DashboardBaseViewController: UIViewController {
                 ) ?? weekInterval.end
                 let startDateString = dateFormatter.string(from: startDate)
                 let endDateString = dateFormatter.string(from: endDate)
-                
+
                 dateLabel.text = "\(startDateString) - \(endDateString)"
             }
         } else if dashboardDateType == .month {
@@ -244,11 +244,11 @@ extension DashboardBaseViewController: UICollectionViewDataSource {
     func numberOfSections(in _: UICollectionView) -> Int {
         Section.allCases.count
     }
-    
+
     func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
         1
     }
-    
+
     func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
@@ -261,10 +261,9 @@ extension DashboardBaseViewController: UICollectionViewDataSource {
             ) as? DashboardStatusCell else {
                 return UICollectionViewCell()
             }
-            cell.updateUI(for: selectedDate, isWeek: dashboardDateType == .week ?
-                          true : false)
+            cell.updateUI(for: selectedDate, dateType: dashboardDateType == .day ? .day : .week)
             return cell
-            
+
         case .chart:
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "DashboardPieChartCell",

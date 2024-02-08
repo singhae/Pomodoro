@@ -27,7 +27,7 @@ struct PomodoroData {
                 focusTime: 25,
                 tagId: "공부",
                 participateDate: dateFormatter.date(
-                    from: "2024-01-30"
+                    from: "2023-12-30"
                 ) ?? defaultDate,
                 success: true
             ),

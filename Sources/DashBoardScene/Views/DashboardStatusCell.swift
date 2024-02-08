@@ -12,6 +12,13 @@ import Then
 import UIKit
 
 final class DashboardStatusCell: UICollectionViewCell {
+    enum DashboardDateType: Int, CaseIterable {
+        case day
+        case week
+        case month
+        case year
+    }
+
     private let participateLabel = UILabel()
     private let countLabel = UILabel()
     private let achieveLabel = UILabel()
@@ -75,14 +82,36 @@ final class DashboardStatusCell: UICollectionViewCell {
         return (startDate, endDate)
     }
 
-    func updateUI(for date: Date, isWeek: Bool = false) {
+    private func getStartAndEndDateOfMonth(for date: Date) -> (start: Date, end: Date) {
+        let calendar = Calendar.current
+        guard let weekInterval = calendar.dateInterval(of: .month, for: date) else {
+            return (date, date)
+        }
+        let startDate = weekInterval.start
+        let endDate = weekInterval.end
+        return (startDate, endDate)
+    }
+
+    func updateUI(for date: Date, dateType: DashboardDateType) {
         var totalParticipateCount = 0
         var filteredDataCount = 0
         var totalSuccessCount = 0
         var totalFailureCount = 0
         let calendar = Calendar.current
 
-        if isWeek {
+        if dateType == .day {
+            totalParticipateCount = PomodoroData.dummyData.filter { $0.participateDate <= date }.count
+            let sameDayData = PomodoroData.dummyData.filter {
+                Calendar.current.isDate(
+                    $0.participateDate,
+                    inSameDayAs: date
+                )
+            }
+            filteredDataCount = sameDayData.count
+            totalSuccessCount = sameDayData.filter(\.success).count
+            totalFailureCount = sameDayData.filter { !$0.success }.count
+
+        } else if dateType == .week {
             let weekDates = getStartAndEndDateOfWeek(for: date)
             let startDate = weekDates.start
             let endDate = weekDates.end
@@ -94,23 +123,29 @@ final class DashboardStatusCell: UICollectionViewCell {
                     .filter { $0.participateDate >= startDate && $0.participateDate < endDate }
                     .map { calendar.startOfDay(for: $0.participateDate) }
             )
-
             totalParticipateCount = calculateParticipateCount.count
             filteredDataCount = weekData.count
             totalSuccessCount = weekData.filter(\.success).count
             totalFailureCount = weekData.filter { !$0.success }.count
-        } else {
-            totalParticipateCount = PomodoroData.dummyData.filter { $0.participateDate <= date }.count
-            let sameDayData = PomodoroData.dummyData.filter {
-                Calendar.current.isDate(
-                    $0.participateDate,
-                    inSameDayAs: date
-                )
+
+        } else if dateType == .month {
+            let monthDates = getStartAndEndDateOfMonth(for: date)
+            let startDate = monthDates.start
+            let endDate = monthDates.end
+            let monthData = PomodoroData.dummyData.filter {
+                $0.participateDate >= startDate && $0.participateDate < endDate
             }
-            filteredDataCount = sameDayData.count
-            totalSuccessCount = sameDayData.filter(\.success).count
-            totalFailureCount = sameDayData.filter { !$0.success }.count
+            let calculateParticipateCount = Set(
+                PomodoroData.dummyData
+                    .filter { $0.participateDate >= startDate && $0.participateDate < endDate }
+                    .map { calendar.startOfDay(for: $0.participateDate) }
+            )
+            totalParticipateCount = calculateParticipateCount.count
+            filteredDataCount = monthData.count
+            totalSuccessCount = monthData.filter(\.success).count
+            totalFailureCount = monthData.filter { !$0.success }.count
         }
+
         participateLabel.text = "참여일 \(totalParticipateCount)"
         countLabel.text = "횟수 \(filteredDataCount)"
         achieveLabel.text = "달성 \(totalSuccessCount)"
