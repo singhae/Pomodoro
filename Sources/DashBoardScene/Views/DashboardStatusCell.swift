@@ -110,7 +110,6 @@ final class DashboardStatusCell: UICollectionViewCell {
             filteredDataCount = sameDayData.count
             totalSuccessCount = sameDayData.filter(\.success).count
             totalFailureCount = sameDayData.filter { !$0.success }.count
-
         } else if dateType == .week {
             let weekDates = getStartAndEndDateOfWeek(for: date)
             let startDate = weekDates.start
@@ -127,7 +126,6 @@ final class DashboardStatusCell: UICollectionViewCell {
             filteredDataCount = weekData.count
             totalSuccessCount = weekData.filter(\.success).count
             totalFailureCount = weekData.filter { !$0.success }.count
-
         } else if dateType == .month {
             let monthDates = getStartAndEndDateOfMonth(for: date)
             let startDate = monthDates.start
@@ -145,7 +143,6 @@ final class DashboardStatusCell: UICollectionViewCell {
             totalSuccessCount = monthData.filter(\.success).count
             totalFailureCount = monthData.filter { !$0.success }.count
         }
-
         participateLabel.text = "참여일 \(totalParticipateCount)"
         countLabel.text = "횟수 \(filteredDataCount)"
         achieveLabel.text = "달성 \(totalSuccessCount)"

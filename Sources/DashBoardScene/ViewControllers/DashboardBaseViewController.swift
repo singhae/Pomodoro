@@ -261,7 +261,10 @@ extension DashboardBaseViewController: UICollectionViewDataSource {
             ) as? DashboardStatusCell else {
                 return UICollectionViewCell()
             }
-            cell.updateUI(for: selectedDate, dateType: dashboardDateType == .day ? .day : .week)
+            cell.updateUI(for: selectedDate,
+                          dateType: dashboardDateType == .day ? .day :
+                              dashboardDateType == .week ? .week :
+                              dashboardDateType == .month ? .month : .year)
             return cell
 
         case .chart:
@@ -271,7 +274,10 @@ extension DashboardBaseViewController: UICollectionViewDataSource {
             ) as? DashboardPieChartCell else {
                 return UICollectionViewCell()
             }
-            cell.setPieChartData(for: selectedDate, isWeek: dashboardDateType == .week ? true : false)
+            cell.setPieChartData(for: selectedDate,
+                                 dateType: dashboardDateType == .day ? .day :
+                                     dashboardDateType == .week ? .week :
+                                     dashboardDateType == .month ? .month : .year)
             return cell
         case .none:
             return UICollectionViewCell()

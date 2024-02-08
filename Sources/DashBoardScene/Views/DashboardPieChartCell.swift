@@ -10,6 +10,13 @@ import DGCharts
 import UIKit
 
 final class DashboardPieChartCell: UICollectionViewCell {
+    enum DashboardDateType: Int, CaseIterable {
+        case day
+        case week
+        case month
+        case year
+    }
+
     private var selectedDate: Date = .init()
     private var dayData: [String] = []
     private var priceData: [Double] = [10]
@@ -44,7 +51,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         backgroundColor = .systemGray3
         layer.cornerRadius = 20
         setupPieChart()
-        setPieChartData(for: Date())
+        setPieChartData(for: Date(), dateType: .day)
     }
 
     private func calculateFocusTimePerTag(for selectedDate: Date) -> [String: Int] {
@@ -92,13 +99,16 @@ final class DashboardPieChartCell: UICollectionViewCell {
         return focusTimePerTag
     }
 
-    func setPieChartData(for date: Date, isWeek: Bool = false) {
+    func setPieChartData(for date: Date, dateType: DashboardDateType) {
         var totalSum = 0.0
         var sessionsPerTag: [String: Int] = [:]
-
         let calendar = Calendar.current
-
-        if isWeek {
+        if dateType == .day {
+            let startOfDay = calendar.startOfDay(for: date)
+            if let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) {
+                sessionsPerTag = calculateFocusTimePerTag(from: startOfDay, to: endOfDay)
+            }
+        } else if dateType == .week {
             if let weekStartDate = calendar.date(
                 from: calendar.dateComponents(
                     [.yearForWeekOfYear, .weekOfYear],
@@ -108,11 +118,19 @@ final class DashboardPieChartCell: UICollectionViewCell {
                 let weekEndDate = calendar.date(byAdding: .day, value: 7, to: weekStartDate) {
                 sessionsPerTag = calculateFocusTimePerTag(from: weekStartDate, to: weekEndDate)
             }
-        } else {
-            let startOfDay = calendar.startOfDay(for: date)
-            if let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) {
-                sessionsPerTag = calculateFocusTimePerTag(from: startOfDay, to: endOfDay)
+        } else if dateType == .month {
+            let calendar = Calendar.current
+
+            let monthStartDateComponents = calendar.dateComponents([.year, .month], from: date)
+            guard let monthStartDate = calendar.date(from: monthStartDateComponents) else {
+                return
             }
+            guard let nextMonthDate = calendar.date(byAdding: .month, value: 1, to: monthStartDate),
+                  let monthEndDate = calendar.date(byAdding: .day, value: -1, to: nextMonthDate)
+            else {
+                return
+            }
+            sessionsPerTag = calculateFocusTimePerTag(from: monthStartDate, to: monthEndDate)
         }
 
         var pieDataEntries: [PieChartDataEntry] = []
