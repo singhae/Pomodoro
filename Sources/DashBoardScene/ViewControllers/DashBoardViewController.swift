@@ -77,8 +77,9 @@ final class DashBoardViewController: UIViewController {
     }
 
     @objc private func segmentChanged() {
-        if let viewController = DashboardBaseViewController.DashboardDateType(rawValue: tabBarControl.selectedSegmentIndex) {
-            displayViewController(viewController)
+        if let selectedViewController = DashboardBaseViewController.DashboardDateType(
+            rawValue: tabBarControl.selectedSegmentIndex) {
+            displayViewController(selectedViewController)
         }
     }
 }

@@ -10,13 +10,9 @@ import SnapKit
 import UIKit
 
 final class WeekViewController: DashboardBaseViewController {
-//    override var dateRange: Int {
-//        7
-//    }
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.dashboardDateType = .week
+        dashboardDateType = .week
         view.backgroundColor = .white
     }
-
 }

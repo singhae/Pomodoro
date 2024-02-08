@@ -217,7 +217,9 @@ class DashboardBaseViewController: UIViewController {
 
             if let weekInterval = calendar.dateInterval(of: .weekOfMonth, for: selectedDate) {
                 let startDate = weekInterval.start
-                let endDate = calendar.date(byAdding: .day, value: -1, to: weekInterval.end) ?? weekInterval.end
+                let endDate = calendar.date(
+                    byAdding: .day, value: -1, to: weekInterval.end
+                ) ?? weekInterval.end
                 let startDateString = dateFormatter.string(from: startDate)
                 let endDateString = dateFormatter.string(from: endDate)
 
@@ -250,7 +252,8 @@ extension DashboardBaseViewController: UICollectionViewDataSource {
             ) as? DashboardStatusCell else {
                 return UICollectionViewCell()
             }
-            cell.updateUI(for: selectedDate, isWeek: false)
+            cell.updateUI(for: selectedDate, isWeek: dashboardDateType == .week ?
+                true : false)
             return cell
 
         case .chart:
@@ -260,7 +263,7 @@ extension DashboardBaseViewController: UICollectionViewDataSource {
             ) as? DashboardPieChartCell else {
                 return UICollectionViewCell()
             }
-            cell.setPieChartData(for: selectedDate, isWeek: false)
+            cell.setPieChartData(for: selectedDate, isWeek: dashboardDateType == .week ? true : false)
             return cell
         case .none:
             return UICollectionViewCell()
