@@ -100,39 +100,9 @@ final class DashboardPieChartCell: UICollectionViewCell {
     }
 
     func setPieChartData(for date: Date, dateType: DashboardDateType) {
+        let (startDate, endDate) = getDateRange(for: date, dateType: dateType)
+        let sessionsPerTag = calculateFocusTimePerTag(from: startDate, to: endDate)
         var totalSum = 0.0
-        var sessionsPerTag: [String: Int] = [:]
-        let calendar = Calendar.current
-        if dateType == .day {
-            let startOfDay = calendar.startOfDay(for: date)
-            if let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) {
-                sessionsPerTag = calculateFocusTimePerTag(from: startOfDay, to: endOfDay)
-            }
-        } else if dateType == .week {
-            if let weekStartDate = calendar.date(
-                from: calendar.dateComponents(
-                    [.yearForWeekOfYear, .weekOfYear],
-                    from: date
-                )
-            ),
-                let weekEndDate = calendar.date(byAdding: .day, value: 7, to: weekStartDate) {
-                sessionsPerTag = calculateFocusTimePerTag(from: weekStartDate, to: weekEndDate)
-            }
-        } else if dateType == .month {
-            let calendar = Calendar.current
-
-            let monthStartDateComponents = calendar.dateComponents([.year, .month], from: date)
-            guard let monthStartDate = calendar.date(from: monthStartDateComponents) else {
-                return
-            }
-            guard let nextMonthDate = calendar.date(byAdding: .month, value: 1, to: monthStartDate),
-                  let monthEndDate = calendar.date(byAdding: .day, value: -1, to: nextMonthDate)
-            else {
-                return
-            }
-            sessionsPerTag = calculateFocusTimePerTag(from: monthStartDate, to: monthEndDate)
-        }
-
         var pieDataEntries: [PieChartDataEntry] = []
         let colors: [UIColor] = [.systemTeal, .systemPink, .systemIndigo]
 
@@ -141,15 +111,37 @@ final class DashboardPieChartCell: UICollectionViewCell {
             pieDataEntries.append(entry)
             totalSum += Double(count)
         }
-
         let pieChartDataSet = PieChartDataSet(entries: pieDataEntries, label: "")
         pieChartDataSet.colors = colors
         pieChartDataSet.drawValuesEnabled = true
-
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
-
         donutPieChartView.data = pieChartData
         donutPieChartView.centerText = "합계\n\(totalSum)"
+    }
+
+    private func getDateRange(for date: Date, dateType: DashboardDateType) -> (start: Date, end: Date) {
+        let calendar = Calendar.current
+        switch dateType {
+        case .day:
+            let startOfDay = calendar.startOfDay(for: date)
+            let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+            return (startOfDay, endOfDay)
+        case .week:
+            let startOfWeek = calendar.date(
+                from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date))!
+            let endOfWeek = calendar.date(byAdding: .day, value: 7, to: startOfWeek)!
+            return (startOfWeek, endOfWeek)
+        case .month:
+            let monthStartDate = calendar.date(from: calendar.dateComponents([.year, .month], from: date))!
+            let nextMonthDate = calendar.date(byAdding: .month, value: 1, to: monthStartDate)!
+            let monthEndDate = calendar.date(byAdding: .day, value: -1, to: nextMonthDate)!
+            return (monthStartDate, monthEndDate)
+        case .year:
+            let monthStartDate = calendar.date(from: calendar.dateComponents([.year, .month], from: date))!
+            let nextMonthDate = calendar.date(byAdding: .month, value: 1, to: monthStartDate)!
+            let monthEndDate = calendar.date(byAdding: .day, value: -1, to: nextMonthDate)!
+            return (monthStartDate, monthEndDate)
+        }
     }
 }
 
