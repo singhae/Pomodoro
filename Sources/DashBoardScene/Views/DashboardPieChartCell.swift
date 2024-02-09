@@ -10,13 +10,6 @@ import DGCharts
 import UIKit
 
 final class DashboardPieChartCell: UICollectionViewCell {
-    enum DashboardDateType: Int, CaseIterable {
-        case day
-        case week
-        case month
-        case year
-    }
-
     private var selectedDate: Date = .init()
     private var dayData: [String] = []
     private var priceData: [Double] = [10]

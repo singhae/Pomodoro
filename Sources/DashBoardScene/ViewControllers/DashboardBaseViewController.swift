@@ -12,25 +12,25 @@ protocol DashboardTabDelegate: AnyObject {
     func dateArrowButtonDidTap(data: Date)
 }
 
-class DashboardBaseViewController: UIViewController {
-    enum DashboardDateType: Int, CaseIterable {
-        case day
-        case week
-        case month
-        case year
-    }
+enum DashboardDateType: Int, CaseIterable {
+    case day
+    case week
+    case month
+    case year
+}
 
+class DashboardBaseViewController: UIViewController {
     enum Section: Int, CaseIterable {
         case status
         case chart
     }
 
     var dashboardDateType: DashboardDateType = .day
-    weak var delegate: DashboardTabDelegate?
-    let dashboardStatusCell = DashboardStatusCell()
-    let dashboardPieChartCell = DashboardPieChartCell()
-    var selectedDate = Date()
-    let calendar = Calendar.current
+    private weak var delegate: DashboardTabDelegate?
+    private let dashboardStatusCell = DashboardStatusCell()
+    private let dashboardPieChartCell = DashboardPieChartCell()
+    private var selectedDate = Date()
+    private let calendar = Calendar.current
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -262,9 +262,7 @@ extension DashboardBaseViewController: UICollectionViewDataSource {
                 return UICollectionViewCell()
             }
             cell.updateUI(for: selectedDate,
-                          dateType: dashboardDateType == .day ? .day :
-                              dashboardDateType == .week ? .week :
-                              dashboardDateType == .month ? .month : .year)
+                          dateType: dashboardDateType)
             return cell
 
         case .chart:
@@ -275,9 +273,7 @@ extension DashboardBaseViewController: UICollectionViewDataSource {
                 return UICollectionViewCell()
             }
             cell.setPieChartData(for: selectedDate,
-                                 dateType: dashboardDateType == .day ? .day :
-                                     dashboardDateType == .week ? .week :
-                                     dashboardDateType == .month ? .month : .year)
+                                 dateType: dashboardDateType)
             return cell
         case .none:
             return UICollectionViewCell()

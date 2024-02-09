@@ -12,13 +12,6 @@ import Then
 import UIKit
 
 final class DashboardStatusCell: UICollectionViewCell {
-    enum DashboardDateType: Int, CaseIterable {
-        case day
-        case week
-        case month
-        case year
-    }
-
     private let participateLabel = UILabel()
     private let countLabel = UILabel()
     private let achieveLabel = UILabel()
