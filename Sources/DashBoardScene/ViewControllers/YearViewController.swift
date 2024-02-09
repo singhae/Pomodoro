@@ -9,23 +9,10 @@
 import SnapKit
 import UIKit
 
-final class YearViewController: UIViewController {
-    private let label = UILabel().then { label in
-        label.text = "YearViewController"
-        label.textColor = .black
-    }
-
+final class YearViewController: DashboardBaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
+        dashboardDateType = .year
         view.backgroundColor = .white
-        setupLabel()
-    }
-
-    private func setupLabel() {
-        view.addSubview(label)
-
-        label.snp.makeConstraints { make in
-            make.centerX.centerY.equalToSuperview()
-        }
     }
 }
