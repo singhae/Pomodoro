@@ -201,7 +201,11 @@ class DashboardBaseViewController: UIViewController {
         let components = calendar.dateComponents([.year, .month, .day], from: currentDate)
         let targetComponents = calendar.dateComponents([.year, .month, .day], from: selectedDate)
 
-        if dashboardDateType == .day {
+        let calendar = Calendar.current
+        let dateFormatter = DateFormatter()
+
+        switch dashboardDateType {
+        case .day:
             if components.year == targetComponents.year,
                components.month == targetComponents.month,
                components.day == targetComponents.day {
@@ -209,12 +213,9 @@ class DashboardBaseViewController: UIViewController {
             } else {
                 dateFormatter.dateFormat = "MM월 dd일"
             }
-            dateLabel.text = dateFormatter.string(from: selectedDate)
-        } else if dashboardDateType == .week {
-            let calendar = Calendar.current
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "MM월 dd일"
 
+        case .week:
+            dateFormatter.dateFormat = "MM월 dd일"
             if let weekInterval = calendar.dateInterval(of: .weekOfMonth, for: selectedDate) {
                 let startDate = weekInterval.start
                 let endDate = calendar.date(
@@ -222,19 +223,17 @@ class DashboardBaseViewController: UIViewController {
                 ) ?? weekInterval.end
                 let startDateString = dateFormatter.string(from: startDate)
                 let endDateString = dateFormatter.string(from: endDate)
-
                 dateLabel.text = "\(startDateString) - \(endDateString)"
+                return
             }
-        } else if dashboardDateType == .month {
-            if components.year == targetComponents.year,
-               components.month == targetComponents.month,
-               components.day == targetComponents.day {
-                dateFormatter.dateFormat = "yyyy년 MM월"
-            } else {
-                dateFormatter.dateFormat = "yyyy년 MM월"
-            }
-            dateLabel.text = dateFormatter.string(from: selectedDate)
+
+        case .month:
+            dateFormatter.dateFormat = "yyyy년 MM월"
+        case .year:
+            dateFormatter.dateFormat = "yyyy년"
         }
+
+        dateLabel.text = dateFormatter.string(from: selectedDate)
     }
 }
 

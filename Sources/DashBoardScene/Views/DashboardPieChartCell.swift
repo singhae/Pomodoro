@@ -117,23 +117,35 @@ final class DashboardPieChartCell: UICollectionViewCell {
         switch dateType {
         case .day:
             let startOfDay = calendar.startOfDay(for: date)
-            let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+            guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else {
+                return (startOfDay, startOfDay)
+            }
             return (startOfDay, endOfDay)
         case .week:
-            let startOfWeek = calendar.date(
-                from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date))!
-            let endOfWeek = calendar.date(byAdding: .day, value: 7, to: startOfWeek)!
+            guard let startOfWeek = calendar.date(
+                from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)),
+                let endOfWeek = calendar.date(byAdding: .day, value: 7, to: startOfWeek)
+            else {
+                return (date, date)
+            }
             return (startOfWeek, endOfWeek)
         case .month:
-            let monthStartDate = calendar.date(from: calendar.dateComponents([.year, .month], from: date))!
-            let nextMonthDate = calendar.date(byAdding: .month, value: 1, to: monthStartDate)!
-            let monthEndDate = calendar.date(byAdding: .day, value: -1, to: nextMonthDate)!
+            guard let monthStartDate = calendar.date(
+                from: calendar.dateComponents([.year, .month], from: date)),
+                let nextMonthDate = calendar.date(byAdding: .month, value: 1, to: monthStartDate),
+                let monthEndDate = calendar.date(byAdding: .day, value: -1, to: nextMonthDate)
+            else {
+                return (date, date)
+            }
             return (monthStartDate, monthEndDate)
         case .year:
-            let monthStartDate = calendar.date(from: calendar.dateComponents([.year, .month], from: date))!
-            let nextMonthDate = calendar.date(byAdding: .month, value: 1, to: monthStartDate)!
-            let monthEndDate = calendar.date(byAdding: .day, value: -1, to: nextMonthDate)!
-            return (monthStartDate, monthEndDate)
+            guard let yearStartDate = calendar.date(from: calendar.dateComponents([.year], from: date)),
+                  let nextYearDate = calendar.date(byAdding: .year, value: 1, to: yearStartDate),
+                  let yearEndDate = calendar.date(byAdding: .day, value: -1, to: nextYearDate)
+            else {
+                return (date, date)
+            }
+            return (yearStartDate, yearEndDate)
         }
     }
 }
