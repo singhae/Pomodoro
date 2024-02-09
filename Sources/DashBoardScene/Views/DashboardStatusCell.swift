@@ -65,56 +65,66 @@ final class DashboardStatusCell: UICollectionViewCell {
         backgroundColor = .black
     }
 
-    private func getStartAndEndDateOfWeek(for date: Date) -> (start: Date, end: Date) {
+    private func getStartAndEndDate(for date: Date, of component: Calendar.Component)
+        -> (start: Date, end: Date) {
         let calendar = Calendar.current
-        guard let weekInterval = calendar.dateInterval(of: .weekOfYear, for: date) else {
+        guard let dateInterval = calendar.dateInterval(of: component, for: date) else {
             return (date, date)
         }
-        let startDate = weekInterval.start
-        let endDate = weekInterval.end
+        let startDate = dateInterval.start
+        let endDate = dateInterval.end
         return (startDate, endDate)
     }
 
-    func updateUI(for date: Date, isWeek: Bool = false) {
-        var totalParticipateCount = 0
-        var filteredDataCount = 0
-        var totalSuccessCount = 0
-        var totalFailureCount = 0
-        let calendar = Calendar.current
-
-        if isWeek {
-            let weekDates = getStartAndEndDateOfWeek(for: date)
-            let startDate = weekDates.start
-            let endDate = weekDates.end
-            let weekData = PomodoroData.dummyData.filter {
-                $0.participateDate >= startDate && $0.participateDate < endDate
+    func updateUI(for date: Date, dateType: DashboardDateType) {
+        let component: Calendar.Component = {
+            switch dateType {
+            case .day:
+                return .day
+            case .week:
+                return .weekOfYear
+            case .month:
+                return .month
+            case .year:
+                return .year
             }
-            let calculateParticipateCount = Set(
-                PomodoroData.dummyData
-                    .filter { $0.participateDate >= startDate && $0.participateDate < endDate }
-                    .map { calendar.startOfDay(for: $0.participateDate) }
-            )
+        }()
 
-            totalParticipateCount = calculateParticipateCount.count
-            filteredDataCount = weekData.count
-            totalSuccessCount = weekData.filter(\.success).count
-            totalFailureCount = weekData.filter { !$0.success }.count
-        } else {
-            totalParticipateCount = PomodoroData.dummyData.filter { $0.participateDate <= date }.count
-            let sameDayData = PomodoroData.dummyData.filter {
-                Calendar.current.isDate(
-                    $0.participateDate,
-                    inSameDayAs: date
-                )
-            }
-            filteredDataCount = sameDayData.count
-            totalSuccessCount = sameDayData.filter(\.success).count
-            totalFailureCount = sameDayData.filter { !$0.success }.count
+        let (startDate, endDate) = getStartAndEndDate(for: date, of: component)
+        let filteredData = PomodoroData.dummyData.filter { $0.participateDate >= startDate &&
+            $0.participateDate < endDate
         }
+        let participateDates = Set(filteredData.map { Calendar.current.startOfDay(for: $0.participateDate) })
+        let totalParticipateCount = participateDates.count
+        let filteredDataCount = filteredData.count
+        let totalSuccessCount = filteredData.filter(\.success).count
+        let totalFailureCount = filteredData.filter { !$0.success }.count
+
         participateLabel.text = "참여일 \(totalParticipateCount)"
         countLabel.text = "횟수 \(filteredDataCount)"
         achieveLabel.text = "달성 \(totalSuccessCount)"
         failLabel.text = "실패 \(totalFailureCount)"
+    }
+
+    func getDateRange(for date: Date, dateType: DashboardDateType) -> (start: Date, end: Date) {
+        let calendar = Calendar.current
+        switch dateType {
+        case .day:
+            return (date, calendar.date(byAdding: .day, value: 1, to: date)!)
+        case .week:
+            let startOfWeek = calendar.date(
+                from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date))!
+            let endOfWeek = calendar.date(byAdding: .weekOfYear, value: 1, to: startOfWeek)!
+            return (startOfWeek, endOfWeek)
+        case .month:
+            let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: date))!
+            let endOfMonth = calendar.date(byAdding: .month, value: 1, to: startOfMonth)!
+            return (startOfMonth, endOfMonth)
+        case .year:
+            let startOfYear = calendar.date(from: calendar.dateComponents([.year], from: date))!
+            let endOfYear = calendar.date(byAdding: .year, value: 1, to: startOfYear)!
+            return (startOfYear, endOfYear)
+        }
     }
 }
 

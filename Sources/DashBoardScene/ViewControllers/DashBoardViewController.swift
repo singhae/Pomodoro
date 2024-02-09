@@ -63,7 +63,7 @@ final class DashBoardViewController: UIViewController {
         tabBarControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
     }
 
-    private func displayViewController(_ currentViewType: DashboardBaseViewController.DashboardDateType) {
+    private func displayViewController(_ currentViewType: DashboardDateType) {
         for subview in containerView.subviews {
             subview.removeFromSuperview()
         }
@@ -77,7 +77,7 @@ final class DashBoardViewController: UIViewController {
     }
 
     @objc private func segmentChanged() {
-        if let selectedViewController = DashboardBaseViewController.DashboardDateType(
+        if let selectedViewController = DashboardDateType(
             rawValue: tabBarControl.selectedSegmentIndex) {
             displayViewController(selectedViewController)
         }

@@ -12,25 +12,25 @@ protocol DashboardTabDelegate: AnyObject {
     func dateArrowButtonDidTap(data: Date)
 }
 
-class DashboardBaseViewController: UIViewController {
-    enum DashboardDateType: Int, CaseIterable {
-        case day
-        case week
-        case month
-        case year
-    }
+enum DashboardDateType: Int, CaseIterable {
+    case day
+    case week
+    case month
+    case year
+}
 
+class DashboardBaseViewController: UIViewController {
     enum Section: Int, CaseIterable {
         case status
         case chart
     }
 
     var dashboardDateType: DashboardDateType = .day
-    weak var delegate: DashboardTabDelegate?
-    let dashboardStatusCell = DashboardStatusCell()
-    let dashboardPieChartCell = DashboardPieChartCell()
-    var selectedDate = Date()
-    let calendar = Calendar.current
+    private weak var delegate: DashboardTabDelegate?
+    private let dashboardStatusCell = DashboardStatusCell()
+    private let dashboardPieChartCell = DashboardPieChartCell()
+    private var selectedDate = Date()
+    private let calendar = Calendar.current
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -197,11 +197,15 @@ class DashboardBaseViewController: UIViewController {
     }
 
     func updateSelectedDateFormat() {
-        if dashboardDateType == .day {
-            let currentDate = Date()
-            let components = calendar.dateComponents([.year, .month, .day], from: currentDate)
-            let targetComponents = calendar.dateComponents([.year, .month, .day], from: selectedDate)
+        let currentDate = Date()
+        let components = calendar.dateComponents([.year, .month, .day], from: currentDate)
+        let targetComponents = calendar.dateComponents([.year, .month, .day], from: selectedDate)
 
+        let calendar = Calendar.current
+        let dateFormatter = DateFormatter()
+
+        switch dashboardDateType {
+        case .day:
             if components.year == targetComponents.year,
                components.month == targetComponents.month,
                components.day == targetComponents.day {
@@ -209,12 +213,9 @@ class DashboardBaseViewController: UIViewController {
             } else {
                 dateFormatter.dateFormat = "MM월 dd일"
             }
-            dateLabel.text = dateFormatter.string(from: selectedDate)
-        } else {
-            let calendar = Calendar.current
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "MM월 dd일"
 
+        case .week:
+            dateFormatter.dateFormat = "MM월 dd일"
             if let weekInterval = calendar.dateInterval(of: .weekOfMonth, for: selectedDate) {
                 let startDate = weekInterval.start
                 let endDate = calendar.date(
@@ -222,10 +223,17 @@ class DashboardBaseViewController: UIViewController {
                 ) ?? weekInterval.end
                 let startDateString = dateFormatter.string(from: startDate)
                 let endDateString = dateFormatter.string(from: endDate)
-
                 dateLabel.text = "\(startDateString) - \(endDateString)"
+                return
             }
+
+        case .month:
+            dateFormatter.dateFormat = "yyyy년 MM월"
+        case .year:
+            dateFormatter.dateFormat = "yyyy년"
         }
+
+        dateLabel.text = dateFormatter.string(from: selectedDate)
     }
 }
 
@@ -252,8 +260,8 @@ extension DashboardBaseViewController: UICollectionViewDataSource {
             ) as? DashboardStatusCell else {
                 return UICollectionViewCell()
             }
-            cell.updateUI(for: selectedDate, isWeek: dashboardDateType == .week ?
-                true : false)
+            cell.updateUI(for: selectedDate,
+                          dateType: dashboardDateType)
             return cell
 
         case .chart:
@@ -263,7 +271,8 @@ extension DashboardBaseViewController: UICollectionViewDataSource {
             ) as? DashboardPieChartCell else {
                 return UICollectionViewCell()
             }
-            cell.setPieChartData(for: selectedDate, isWeek: dashboardDateType == .week ? true : false)
+            cell.setPieChartData(for: selectedDate,
+                                 dateType: dashboardDateType)
             return cell
         case .none:
             return UICollectionViewCell()
