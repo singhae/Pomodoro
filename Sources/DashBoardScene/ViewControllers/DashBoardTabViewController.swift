@@ -1,5 +1,5 @@
 //
-//  DashBoardViewController.swift
+//  DashBoardTabViewController.swift
 //  Pomodoro
 //
 //  Created by 진세진 on 2023/11/06.
@@ -9,7 +9,7 @@
 import SnapKit
 import UIKit
 
-final class DashBoardViewController: UIViewController {
+final class DashBoardTabViewController: UIViewController {
     private enum SegmentItem: Int {
         case day
         case week
