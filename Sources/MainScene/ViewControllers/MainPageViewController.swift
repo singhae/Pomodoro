@@ -28,7 +28,7 @@ final class MainPageViewController: UIViewController {
     private lazy var dataViewControllers: [UIViewController] = [
         SettingViewController(),
         MainViewController(),
-        DashBoardViewController()
+        DashBoardTabViewController()
     ]
 
     private lazy var pageViewController: UIPageViewController = .init(
