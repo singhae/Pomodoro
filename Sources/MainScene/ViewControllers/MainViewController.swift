@@ -16,6 +16,8 @@ final class MainViewController: UIViewController {
     private var notificationId: String?
     private var currentTime = 0
     private var maxTime = 0
+    private var longPressTimer: Timer?
+    private var longPressTime: Float = 0.0
 
     private let timeLabel = UILabel().then {
         $0.textAlignment = .center
@@ -27,6 +29,14 @@ final class MainViewController: UIViewController {
         $0.textAlignment = .center
         $0.textColor = .lightGray
         $0.font = UIFont.systemFont(ofSize: 16)
+        $0.isHidden = true
+    }
+
+    private let progressBar = UIProgressView().then {
+        $0.progressViewStyle = .default
+        $0.trackTintColor = .lightGray
+        $0.progressTintColor = .systemBlue
+        $0.progress = 0.0
         $0.isHidden = true
     }
 
@@ -43,11 +53,13 @@ final class MainViewController: UIViewController {
 
     private lazy var countButton = UIButton(type: .roundedRect).then {
         $0.setTitle("카운트 시작", for: .normal)
+        $0.setTitleColor(.black, for: .normal)
         $0.addTarget(self, action: #selector(startTimer), for: .touchUpInside)
     }
 
     private lazy var timeButton = UIButton(type: .roundedRect).then {
         $0.setTitle("시간 설정", for: .normal)
+        $0.setTitleColor(.black, for: .normal)
         $0.addTarget(self, action: #selector(timeSetting), for: .touchUpInside)
     }
 
@@ -57,12 +69,7 @@ final class MainViewController: UIViewController {
         addSubviews()
         setupConstraints()
 
-        let longPressGestureRecognizer = UILongPressGestureRecognizer(
-            target: self,
-            action: #selector(stopTimer)
-        )
-        longPressGestureRecognizer.minimumPressDuration = 3
-        view.addGestureRecognizer(longPressGestureRecognizer)
+        longPressSetting(isEnable: false)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -91,11 +98,60 @@ extension MainViewController {
         presentPanModal(modalViewController)
     }
 
+    private func longPressSetting(isEnable: Bool) {
+        let longPressGestureRecognizer = UILongPressGestureRecognizer(
+            target: self,
+            action: #selector(handleLongPress)
+        )
+        longPressGestureRecognizer.isEnabled = isEnable
+        longPressGestureRecognizer.allowableMovement = .infinity
+        longPressGestureRecognizer.minimumPressDuration = 0.2
+        view.addGestureRecognizer(longPressGestureRecognizer)
+    }
+
+    @objc private func handleLongPress(gestureRecognizer: UILongPressGestureRecognizer) {
+        progressBar.isHidden = false
+
+        longPressTimer?.invalidate()
+        longPressTimer = Timer.scheduledTimer(timeInterval: 0.02,
+                                              target: self,
+                                              selector: #selector(setProgress),
+                                              userInfo: nil,
+                                              repeats: true)
+        longPressTimer?.fire()
+
+        if gestureRecognizer.state == .cancelled || gestureRecognizer.state == .ended {
+            progressBar.isHidden = true
+            longPressTime = 0.0
+            progressBar.progress = 0.0
+
+            longPressTimer?.invalidate()
+        }
+    }
+
+    @objc private func setProgress() {
+        longPressTime += 0.02
+        progressBar.setProgress(longPressTime, animated: true)
+
+        if longPressTime >= 1 {
+            longPressTime = 0.0
+            progressBar.progress = 0.0
+
+            longPressTimer?.invalidate()
+
+            progressBar.isHidden = true
+            stopTimer()
+        }
+    }
+
     @objc private func stopTimer() {
         timer?.invalidate()
         currentTime = 0
         maxTime = 0
         updateTimeLabel()
+        longPressGuideLabel.isHidden = true
+        countButton.isHidden = false
+        timeButton.isHidden = false
     }
 
     @objc private func timeSetting() {
@@ -104,7 +160,16 @@ extension MainViewController {
     }
 
     @objc private func startTimer() {
+        longPressTime = 0.0
+        progressBar.progress = 0.0
+
+        longPressSetting(isEnable: true)
+
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            self.longPressGuideLabel.isHidden = false
+            self.countButton.isHidden = true
+            self.timeButton.isHidden = true
+
             let minutes = (self.maxTime - self.currentTime) / 60
             let seconds = (self.maxTime - self.currentTime) % 60
 
@@ -113,6 +178,9 @@ extension MainViewController {
 
             if self.currentTime > self.maxTime {
                 timer.invalidate()
+                self.longPressGuideLabel.isHidden = true
+                self.countButton.isHidden = false
+                self.timeButton.isHidden = false
             }
         }
         timer?.fire()
@@ -149,6 +217,7 @@ extension MainViewController {
         view.addSubview(tagButton)
         view.addSubview(timeButton)
         view.addSubview(longPressGuideLabel)
+        view.addSubview(progressBar)
     }
 
     private func setupConstraints() {
@@ -156,12 +225,10 @@ extension MainViewController {
             make.centerX.equalToSuperview()
             make.top.equalTo(timeLabel.snp.bottom).offset(20)
         }
-
         longPressGuideLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalTo(view.snp.bottom).offset(-30)
         }
-
         timeLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().multipliedBy(0.67)
@@ -173,6 +240,11 @@ extension MainViewController {
         countButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalTo(timeButton.snp.top).offset(-50)
+        }
+        progressBar.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(longPressGuideLabel).offset(-50)
+            make.width.equalToSuperview().multipliedBy(0.8)
         }
     }
 }
