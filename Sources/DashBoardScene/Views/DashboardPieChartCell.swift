@@ -26,10 +26,14 @@ final class DashboardPieChartCell: UICollectionViewCell {
         chart.holeColor = .systemGray3
         chart.backgroundColor = .systemGray3
         chart.legend.font = .systemFont(ofSize: 15)
+        chart.legend.verticalAlignment = .bottom
+        chart.legend.neededHeight = 10
+        chart.legend.neededWidth = 100
         chart.drawSlicesUnderHoleEnabled = false
         chart.holeRadiusPercent = 0.55
         chart.drawEntryLabelsEnabled = false
-        chart.legend.enabled = true
+        chart.highlightPerTapEnabled = false
+        chart.chartDescription.textColor = .red
     }
 
     @available(*, unavailable)
@@ -95,21 +99,30 @@ final class DashboardPieChartCell: UICollectionViewCell {
     func setPieChartData(for date: Date, dateType: DashboardDateType) {
         let (startDate, endDate) = getDateRange(for: date, dateType: dateType)
         let sessionsPerTag = calculateFocusTimePerTag(from: startDate, to: endDate)
-        var totalSum = 0.0
+        var totalSum = 0
+        var finalHour = 0
+        var finalMin = 0
         var pieDataEntries: [PieChartDataEntry] = []
         let colors: [UIColor] = [.systemTeal, .systemPink, .systemIndigo]
 
         for (tag, count) in sessionsPerTag {
             let entry = PieChartDataEntry(value: Double(count), label: tag)
             pieDataEntries.append(entry)
-            totalSum += Double(count)
+            totalSum += Int(count)
         }
         let pieChartDataSet = PieChartDataSet(entries: pieDataEntries, label: "")
         pieChartDataSet.colors = colors
-        pieChartDataSet.drawValuesEnabled = true
+        pieChartDataSet.drawValuesEnabled = false
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
         donutPieChartView.data = pieChartData
-        donutPieChartView.centerText = "합계\n\(totalSum)"
+        finalHour = Int(totalSum / 60)
+        if finalHour <= 0 {
+            finalMin = Int(totalSum)
+            donutPieChartView.centerText = "합계\n\(finalMin)분"
+        } else {
+            finalMin = Int(totalSum) % finalHour
+            donutPieChartView.centerText = "합계\n\(finalHour)시간 \(finalMin)분"
+        }
     }
 
     private func getDateRange(for date: Date, dateType: DashboardDateType) -> (start: Date, end: Date) {
