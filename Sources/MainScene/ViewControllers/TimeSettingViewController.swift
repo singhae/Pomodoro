@@ -1,4 +1,3 @@
-//
 //  TimeSettingViewController.swift
 //  Pomodoro
 //
@@ -17,16 +16,16 @@ final class TimeSettingViewController: UIViewController {
     private var isSelectedTime: Bool = false
     private let colletionViewIdentifier = "TimerCollectionViewCell"
     private var centerIndexPath: IndexPath?
+    private let timeSelectRange = 5
     var selectedTime: Int = 0
 
     private weak var delegate: TimeSettingViewControllerDelegate?
 
-    init(isSelectedTime: Bool,
-         heightProportionForMajorCell _: CGFloat? = nil,
-         centerIndexPath: IndexPath? = nil,
-         delegate: TimeSettingViewControllerDelegate) {
+    init(
+        isSelectedTime: Bool,
+        delegate: TimeSettingViewControllerDelegate
+    ) {
         self.isSelectedTime = isSelectedTime
-        self.centerIndexPath = centerIndexPath
         self.delegate = delegate
         super.init(nibName: nil, bundle: nil)
     }
@@ -51,7 +50,10 @@ final class TimeSettingViewController: UIViewController {
         $0.scrollDirection = .horizontal
     }
 
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionFlowlayout).then {
+    private lazy var collectionView = UICollectionView(
+        frame: .zero,
+        collectionViewLayout: collectionFlowlayout
+    ).then {
         $0.backgroundColor = .white
         $0.showsHorizontalScrollIndicator = true
         $0.register(TimerCollectionViewCell.self, forCellWithReuseIdentifier: colletionViewIdentifier)
@@ -104,8 +106,14 @@ extension TimeSettingViewController: UICollectionViewDelegate, UICollectionViewD
         100
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: colletionViewIdentifier, for: indexPath) as? TimerCollectionViewCell else {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: colletionViewIdentifier,
+            for: indexPath
+        ) as? TimerCollectionViewCell else {
             return UICollectionViewCell()
         }
 
@@ -124,29 +132,34 @@ extension TimeSettingViewController: UICollectionViewDelegate, UICollectionViewD
         return cell
     }
 
-    func calculateLastTimeInMinute(for indexPath: IndexPath) -> Int {
-        var lastTimeInMinute = 0
-        let cellItemReminder = Int(indexPath.item) % 5
-        if cellItemReminder % 5 != 0 {
-            lastTimeInMinute = Int(indexPath.item) + (cellItemReminder > 2 ? (5 - cellItemReminder) : (cellItemReminder * -1))
-        } else {
-            lastTimeInMinute = Int(indexPath.item)
+    func findClosestSelectableTime(for currentTime: Int) -> Int {
+        let reminder = currentTime % timeSelectRange
+
+        guard reminder != .zero else {
+            return currentTime
         }
 
-        return lastTimeInMinute
+        if reminder > 2 {
+            return currentTime + (timeSelectRange - reminder)
+        } else {
+            return currentTime - reminder
+        }
     }
 }
 
 extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDelegateFlowLayout {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let center = CGPoint(x: scrollView.contentOffset.x + (scrollView.bounds.width / 2), y: scrollView.bounds.height / 2)
+        let center = CGPoint(
+            x: scrollView.contentOffset.x + (scrollView.bounds.width / 2),
+            y: scrollView.bounds.height / 2
+        )
 
         guard let centerIndexPathCalculation = collectionView.indexPathForItem(at: center) else {
             return
         }
-        let timeInMinute = calculateLastTimeInMinute(for: centerIndexPathCalculation)
-        let hours = timeInMinute / 60
-        let minutes = timeInMinute % 60
+
+        let hours = centerIndexPathCalculation.item / 60
+        let minutes = centerIndexPathCalculation.item % 60
         titleTime.text = String(format: "%02d:%02d", hours, minutes)
 
         if centerIndexPath != centerIndexPathCalculation {
@@ -155,7 +168,11 @@ extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDeleg
         }
     }
 
-    func collectionView(_: UICollectionView, layout _: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(
+        _: UICollectionView,
+        layout _: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
         if indexPath.item % 5 == 0 {
             return CGSize(width: 75, height: 75)
         } else {
@@ -173,51 +190,38 @@ extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDeleg
         }
     }
 
+    func collectionView(_: UICollectionView, didSelectItemAt _: IndexPath) {
+        updateCellPositions()
+    }
+
     func updateCellPositions() {
-        let center = CGPoint(x: collectionView.contentOffset.x + (collectionView.bounds.width / 2),
-                             y: collectionView.bounds.height / 2)
+        let center = CGPoint(
+            x: collectionView.contentOffset.x + (collectionView.bounds.width / 2),
+            y: collectionView.bounds.height / 2
+        )
 
         guard let centerIndexPathCalculation = collectionView.indexPathForItem(at: center) else {
             return
         }
 
-        if collectionView.cellForItem(at: centerIndexPathCalculation)?.frame.size == CGSize(width: 50, height: 50) {
-            let indexPathToScroll = findNearestBigCellIndexPath(from: centerIndexPathCalculation)
+        if (centerIndexPathCalculation.item % timeSelectRange) != .zero {
+            let indexPathToScroll = IndexPath(
+                item: findClosestSelectableTime(for: centerIndexPathCalculation.item),
+                section: 0
+            )
 
-            if let layoutAttributes = collectionView.layoutAttributesForItem(at: indexPathToScroll) {
-                let targetOffset = CGPoint(x: layoutAttributes.frame.origin.x - collectionView.contentInset.left, y: 0)
+            if let cell = collectionView.cellForItem(at: indexPathToScroll) {
+                let targetOffset = CGPoint(
+                    x: cell.frame.origin.x - collectionView.contentInset.left,
+                    y: 0
+                )
                 collectionView.setContentOffset(targetOffset, animated: true)
             }
-            return
         }
-
-        let hours = centerIndexPathCalculation.item / 60
-        let minutes = centerIndexPathCalculation.item % 60
-        titleTime.text = String(format: "%02d:%02d", hours, minutes)
 
         if centerIndexPath != centerIndexPathCalculation {
             centerIndexPath = centerIndexPathCalculation
             collectionView.reloadData()
         }
-    }
-
-    func findNearestBigCellIndexPath(from indexPath: IndexPath) -> IndexPath {
-        var closestCellIndexPath = indexPath
-
-        if indexPath.item % 5 == 0 {
-            return indexPath
-        } else {
-            var nearestLargeCellItem = 0
-            let indexReminder = indexPath.item % 5
-            print(indexReminder)
-            if indexReminder > 2 {
-                nearestLargeCellItem = indexPath.item + (5 - indexReminder)
-            } else {
-                nearestLargeCellItem = indexPath.item - indexReminder
-                print(indexPath.item)
-            }
-            closestCellIndexPath = IndexPath(item: nearestLargeCellItem, section: 0)
-        }
-        return closestCellIndexPath
     }
 }
