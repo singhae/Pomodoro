@@ -11,6 +11,7 @@
 		213F30532B6BE72300FAF5F2 /* DashboardPieChartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */; };
 		213F30552B6BE73900FAF5F2 /* DashboardStatusCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */; };
 		21B21B842B73E050008FFDCB /* DashboardBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B21B832B73E050008FFDCB /* DashboardBaseViewController.swift */; };
+		4DC2298A2B7E2C0900D06ABB /* TagConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC229892B7E2C0900D06ABB /* TagConfigurationViewController.swift */; };
 		CE4F2B032B6DE0D7000E5420 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = CE4F2B022B6DE0D7000E5420 /* .swiftlint.yml */; };
 		CEB721942B6DECC7001AB9C1 /* PomodoroTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB721932B6DECC7001AB9C1 /* PomodoroTests.swift */; };
 		CEDCA0FD2B67D015005C18EA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEDCA0D32B67D015005C18EA /* LaunchScreen.storyboard */; };
@@ -36,8 +37,6 @@
 		CEDCA1172B67D015005C18EA /* TagList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0FA2B67D015005C18EA /* TagList.swift */; };
 		CEDCA1182B67D015005C18EA /* Option.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0FB2B67D015005C18EA /* Option.swift */; };
 		CEDCA1192B67D015005C18EA /* DashBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0FC2B67D015005C18EA /* DashBoard.swift */; };
-		CEDCA11C2B67D0AB005C18EA /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA11B2B67D0AB005C18EA /* Realm */; };
-		CEDCA11E2B67D0AB005C18EA /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA11D2B67D0AB005C18EA /* RealmSwift */; };
 		CEDCA1212B67D131005C18EA /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA1202B67D131005C18EA /* Then */; };
 		CEDCA1242B67D18C005C18EA /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA1232B67D18C005C18EA /* SnapKit */; };
 		CEDCA1292B67D1E4005C18EA /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA1282B67D1E4005C18EA /* DGCharts */; };
@@ -59,6 +58,7 @@
 		213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardPieChartCell.swift; sourceTree = "<group>"; };
 		213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStatusCell.swift; sourceTree = "<group>"; };
 		21B21B832B73E050008FFDCB /* DashboardBaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardBaseViewController.swift; sourceTree = "<group>"; };
+		4DC229892B7E2C0900D06ABB /* TagConfigurationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagConfigurationViewController.swift; sourceTree = "<group>"; };
 		CE4F2B022B6DE0D7000E5420 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		CEB721912B6DECC7001AB9C1 /* PomodoroTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PomodoroTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEB721932B6DECC7001AB9C1 /* PomodoroTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroTests.swift; sourceTree = "<group>"; };
@@ -101,12 +101,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEDCA11E2B67D0AB005C18EA /* RealmSwift in Frameworks */,
 				CEDCA1242B67D18C005C18EA /* SnapKit in Frameworks */,
 				CEDCA1212B67D131005C18EA /* Then in Frameworks */,
 				CEDCA12E2B67D263005C18EA /* PanModal in Frameworks */,
 				CEDCA1292B67D1E4005C18EA /* DGCharts in Frameworks */,
-				CEDCA11C2B67D0AB005C18EA /* Realm in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -220,6 +218,7 @@
 				CEDCA0E82B67D015005C18EA /* TagCollectionViewCell.swift */,
 				CEDCA0E92B67D015005C18EA /* TagCollectionViewData.swift */,
 				CEDCA0EA2B67D015005C18EA /* MainPageViewController.swift */,
+				4DC229892B7E2C0900D06ABB /* TagConfigurationViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -316,8 +315,6 @@
 			);
 			name = Pomodoro;
 			packageProductDependencies = (
-				CEDCA11B2B67D0AB005C18EA /* Realm */,
-				CEDCA11D2B67D0AB005C18EA /* RealmSwift */,
 				CEDCA1202B67D131005C18EA /* Then */,
 				CEDCA1232B67D18C005C18EA /* SnapKit */,
 				CEDCA1282B67D1E4005C18EA /* DGCharts */,
@@ -468,6 +465,7 @@
 				0DF629662B691ABA00BFE39F /* TimerCollectionViewCell.swift in Sources */,
 				CEDCA1072B67D015005C18EA /* TimeSettingViewController.swift in Sources */,
 				213F30552B6BE73900FAF5F2 /* DashboardStatusCell.swift in Sources */,
+				4DC2298A2B7E2C0900D06ABB /* TagConfigurationViewController.swift in Sources */,
 				CEDCA1042B67D015005C18EA /* DataResetModalViewController.swift in Sources */,
 				CEDCA1142B67D015005C18EA /* MockData.swift in Sources */,
 				CEDCA1102B67D015005C18EA /* DashBoardTabViewController.swift in Sources */,
@@ -794,16 +792,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		CEDCA11B2B67D0AB005C18EA /* Realm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CEDCA11A2B67D0AB005C18EA /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = Realm;
-		};
-		CEDCA11D2B67D0AB005C18EA /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CEDCA11A2B67D0AB005C18EA /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = RealmSwift;
-		};
 		CEDCA1202B67D131005C18EA /* Then */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CEDCA11F2B67D131005C18EA /* XCRemoteSwiftPackageReference "Then" */;
