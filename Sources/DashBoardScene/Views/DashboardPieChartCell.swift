@@ -100,6 +100,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         let (startDate, endDate) = getDateRange(for: date, dateType: dateType)
         let sessionsPerTag = calculateFocusTimePerTag(from: startDate, to: endDate)
         var totalSum = 0
+        var finalDay = 0
         var finalHour = 0
         var finalMin = 0
         var pieDataEntries: [PieChartDataEntry] = []
@@ -116,12 +117,18 @@ final class DashboardPieChartCell: UICollectionViewCell {
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
         donutPieChartView.data = pieChartData
         finalHour = Int(totalSum / 60)
-        if finalHour <= 0 {
-            finalMin = Int(totalSum)
-            donutPieChartView.centerText = "합계\n\(finalMin)분"
-        } else {
-            finalMin = Int(totalSum) % finalHour
+
+        if totalSum < 60 {
+            donutPieChartView.centerText = "합계\n\(totalSum)분"
+        } else if totalSum < 24 * 60 {
+            finalHour = totalSum / 60
+            finalMin = totalSum % 60
             donutPieChartView.centerText = "합계\n\(finalHour)시간 \(finalMin)분"
+        } else {
+            finalDay = totalSum / (24 * 60)
+            finalHour = totalSum / 60
+            finalMin = totalSum % 60
+            donutPieChartView.centerText = "합계\n\(finalDay)일 \(finalHour)시간  \(finalMin)분"
         }
     }
 
