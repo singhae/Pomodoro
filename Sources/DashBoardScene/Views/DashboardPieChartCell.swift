@@ -13,7 +13,6 @@ final class DashboardPieChartCell: UICollectionViewCell {
     private var selectedDate: Date = .init()
     private var dayData: [String] = []
     private var priceData: [Double] = [10]
-
     private let pieBackgroundView = UIView().then { view in
         view.layer.cornerRadius = 20
         view.backgroundColor = .systemGray3
@@ -117,17 +116,14 @@ final class DashboardPieChartCell: UICollectionViewCell {
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
         donutPieChartView.data = pieChartData
         finalHour = Int(totalSum / 60)
-
+        finalMin = totalSum % 60
+        finalDay = totalSum / (24 * 60)
+        
         if totalSum < 60 {
             donutPieChartView.centerText = "합계\n\(totalSum)분"
-        } else if totalSum < 24 * 60 {
-            finalHour = totalSum / 60
-            finalMin = totalSum % 60
+        } else if totalSum < (24 * 60) {
             donutPieChartView.centerText = "합계\n\(finalHour)시간 \(finalMin)분"
         } else {
-            finalDay = totalSum / (24 * 60)
-            finalHour = totalSum / 60
-            finalMin = totalSum % 60
             donutPieChartView.centerText = "합계\n\(finalDay)일 \(finalHour)시간  \(finalMin)분"
         }
     }
