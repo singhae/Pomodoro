@@ -17,7 +17,6 @@ final class DashboardPieChartCell: UICollectionViewCell {
         view.layer.cornerRadius = 20
         view.backgroundColor = .systemGray3
     }
-    
     private let donutPieChartView = PieChartView().then { chart in
         chart.noDataText = "출력 데이터가 없습니다."
         chart.noDataFont = .systemFont(ofSize: 20)
