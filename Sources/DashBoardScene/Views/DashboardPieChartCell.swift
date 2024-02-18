@@ -17,7 +17,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         view.layer.cornerRadius = 20
         view.backgroundColor = .systemGray3
     }
-
+    
     private let donutPieChartView = PieChartView().then { chart in
         chart.noDataText = "출력 데이터가 없습니다."
         chart.noDataFont = .systemFont(ofSize: 20)
@@ -34,12 +34,12 @@ final class DashboardPieChartCell: UICollectionViewCell {
         chart.highlightPerTapEnabled = false
         chart.chartDescription.textColor = .red
     }
-
+    
     @available(*, unavailable)
     required init?(coder _: NSCoder) {
         fatalError()
     }
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(pieBackgroundView)
@@ -49,11 +49,11 @@ final class DashboardPieChartCell: UICollectionViewCell {
         setupPieChart()
         setPieChartData(for: Date(), dateType: .day)
     }
-
+    
     private func calculateFocusTimePerTag(for selectedDate: Date) -> [String: Int] {
         let calendar = Calendar.current
         var focusTimePerTag = [String: Int]()
-
+        
         let filteredSessions = PomodoroData.dummyData.filter { session in
             calendar.isDate(session.participateDate, inSameDayAs: selectedDate)
         }
@@ -62,7 +62,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         }
         return focusTimePerTag
     }
-
+    
     private func setupPieChart() {
         pieBackgroundView.snp.makeConstraints { make in
             make.centerX.centerY.equalToSuperview()
@@ -73,7 +73,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
             make.width.height.equalToSuperview().multipliedBy(1.1)
         }
     }
-
+    
     private func entryData(values: [Double]) -> [ChartDataEntry] {
         var pieDataEntries: [ChartDataEntry] = []
         for index in 0 ..< values.count {
@@ -82,10 +82,10 @@ final class DashboardPieChartCell: UICollectionViewCell {
         }
         return pieDataEntries
     }
-
+    
     private func calculateFocusTimePerTag(from startDate: Date, to endDate: Date) -> [String: Int] {
         var focusTimePerTag = [String: Int]()
-
+        
         let filteredSessions = PomodoroData.dummyData.filter { session in
             session.participateDate >= startDate && session.participateDate < endDate
         }
@@ -94,40 +94,41 @@ final class DashboardPieChartCell: UICollectionViewCell {
         }
         return focusTimePerTag
     }
-
+    
     func setPieChartData(for date: Date, dateType: DashboardDateType) {
         let (startDate, endDate) = getDateRange(for: date, dateType: dateType)
-        let sessionsPerTag = calculateFocusTimePerTag(from: startDate, to: endDate)
-        var totalSum = 0
-        var finalDay = 0
-        var finalHour = 0
-        var finalMin = 0
-        var pieDataEntries: [PieChartDataEntry] = []
-        let colors: [UIColor] = [.systemTeal, .systemPink, .systemIndigo]
-
-        for (tag, count) in sessionsPerTag {
-            let entry = PieChartDataEntry(value: Double(count), label: tag)
-            pieDataEntries.append(entry)
-            totalSum += Int(count)
+        let focusTimePerTag = calculateFocusTimePerTag(from: startDate, to: endDate)
+        let pieChartDataEntries = focusTimePerTag.map {
+            PieChartDataEntry(value: Double($0.value), label: $0.key)
         }
-        let pieChartDataSet = PieChartDataSet(entries: pieDataEntries, label: "")
-        pieChartDataSet.colors = colors
-        pieChartDataSet.drawValuesEnabled = false
+        let pieChartDataSet = PieChartDataSet(entries: pieChartDataEntries, label: "").then {
+            $0.colors = [.systemTeal, .systemPink, .systemIndigo]
+            $0.drawValuesEnabled = false
+        }
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
         donutPieChartView.data = pieChartData
-        finalHour = Int(totalSum / 60)
-        finalMin = totalSum % 60
-        finalDay = totalSum / (24 * 60)
         
-        if totalSum < 60 {
-            donutPieChartView.centerText = "합계\n\(totalSum)분"
-        } else if totalSum < (24 * 60) {
-            donutPieChartView.centerText = "합계\n\(finalHour)시간 \(finalMin)분"
-        } else {
-            donutPieChartView.centerText = "합계\n\(finalDay)일 \(finalHour)시간  \(finalMin)분"
-        }
+        let totalFocusTime = focusTimePerTag.reduce(0) { $0 + $1.value }
+        updatePieChartText(totalFocusTime: totalFocusTime)
     }
-
+    
+    private func updatePieChartText(totalFocusTime: Int) {
+        let days = totalFocusTime / (24 * 60)
+        let hours = (totalFocusTime % (24 * 60)) / 60
+        let minutes = totalFocusTime % 60
+        
+        var totalTimeText = "합계\n"
+        if days > 0 {
+            totalTimeText += "\(days)일 "
+        }
+        if hours > 0 || days > 0 {
+            totalTimeText += "\(hours)시간 "
+        }
+        totalTimeText += "\(minutes)분"
+        
+        donutPieChartView.centerText = totalTimeText
+    }
+    
     private func getDateRange(for date: Date, dateType: DashboardDateType) -> (start: Date, end: Date) {
         let calendar = Calendar.current
         switch dateType {
@@ -140,7 +141,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         case .week:
             guard let startOfWeek = calendar.date(
                 from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)),
-                let endOfWeek = calendar.date(byAdding: .day, value: 7, to: startOfWeek)
+                  let endOfWeek = calendar.date(byAdding: .day, value: 7, to: startOfWeek)
             else {
                 return (date, date)
             }
@@ -148,8 +149,8 @@ final class DashboardPieChartCell: UICollectionViewCell {
         case .month:
             guard let monthStartDate = calendar.date(
                 from: calendar.dateComponents([.year, .month], from: date)),
-                let nextMonthDate = calendar.date(byAdding: .month, value: 1, to: monthStartDate),
-                let monthEndDate = calendar.date(byAdding: .day, value: -1, to: nextMonthDate)
+                  let nextMonthDate = calendar.date(byAdding: .month, value: 1, to: monthStartDate),
+                  let monthEndDate = calendar.date(byAdding: .day, value: -1, to: nextMonthDate)
             else {
                 return (date, date)
             }
