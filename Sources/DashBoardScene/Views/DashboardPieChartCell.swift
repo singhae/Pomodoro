@@ -33,6 +33,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         chart.highlightPerTapEnabled = false
         chart.chartDescription.textColor = .red
     }
+    
     @available(*, unavailable)
     required init?(coder _: NSCoder) {
         fatalError()
@@ -49,7 +50,6 @@ final class DashboardPieChartCell: UICollectionViewCell {
     private func calculateFocusTimePerTag(for selectedDate: Date) -> [String: Int] {
         let calendar = Calendar.current
         var focusTimePerTag = [String: Int]()
-        
         let filteredSessions = PomodoroData.dummyData.filter { session in
             calendar.isDate(session.participateDate, inSameDayAs: selectedDate)
         }
@@ -58,7 +58,6 @@ final class DashboardPieChartCell: UICollectionViewCell {
         }
         return focusTimePerTag
     }
-    
     private func setupPieChart() {
         pieBackgroundView.snp.makeConstraints { make in
             make.centerX.centerY.equalToSuperview()
@@ -87,7 +86,6 @@ final class DashboardPieChartCell: UICollectionViewCell {
         }
         return focusTimePerTag
     }
-    
     func setPieChartData(for date: Date, dateType: DashboardDateType) {
         let (startDate, endDate) = getDateRange(for: date, dateType: dateType)
         let focusTimePerTag = calculateFocusTimePerTag(from: startDate, to: endDate)
@@ -100,16 +98,13 @@ final class DashboardPieChartCell: UICollectionViewCell {
         }
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
         donutPieChartView.data = pieChartData
-        
         let totalFocusTime = focusTimePerTag.reduce(0) { $0 + $1.value }
         updatePieChartText(totalFocusTime: totalFocusTime)
     }
-    
     private func updatePieChartText(totalFocusTime: Int) {
         let days = totalFocusTime / (24 * 60)
         let hours = (totalFocusTime % (24 * 60)) / 60
         let minutes = totalFocusTime % 60
-        
         var totalTimeText = "합계\n"
         if days > 0 {
             totalTimeText += "\(days)일 "
@@ -118,10 +113,8 @@ final class DashboardPieChartCell: UICollectionViewCell {
             totalTimeText += "\(hours)시간 "
         }
         totalTimeText += "\(minutes)분"
-        
         donutPieChartView.centerText = totalTimeText
     }
-    
     private func getDateRange(for date: Date, dateType: DashboardDateType) -> (start: Date, end: Date) {
         let calendar = Calendar.current
         switch dateType {
@@ -134,7 +127,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         case .week:
             guard let startOfWeek = calendar.date(
                 from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)),
-                  let endOfWeek = calendar.date(byAdding: .day, value: 7, to: startOfWeek)
+                let endOfWeek = calendar.date(byAdding: .day, value: 7, to: startOfWeek)
             else {
                 return (date, date)
             }
@@ -142,8 +135,8 @@ final class DashboardPieChartCell: UICollectionViewCell {
         case .month:
             guard let monthStartDate = calendar.date(
                 from: calendar.dateComponents([.year, .month], from: date)),
-                  let nextMonthDate = calendar.date(byAdding: .month, value: 1, to: monthStartDate),
-                  let monthEndDate = calendar.date(byAdding: .day, value: -1, to: nextMonthDate)
+                let nextMonthDate = calendar.date(byAdding: .month, value: 1, to: monthStartDate),
+                let monthEndDate = calendar.date(byAdding: .day, value: -1, to: nextMonthDate)
             else {
                 return (date, date)
             }

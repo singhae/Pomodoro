@@ -79,7 +79,6 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         collectionViewLayer.sectionInset = UIEdgeInsets(top: 5.0, left: 7.0, bottom: 5.0, right: 7.0)
         collectionViewLayer.minimumLineSpacing = 5
         collectionViewLayer.minimumInteritemSpacing = 1
-
         let tagCollectionView = TagCollectionView(frame: .zero, collectionViewLayout: collectionViewLayer)
         tagCollectionView.backgroundColor = .secondarySystemBackground
         view.addSubview(tagCollectionView)
