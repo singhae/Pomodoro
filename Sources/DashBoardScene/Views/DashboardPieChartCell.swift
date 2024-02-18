@@ -33,6 +33,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         chart.highlightPerTapEnabled = false
         chart.chartDescription.textColor = .red
     }
+    
     @available(*, unavailable)
     required init?(coder _: NSCoder) {
         fatalError()
