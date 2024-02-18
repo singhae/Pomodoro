@@ -33,12 +33,10 @@ final class DashboardPieChartCell: UICollectionViewCell {
         chart.highlightPerTapEnabled = false
         chart.chartDescription.textColor = .red
     }
-    
     @available(*, unavailable)
     required init?(coder _: NSCoder) {
         fatalError()
     }
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(pieBackgroundView)
@@ -48,7 +46,6 @@ final class DashboardPieChartCell: UICollectionViewCell {
         setupPieChart()
         setPieChartData(for: Date(), dateType: .day)
     }
-    
     private func calculateFocusTimePerTag(for selectedDate: Date) -> [String: Int] {
         let calendar = Calendar.current
         var focusTimePerTag = [String: Int]()
@@ -72,7 +69,6 @@ final class DashboardPieChartCell: UICollectionViewCell {
             make.width.height.equalToSuperview().multipliedBy(1.1)
         }
     }
-    
     private func entryData(values: [Double]) -> [ChartDataEntry] {
         var pieDataEntries: [ChartDataEntry] = []
         for index in 0 ..< values.count {
@@ -81,10 +77,8 @@ final class DashboardPieChartCell: UICollectionViewCell {
         }
         return pieDataEntries
     }
-    
     private func calculateFocusTimePerTag(from startDate: Date, to endDate: Date) -> [String: Int] {
         var focusTimePerTag = [String: Int]()
-        
         let filteredSessions = PomodoroData.dummyData.filter { session in
             session.participateDate >= startDate && session.participateDate < endDate
         }
