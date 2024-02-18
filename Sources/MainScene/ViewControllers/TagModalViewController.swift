@@ -107,7 +107,9 @@ protocol TagCreationDelegate: AnyObject {
     func didCreateTag(tag: String)
 }
 
-extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TagCreationDelegate {
+extension TagModalViewController: UICollectionViewDataSource,
+    UICollectionViewDelegateFlowLayout,
+    TagCreationDelegate {
     func collectionView(
         _ collectionView: UICollectionView,
         layout _: UICollectionViewLayout,
