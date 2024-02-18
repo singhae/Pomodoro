@@ -18,6 +18,7 @@ final class TimeSettingViewController: UIViewController {
     private var centerIndexPath: IndexPath?
     private let timeSelectRange = 5
     var selectedTime: Int = 0
+    private var isSelectedCellBiggerfive: Bool = true
 
     private var isHiddenTimeButton = true {
         didSet {
