@@ -262,8 +262,8 @@
 			isa = PBXGroup;
 			children = (
 				CEDCA0F62B67D015005C18EA /* MockData.swift */,
-				213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */,
 				213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */,
+				213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";

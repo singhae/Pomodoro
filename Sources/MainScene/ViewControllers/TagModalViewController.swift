@@ -107,8 +107,9 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
     func collectionView(
         _ collectionView: UICollectionView,
         layout _: UICollectionViewLayout,
-        sizeForItemAt _: IndexPath) ->
-    CGSize {
+        sizeForItemAt _: IndexPath
+    ) ->
+        CGSize {
         let padding: CGFloat = 10
         let totalPadding = padding * (2 - 1)
         let individualPadding = totalPadding / 2
