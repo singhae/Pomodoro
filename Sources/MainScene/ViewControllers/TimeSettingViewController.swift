@@ -18,6 +18,11 @@ final class TimeSettingViewController: UIViewController {
     private var centerIndexPath: IndexPath?
     private let timeSelectRange = 5
     var selectedTime: Int = 0
+    private var isHiddenTimeButton = true {
+        didSet {
+            timeSettingbutton.isHidden = isHiddenTimeButton
+        }
+    }
 
     private weak var delegate: TimeSettingViewControllerDelegate?
 
@@ -38,6 +43,7 @@ final class TimeSettingViewController: UIViewController {
     private lazy var timeSettingbutton = UIButton().then {
         $0.setTitle("설정 완료", for: .normal)
         $0.setTitleColor(.black, for: .normal)
+        $0.isHidden = isHiddenTimeButton
         $0.addTarget(self, action: #selector(onClick), for: .touchUpInside)
     }
 
@@ -103,7 +109,7 @@ final class TimeSettingViewController: UIViewController {
 
 extension TimeSettingViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
-        100
+        150
     }
 
     func collectionView(
@@ -190,8 +196,18 @@ extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDeleg
         }
     }
 
-    func collectionView(_: UICollectionView, didSelectItemAt _: IndexPath) {
+    func collectionView(_: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         updateCellPositions()
+        print(indexPath.row)
+        if indexPath.row >= 5 {
+            print("현재 버튼 상태 : " + String(isHiddenTimeButton))
+            print("-----------------------------------")
+            isHiddenTimeButton = false
+        } else {
+            print("현재 버튼 상태 : " + String(isHiddenTimeButton))
+            print("-----------------------------------")
+            isHiddenTimeButton = true
+        }
     }
 
     func updateCellPositions() {
@@ -199,6 +215,8 @@ extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDeleg
             x: collectionView.contentOffset.x + (collectionView.bounds.width / 2),
             y: collectionView.bounds.height / 2
         )
+
+        selectTimeHiddenTimeButton()
 
         guard let centerIndexPathCalculation = collectionView.indexPathForItem(at: center) else {
             return
@@ -222,6 +240,23 @@ extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDeleg
         if centerIndexPath != centerIndexPathCalculation {
             centerIndexPath = centerIndexPathCalculation
             collectionView.reloadData()
+        }
+    }
+
+    func selectTimeHiddenTimeButton() {
+        let center = CGPoint(
+            x: collectionView.contentOffset.x + (collectionView.bounds.width / 2),
+            y: collectionView.bounds.height / 2
+        )
+
+        guard let centerIndexPathCalculation = collectionView.indexPathForItem(at: center) else {
+            return
+        }
+
+        if centerIndexPathCalculation.row >= 3 {
+            isHiddenTimeButton = false
+        } else {
+            isHiddenTimeButton = true
         }
     }
 }
