@@ -11,10 +11,10 @@ final class BreakViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        setUi()
+        setUI()
     }
 
-    private func setUi() {
+    private func setUI() {
         let breakImage = UIImageView().then {
             view.addSubview($0)
             $0.image = UIImage(systemName: "hand.thumbsup")?.withRenderingMode(.alwaysTemplate)
