@@ -65,11 +65,19 @@ final class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(didEnterBackground),
+                                               name: UIApplication.didEnterBackgroundNotification, object: nil)
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(didEnterForeground),
+                                               name: UIApplication.willEnterForegroundNotification, object: nil)
+
         view.backgroundColor = .white
         addSubviews()
         setupConstraints()
 
-        print("Current: \(pomodoroTimeManager.currentTime), Max: \(pomodoroTimeManager.maxTime)")
         if pomodoroTimeManager.maxTime > pomodoroTimeManager.currentTime {
             updateTimeLabel()
             startTimer()
@@ -78,10 +86,13 @@ final class MainViewController: UIViewController {
         setupLongPress(isEnable: false)
     }
 
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateTimeLabel()
-        // FIXME: Remove startTimer() after implementing time setup
     }
 
     private func updateTimeLabel() {
@@ -98,6 +109,15 @@ final class MainViewController: UIViewController {
 // MARK: - Action
 
 extension MainViewController {
+    @objc func didEnterBackground() {}
+
+    @objc func didEnterForeground() {
+        let minutes = (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60
+        let seconds = (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) % 60
+
+        timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
+    }
+
     @objc private func openTagModal() {
         let modalViewController = TagModalViewController()
         modalViewController.modalPresentationStyle = .fullScreen
@@ -152,7 +172,7 @@ extension MainViewController {
 
     @objc private func stopTimer() {
         timer?.invalidate()
-        pomodoroTimeManager.currentTime = 0
+        pomodoroTimeManager.setupCurrentTime(curr: 0)
         pomodoroTimeManager.maxTime = 0
         updateTimeLabel()
         longPressGuideLabel.isHidden = true
@@ -166,7 +186,6 @@ extension MainViewController {
     }
 
     @objc private func startTimer() {
-        print("CurrentTime: \(pomodoroTimeManager.currentTime), MaxTime: \(pomodoroTimeManager.maxTime)")
         longPressTime = 0.0
         progressBar.progress = 0.0
 
@@ -177,16 +196,17 @@ extension MainViewController {
             self.countButton.isHidden = true
             self.timeButton.isHidden = true
 
-            if self.pomodoroTimeManager.currentTime > self.pomodoroTimeManager.maxTime {
+            self.pomodoroTimeManager.setupCurrentTime(curr: self.pomodoroTimeManager.currentTime + 1)
+
+            let minutes = (self.pomodoroTimeManager.maxTime - self.pomodoroTimeManager.currentTime) / 60
+            let seconds = (self.pomodoroTimeManager.maxTime - self.pomodoroTimeManager.currentTime) % 60
+
+            if minutes == 0, seconds == 0 {
                 timer.invalidate()
                 self.longPressGuideLabel.isHidden = true
                 self.countButton.isHidden = false
                 self.timeButton.isHidden = false
             }
-            self.pomodoroTimeManager.currentTime += 1
-
-            let minutes = (self.pomodoroTimeManager.maxTime - self.pomodoroTimeManager.currentTime) / 60
-            let seconds = (self.pomodoroTimeManager.maxTime - self.pomodoroTimeManager.currentTime) % 60
 
             self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
         }
@@ -208,10 +228,7 @@ extension MainViewController {
         )
 
         UNUserNotificationCenter.current()
-            .add(request) { error in
-                guard let error else { return }
-                print(error.localizedDescription)
-            }
+            .add(request)
     }
 }
 
