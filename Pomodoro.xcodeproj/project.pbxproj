@@ -13,6 +13,7 @@
 		21B21B842B73E050008FFDCB /* DashboardBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B21B832B73E050008FFDCB /* DashboardBaseViewController.swift */; };
 		21D85CCD2B831E5B00E2FAA8 /* BreakViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D85CCC2B831E5B00E2FAA8 /* BreakViewController.swift */; };
 		21D85CD02B8325AC00E2FAA8 /* BreakTimerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D85CCF2B8325AC00E2FAA8 /* BreakTimerViewController.swift */; };
+		21D85CD02B8325AC00E2FAA8 /* SetBreakTimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D85CCF2B8325AC00E2FAA8 /* SetBreakTimeViewController.swift */; };
 		4DC2298A2B7E2C0900D06ABB /* TagConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC229892B7E2C0900D06ABB /* TagConfigurationViewController.swift */; };
 		CE4F2B032B6DE0D7000E5420 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = CE4F2B022B6DE0D7000E5420 /* .swiftlint.yml */; };
 		CEB721942B6DECC7001AB9C1 /* PomodoroTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB721932B6DECC7001AB9C1 /* PomodoroTests.swift */; };
@@ -62,6 +63,7 @@
 		21B21B832B73E050008FFDCB /* DashboardBaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardBaseViewController.swift; sourceTree = "<group>"; };
 		21D85CCC2B831E5B00E2FAA8 /* BreakViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakViewController.swift; sourceTree = "<group>"; };
 		21D85CCF2B8325AC00E2FAA8 /* BreakTimerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakTimerViewController.swift; sourceTree = "<group>"; };
+		21D85CCF2B8325AC00E2FAA8 /* SetBreakTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetBreakTimeViewController.swift; sourceTree = "<group>"; };
 		4DC229892B7E2C0900D06ABB /* TagConfigurationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagConfigurationViewController.swift; sourceTree = "<group>"; };
 		CE4F2B022B6DE0D7000E5420 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		CEB721912B6DECC7001AB9C1 /* PomodoroTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PomodoroTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
