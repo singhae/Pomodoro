@@ -103,7 +103,11 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     }
 }
 
-extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+protocol TagCreationDelegate: AnyObject {
+    func didCreateTag(tag: String)
+}
+
+extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TagCreationDelegate {
     func collectionView(
         _ collectionView: UICollectionView,
         layout _: UICollectionViewLayout,
@@ -139,5 +143,21 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
 
         cell.tagLabel.text = dataSource[indexPath.item]
         return cell
+    }
+
+    func collectionView(
+        _: UICollectionView,
+        didSelectItemAt _: IndexPath
+    ) {
+        let tagConfigView = TagConfigurationViewController()
+        tagConfigView.delegate = self // 이 부분이 중요
+        present(tagConfigView, animated: true, completion: nil)
+    }
+
+    func didCreateTag(tag: String) {
+        TagCollectionViewData.data.append(tag)
+        print("태그 추가")
+        print("Updated data: \(TagCollectionViewData.data)")
+        tagCollectionView?.reloadData()
     }
 }
