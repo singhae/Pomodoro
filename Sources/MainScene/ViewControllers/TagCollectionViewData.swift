@@ -12,5 +12,5 @@ import Foundation
 enum TagCollectionViewData {
     // MARK: - FIXME
 
-    static let data = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+    static var data = ["태그 생성"]
 }

@@ -1,4 +1,3 @@
-//
 //  TimeSettingViewController.swift
 //  Pomodoro
 //
@@ -17,18 +16,16 @@ final class TimeSettingViewController: UIViewController {
     private var isSelectedTime: Bool = false
     private let colletionViewIdentifier = "TimerCollectionViewCell"
     private var centerIndexPath: IndexPath?
-    private var selectedTime: Int = 0
+    private let timeSelectRange = 5
+    var selectedTime: Int = 0
 
     private weak var delegate: TimeSettingViewControllerDelegate?
 
     init(
         isSelectedTime: Bool,
-        heightProportionForMajorCell _: CGFloat? = nil,
-        centerIndexPath: IndexPath? = nil,
-        delegate: TimeSettingViewControllerDelegate? = nil
+        delegate: TimeSettingViewControllerDelegate
     ) {
         self.isSelectedTime = isSelectedTime
-        self.centerIndexPath = centerIndexPath
         self.delegate = delegate
         super.init(nibName: nil, bundle: nil)
     }
@@ -134,6 +131,20 @@ extension TimeSettingViewController: UICollectionViewDelegate, UICollectionViewD
 
         return cell
     }
+
+    func findClosestSelectableTime(for currentTime: Int) -> Int {
+        let reminder = currentTime % timeSelectRange
+
+        guard reminder != .zero else {
+            return currentTime
+        }
+
+        if reminder > 2 {
+            return currentTime + (timeSelectRange - reminder)
+        } else {
+            return currentTime - reminder
+        }
+    }
 }
 
 extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -146,8 +157,9 @@ extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDeleg
         guard let centerIndexPathCalculation = collectionView.indexPathForItem(at: center) else {
             return
         }
-        let hours = Int(centerIndexPathCalculation.item) / 60
-        let minutes = Int(centerIndexPathCalculation.item) % 60
+
+        let hours = centerIndexPathCalculation.item / 60
+        let minutes = centerIndexPathCalculation.item % 60
         titleTime.text = String(format: "%02d:%02d", hours, minutes)
 
         if centerIndexPath != centerIndexPathCalculation {
@@ -165,6 +177,51 @@ extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDeleg
             return CGSize(width: 75, height: 75)
         } else {
             return CGSize(width: 50, height: 50)
+        }
+    }
+
+    func scrollViewDidEndDecelerating(_: UIScrollView) {
+        updateCellPositions()
+    }
+
+    func scrollViewDidEndDragging(_: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            updateCellPositions()
+        }
+    }
+
+    func collectionView(_: UICollectionView, didSelectItemAt _: IndexPath) {
+        updateCellPositions()
+    }
+
+    func updateCellPositions() {
+        let center = CGPoint(
+            x: collectionView.contentOffset.x + (collectionView.bounds.width / 2),
+            y: collectionView.bounds.height / 2
+        )
+
+        guard let centerIndexPathCalculation = collectionView.indexPathForItem(at: center) else {
+            return
+        }
+
+        if (centerIndexPathCalculation.item % timeSelectRange) != .zero {
+            let indexPathToScroll = IndexPath(
+                item: findClosestSelectableTime(for: centerIndexPathCalculation.item),
+                section: 0
+            )
+
+            if let cell = collectionView.cellForItem(at: indexPathToScroll) {
+                let targetOffset = CGPoint(
+                    x: cell.frame.origin.x - collectionView.contentInset.left,
+                    y: 0
+                )
+                collectionView.setContentOffset(targetOffset, animated: true)
+            }
+        }
+
+        if centerIndexPath != centerIndexPathCalculation {
+            centerIndexPath = centerIndexPathCalculation
+            collectionView.reloadData()
         }
     }
 }

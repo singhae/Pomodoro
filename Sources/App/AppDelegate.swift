@@ -12,6 +12,7 @@ import UserNotifications
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     let unNotificationCenter = UNUserNotificationCenter.current()
+    let pomodoroTimeManager = PomodoroTimeManager.shared
 
     func application(
         _: UIApplication,
@@ -23,7 +24,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             options: [.alert, .sound, .badge],
             completionHandler: { _, _ in }
         )
+
+        // 앱 재시작될 때
+        print("APP INITIALIZE..")
+        pomodoroTimeManager.restoreTimerInfo()
+//        pomodoroTimeManager.startTimer()
+
         return true
+    }
+
+    func applicationWillTerminate(_: UIApplication) {
+        print("TERMINATE")
+        pomodoroTimeManager.saveTimerInfo()
+    }
+
+    func applicationDidEnterBackground(_: UIApplication) {
+        print("ENTER BACKGROUND")
+        pomodoroTimeManager.saveTimerInfo()
     }
 
     func application(
