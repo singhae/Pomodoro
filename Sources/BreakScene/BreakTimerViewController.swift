@@ -5,6 +5,13 @@
 //  Created by 김하람 on 2/19/24.
 //
 
+//final class BreakTimerViewController: UIViewController {
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+//        view.backgroundColor = .systemYellow
+//    }
+//}
+
 import PanModal
 import SnapKit
 import Then
@@ -14,7 +21,7 @@ final class BreakTimerViewController: UIViewController {
     private var timer: Timer?
     private var notificationId: String?
     private var currentTime = 0
-    private var maxTime = 25 // * 60
+    private var maxTime = 0
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
 
@@ -50,6 +57,18 @@ final class BreakTimerViewController: UIViewController {
         )
     }
 
+    private lazy var countButton = UIButton(type: .roundedRect).then {
+        $0.setTitle("카운트 시작", for: .normal)
+        $0.setTitleColor(.black, for: .normal)
+        $0.addTarget(self, action: #selector(startTimer), for: .touchUpInside)
+    }
+
+    private lazy var timeButton = UIButton(type: .roundedRect).then {
+        $0.setTitle("시간 설정", for: .normal)
+        $0.setTitleColor(.black, for: .normal)
+        $0.addTarget(self, action: #selector(timeSetting), for: .touchUpInside)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -57,7 +76,6 @@ final class BreakTimerViewController: UIViewController {
         setupConstraints()
 
         longPressSetting(isEnable: false)
-        startTimer()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -138,10 +156,13 @@ extension BreakTimerViewController {
         maxTime = 0
         updateTimeLabel()
         longPressGuideLabel.isHidden = true
+        countButton.isHidden = false
+        timeButton.isHidden = false
     }
 
     @objc private func timeSetting() {
         let timeSettingviewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
+        navigationController?.pushViewController(timeSettingviewController, animated: true)
     }
 
     @objc private func startTimer() {
@@ -152,6 +173,8 @@ extension BreakTimerViewController {
 
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             self.longPressGuideLabel.isHidden = false
+            self.countButton.isHidden = true
+            self.timeButton.isHidden = true
 
             let minutes = (self.maxTime - self.currentTime) / 60
             let seconds = (self.maxTime - self.currentTime) % 60
@@ -162,8 +185,10 @@ extension BreakTimerViewController {
             if self.currentTime > self.maxTime {
                 timer.invalidate()
                 self.longPressGuideLabel.isHidden = true
-                let mainVC = MainViewController()
-                self.navigationController?.pushViewController(mainVC, animated: true)
+                self.countButton.isHidden = false
+                self.timeButton.isHidden = false
+                let breakVC = BreakViewController()
+                self.navigationController?.pushViewController(breakVC, animated: true)
             }
         }
         timer?.fire()
@@ -195,8 +220,10 @@ extension BreakTimerViewController {
 
 extension BreakTimerViewController {
     private func addSubviews() {
+        view.addSubview(countButton)
         view.addSubview(timeLabel)
         view.addSubview(tagButton)
+        view.addSubview(timeButton)
         view.addSubview(longPressGuideLabel)
         view.addSubview(progressBar)
     }
@@ -213,6 +240,14 @@ extension BreakTimerViewController {
         timeLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().multipliedBy(0.67)
+        }
+        timeButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(view.snp.bottom).offset(-50)
+        }
+        countButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(timeButton.snp.top).offset(-50)
         }
         progressBar.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
