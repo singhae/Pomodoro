@@ -38,6 +38,7 @@ class DashboardBaseViewController: UIViewController {
         setupDateLabel()
         setupArrowButtons()
         setupCollectionView()
+        updateSelectedDateFormat()
     }
 
     let dateFormatter = DateFormatter().then {
@@ -104,7 +105,6 @@ class DashboardBaseViewController: UIViewController {
             return
         }
         selectedDate = previousDate
-
         updateSelectedDateFormat()
         delegate?.dateArrowButtonDidTap(data: selectedDate)
         dashboardStatusCell.dateArrowButtonDidTap(data: selectedDate)

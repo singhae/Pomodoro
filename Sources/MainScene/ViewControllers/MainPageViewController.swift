@@ -40,7 +40,6 @@ final class MainPageViewController: UIViewController {
     private func setupPageViewController() {
         addChild(pageViewController)
         view.addSubview(pageViewController.view)
-
         pageViewController.view.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
