@@ -11,6 +11,8 @@
 		213F30532B6BE72300FAF5F2 /* DashboardPieChartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */; };
 		213F30552B6BE73900FAF5F2 /* DashboardStatusCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */; };
 		21B21B842B73E050008FFDCB /* DashboardBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B21B832B73E050008FFDCB /* DashboardBaseViewController.swift */; };
+		21D85CCD2B831E5B00E2FAA8 /* BreakViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D85CCC2B831E5B00E2FAA8 /* BreakViewController.swift */; };
+		21D85CD02B8325AC00E2FAA8 /* SetBreakTimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D85CCF2B8325AC00E2FAA8 /* SetBreakTimeViewController.swift */; };
 		CE4F2B032B6DE0D7000E5420 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = CE4F2B022B6DE0D7000E5420 /* .swiftlint.yml */; };
 		CEB721942B6DECC7001AB9C1 /* PomodoroTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB721932B6DECC7001AB9C1 /* PomodoroTests.swift */; };
 		CEDCA0FD2B67D015005C18EA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEDCA0D32B67D015005C18EA /* LaunchScreen.storyboard */; };
@@ -59,6 +61,8 @@
 		213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardPieChartCell.swift; sourceTree = "<group>"; };
 		213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStatusCell.swift; sourceTree = "<group>"; };
 		21B21B832B73E050008FFDCB /* DashboardBaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardBaseViewController.swift; sourceTree = "<group>"; };
+		21D85CCC2B831E5B00E2FAA8 /* BreakViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakViewController.swift; sourceTree = "<group>"; };
+		21D85CCF2B8325AC00E2FAA8 /* SetBreakTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetBreakTimeViewController.swift; sourceTree = "<group>"; };
 		CE4F2B022B6DE0D7000E5420 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		CEB721912B6DECC7001AB9C1 /* PomodoroTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PomodoroTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEB721932B6DECC7001AB9C1 /* PomodoroTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroTests.swift; sourceTree = "<group>"; };
@@ -121,6 +125,15 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		21D85CCE2B83258300E2FAA8 /* BreakScene */ = {
+			isa = PBXGroup;
+			children = (
+				21D85CCC2B831E5B00E2FAA8 /* BreakViewController.swift */,
+				21D85CCF2B8325AC00E2FAA8 /* SetBreakTimeViewController.swift */,
+			);
+			path = BreakScene;
+			sourceTree = "<group>";
+		};
 		CEB721922B6DECC7001AB9C1 /* PomodoroTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -163,6 +176,7 @@
 		CEDCA0D82B67D015005C18EA /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				21D85CCE2B83258300E2FAA8 /* BreakScene */,
 				CEDCA0D92B67D015005C18EA /* SettingsScene */,
 				CEDCA0DF2B67D015005C18EA /* App */,
 				CEDCA0E22B67D015005C18EA /* MainScene */,
@@ -446,6 +460,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEDCA1192B67D015005C18EA /* DashBoard.swift in Sources */,
+				21D85CCD2B831E5B00E2FAA8 /* BreakViewController.swift in Sources */,
 				21B21B842B73E050008FFDCB /* DashboardBaseViewController.swift in Sources */,
 				CEDCA1172B67D015005C18EA /* TagList.swift in Sources */,
 				CEDCA10C2B67D015005C18EA /* TagCollectionViewData.swift in Sources */,
@@ -468,6 +483,7 @@
 				213F30552B6BE73900FAF5F2 /* DashboardStatusCell.swift in Sources */,
 				CEDCA1042B67D015005C18EA /* DataResetModalViewController.swift in Sources */,
 				CEDCA1142B67D015005C18EA /* MockData.swift in Sources */,
+				21D85CD02B8325AC00E2FAA8 /* SetBreakTimeViewController.swift in Sources */,
 				CEDCA1102B67D015005C18EA /* DashBoardTabViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

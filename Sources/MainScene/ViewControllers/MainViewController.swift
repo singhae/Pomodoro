@@ -181,6 +181,8 @@ extension MainViewController {
                 self.longPressGuideLabel.isHidden = true
                 self.countButton.isHidden = false
                 self.timeButton.isHidden = false
+                let breakVC = BreakViewController()
+                self.navigationController?.pushViewController(breakVC, animated: true)
             }
         }
         timer?.fire()
