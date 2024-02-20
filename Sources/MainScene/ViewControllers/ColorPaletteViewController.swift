@@ -26,13 +26,13 @@ final class ColorPaletteViewController: UIViewController {
         $0.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "colorCell")
         $0.backgroundColor = .clear
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupCollectionView()
     }
-    
+
     private func setupCollectionView() {
         view.addSubview(collectionView)
         collectionView.snp.makeConstraints { make in
