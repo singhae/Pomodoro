@@ -26,7 +26,6 @@ final class ColorPaletteViewController: UIViewController {
         $0.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "colorCell")
         $0.backgroundColor = .clear
     }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
