@@ -45,23 +45,19 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         configureCollectionViewDelegate()
         configureLayout()
     }
-    
     private func configureLayout() {
         horizontalStackView.addArrangedSubview(label)
         horizontalStackView.addArrangedSubview(circleButton)
-        
         mainStackView.addArrangedSubview(horizontalStackView)
         if let tagCollectionView {
             mainStackView.addArrangedSubview(tagCollectionView)
         }
 
         view.addSubview(mainStackView)
-        
         mainStackView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
     }
-    
     private func configureCollectionView() {
         let collectionViewLayer = UICollectionViewFlowLayout()
         collectionViewLayer.sectionInset = UIEdgeInsets(top: 5.0, left: 7.0, bottom: 5.0, right: 7.0)
@@ -77,14 +73,12 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         }
         self.tagCollectionView = tagCollectionView
     }
-    
     private func registerCollectionView() {
         tagCollectionView?.register(
             TagCollectionViewCell.self,
             forCellWithReuseIdentifier: TagCollectionViewCell.id
         )
     }
-    
     private func configureCollectionViewDelegate() {
         tagCollectionView?.dataSource = self
         tagCollectionView?.delegate = self
@@ -110,7 +104,6 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
         
         return CGSize(width: width - individualPadding, height: height)
     }
-    
     func collectionView(
         _: UICollectionView,
         numberOfItemsInSection _: Int
