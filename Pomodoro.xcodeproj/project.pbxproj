@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0DC41B432B82667A002FB140 /* PomodoroTimeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC41B422B82667A002FB140 /* PomodoroTimeManager.swift */; };
 		0DF629662B691ABA00BFE39F /* TimerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */; };
 		213F30532B6BE72300FAF5F2 /* DashboardPieChartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */; };
 		213F30552B6BE73900FAF5F2 /* DashboardStatusCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */; };
@@ -58,6 +59,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0DC41B422B82667A002FB140 /* PomodoroTimeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PomodoroTimeManager.swift; sourceTree = "<group>"; };
 		0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerCollectionViewCell.swift; sourceTree = "<group>"; };
 		213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardPieChartCell.swift; sourceTree = "<group>"; };
 		213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStatusCell.swift; sourceTree = "<group>"; };
@@ -289,6 +291,7 @@
 		CEDCA0F82B67D015005C18EA /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				0DC41B422B82667A002FB140 /* PomodoroTimeManager.swift */,
 				CEDCA0F92B67D015005C18EA /* Pomodoro.swift */,
 				CEDCA0FA2B67D015005C18EA /* TagList.swift */,
 				CEDCA0FB2B67D015005C18EA /* Option.swift */,
@@ -487,6 +490,7 @@
 				0DF629662B691ABA00BFE39F /* TimerCollectionViewCell.swift in Sources */,
 				CEDCA1072B67D015005C18EA /* TimeSettingViewController.swift in Sources */,
 				213F30552B6BE73900FAF5F2 /* DashboardStatusCell.swift in Sources */,
+				0DC41B432B82667A002FB140 /* PomodoroTimeManager.swift in Sources */,
 				4DC2298A2B7E2C0900D06ABB /* TagConfigurationViewController.swift in Sources */,
 				CEDCA1042B67D015005C18EA /* DataResetModalViewController.swift in Sources */,
 				CEDCA1142B67D015005C18EA /* MockData.swift in Sources */,
