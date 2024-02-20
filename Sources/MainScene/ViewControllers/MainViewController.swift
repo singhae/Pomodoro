@@ -205,45 +205,6 @@ extension MainViewController {
 
             self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
         })
-
-//        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-//            self.longPressGuideLabel.isHidden = false
-//            self.countButton.isHidden = true
-//            self.timeButton.isHidden = true
-//
-//            self.pomodoroTimeManager.setupCurrentTime(curr: self.pomodoroTimeManager.currentTime + 1)
-//
-//            let minutes = (self.pomodoroTimeManager.maxTime - self.pomodoroTimeManager.currentTime) / 60
-//            let seconds = (self.pomodoroTimeManager.maxTime - self.pomodoroTimeManager.currentTime) % 60
-//
-//            if minutes == 0, seconds == 0 {
-//                timer.invalidate()
-//                self.longPressGuideLabel.isHidden = true
-//                self.countButton.isHidden = false
-//                self.timeButton.isHidden = false
-//            }
-//
-//            self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
-//        }
-//        timer?.fire()
-
-//        notificationId = UUID().uuidString
-//
-//        let content = UNMutableNotificationContent()
-//        content.title = "시간 종료!"
-//        content.body = "시간이 종료되었습니다. 휴식을 취해주세요."
-//
-//        let request = UNNotificationRequest(
-//            identifier: notificationId!,
-//            content: content,
-//            trigger: UNTimeIntervalNotificationTrigger(
-//                timeInterval: TimeInterval(pomodoroTimeManager.maxTime),
-//                repeats: false
-//            )
-//        )
-//
-//        UNUserNotificationCenter.current()
-//            .add(request)
     }
 }
 
