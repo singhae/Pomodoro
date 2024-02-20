@@ -120,7 +120,6 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
         let height: CGFloat = 70
         return CGSize(width: width - individualPadding, height: height)
     }
-    
     func collectionView(
         _: UICollectionView,
         numberOfItemsInSection _: Int
