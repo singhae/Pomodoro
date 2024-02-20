@@ -12,21 +12,17 @@ import UIKit
 final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     private var tagCollectionView: TagCollectionView?
     private let dataSource = TagCollectionViewData.data
-
     private let horizontalStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 10
         $0.alignment = .center
         $0.distribution = .equalSpacing
     }
-
     private let label = UILabel().then {
         $0.text = "태그선택"
         $0.textColor = .white
-        // $0.font = UIFont.systemFont(ofSize: 28)
         $0.font = UIFont.boldSystemFont(ofSize: 26)
     }
-
     private let circleButton = UIButton().then {
         $0.setImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
         $0.contentMode = .scaleAspectFit
@@ -35,44 +31,32 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         $0.layer.cornerRadius = 10
         $0.clipsToBounds = true
     }
-
     private let mainStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 20
         $0.alignment = .fill
     }
-
     // MARK: - TODO
-
     @objc private func circleButtonTapped() {}
-
     override func viewDidLoad() {
         super.viewDidLoad()
-
         configureCollectionView()
-
         registerCollectionView()
-
         configureCollectionViewDelegate()
-
         configureLayout()
     }
-
     private func configureLayout() {
         horizontalStackView.addArrangedSubview(label)
         horizontalStackView.addArrangedSubview(circleButton)
-
         mainStackView.addArrangedSubview(horizontalStackView)
         if let tagCollectionView {
             mainStackView.addArrangedSubview(tagCollectionView)
         }
         view.addSubview(mainStackView)
-
         mainStackView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
     }
-
     private func configureCollectionView() {
         let collectionViewLayer = UICollectionViewFlowLayout()
         collectionViewLayer.sectionInset = UIEdgeInsets(top: 5.0, left: 7.0, bottom: 5.0, right: 7.0)
@@ -81,21 +65,19 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         let tagCollectionView = TagCollectionView(frame: .zero, collectionViewLayout: collectionViewLayer)
         tagCollectionView.backgroundColor = .secondarySystemBackground
         view.addSubview(tagCollectionView)
-
+        
         tagCollectionView.snp.makeConstraints { make in
             make.top.equalTo(120)
             make.left.right.bottom.equalToSuperview().inset(40)
         }
         self.tagCollectionView = tagCollectionView
     }
-
     private func registerCollectionView() {
         tagCollectionView?.register(
             TagCollectionViewCell.self,
             forCellWithReuseIdentifier: TagCollectionViewCell.id
         )
     }
-
     private func configureCollectionViewDelegate() {
         tagCollectionView?.dataSource = self
         tagCollectionView?.delegate = self
@@ -103,10 +85,10 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
 }
 
 protocol TagCreationDelegate: AnyObject {
-    func didCreateTag(tag: String)
+    func createTag(tag: String)
 }
 
-extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TagCreationDelegate {
+extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(
         _ collectionView: UICollectionView,
         layout _: UICollectionViewLayout,
@@ -126,7 +108,6 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
     ) -> Int {
         dataSource.count
     }
-
     func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
@@ -137,11 +118,10 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
         ) as? TagCollectionViewCell else {
             return UICollectionViewCell()
         }
-
+        
         cell.tagLabel.text = dataSource[indexPath.item]
         return cell
     }
-
     func collectionView(
         _: UICollectionView,
         didSelectItemAt _: IndexPath
@@ -150,8 +130,10 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
         tagConfigView.delegate = self // 이 부분이 중요
         present(tagConfigView, animated: true, completion: nil)
     }
+}
 
-    func didCreateTag(tag: String) {
+extension TagModalViewController: TagCreationDelegate {
+    func createTag(tag: String) {
         TagCollectionViewData.data.append(tag)
         print("태그 추가")
         print("Updated data: \(TagCollectionViewData.data)")
