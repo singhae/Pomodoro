@@ -9,9 +9,14 @@ import SnapKit
 import Then
 import UIKit
 
+protocol TagCreationDelegate: AnyObject {
+    func createTag(tag: String)
+}
+
 final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     private var tagCollectionView: TagCollectionView?
     private let dataSource = TagCollectionViewData.data
+    private var tagList = TagList()
     private let horizontalStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 10
@@ -25,7 +30,7 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         $0.font = UIFont.boldSystemFont(ofSize: 26)
     }
 
-    private let circleButton = UIButton().then {
+    private let ellipseButton = UIButton().then {
         $0.setImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
         $0.contentMode = .scaleAspectFit
         $0.tintColor = .black
@@ -40,9 +45,9 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         $0.alignment = .fill
     }
 
-    // MARK: - TODO
+    // MARK: - 삭제 기능(+ 버튼)
 
-    @objc private func circleButtonTapped() {}
+    @objc private func ellipseButtonTapped() {}
     override func viewDidLoad() {
         super.viewDidLoad()
         configureCollectionView()
@@ -53,7 +58,7 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
 
     private func configureLayout() {
         horizontalStackView.addArrangedSubview(label)
-        horizontalStackView.addArrangedSubview(circleButton)
+        horizontalStackView.addArrangedSubview(ellipseButton)
         mainStackView.addArrangedSubview(horizontalStackView)
         if let tagCollectionView {
             mainStackView.addArrangedSubview(tagCollectionView)
@@ -93,19 +98,14 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     }
 }
 
-protocol TagCreationDelegate: AnyObject {
-    func createTag(tag: String)
-}
-
-extension TagModalViewController: UICollectionViewDataSource,
-    UICollectionViewDelegateFlowLayout,
-    TagCreationDelegate {
+extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(
         _ collectionView: UICollectionView,
         layout _: UICollectionViewLayout,
         sizeForItemAt _: IndexPath
     ) ->
-        CGSize {
+        CGSize
+    {
         let padding: CGFloat = 10
         let totalPadding = padding * (2 - 1)
         let individualPadding = totalPadding / 2
@@ -118,21 +118,30 @@ extension TagModalViewController: UICollectionViewDataSource,
         _: UICollectionView,
         numberOfItemsInSection _: Int
     ) -> Int {
-        dataSource.count
+        // dataSource.count
+        tagList.tagList.count
     }
 
     func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: TagCollectionViewCell.id,
-            for: indexPath
-        ) as? TagCollectionViewCell else {
+        //        guard let cell = collectionView.dequeueReusableCell(
+        //            withReuseIdentifier: TagCollectionViewCell.id,
+        //            for: indexPath
+        //        ) as? TagCollectionViewCell else {
+        //            return UICollectionViewCell()
+        //        }
+        //
+        //        cell.tagLabel.text = dataSource[indexPath.item]
+        //        return cell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TagCollectionViewCell.id, for: indexPath) as? TagCollectionViewCell else {
             return UICollectionViewCell()
         }
 
-        cell.tagLabel.text = dataSource[indexPath.item]
+        let tag = tagList.tagList[indexPath.item]
+        cell.configureWithTag(tag)
+
         return cell
     }
 
@@ -141,7 +150,7 @@ extension TagModalViewController: UICollectionViewDataSource,
         didSelectItemAt _: IndexPath
     ) {
         let tagConfigView = TagConfigurationViewController()
-        tagConfigView.delegate = self // 이 부분이 중요
+        tagConfigView.delegate = self
         present(tagConfigView, animated: true, completion: nil)
     }
 }
