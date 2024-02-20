@@ -18,6 +18,7 @@ final class TimeSettingViewController: UIViewController {
     private var centerIndexPath: IndexPath?
     private let timeSelectRange = 5
     var selectedTime: Int = 0
+
     private var isHiddenTimeButton = true {
         didSet {
             timeSettingbutton.isHidden = isHiddenTimeButton
@@ -44,7 +45,7 @@ final class TimeSettingViewController: UIViewController {
         $0.setTitle("설정 완료", for: .normal)
         $0.setTitleColor(.black, for: .normal)
         $0.isHidden = isHiddenTimeButton
-        $0.addTarget(self, action: #selector(onClick), for: .touchUpInside)
+        $0.addTarget(self, action: #selector(onClickTimerSetting), for: .touchUpInside)
     }
 
     private var titleTime = UILabel().then {
@@ -101,9 +102,10 @@ final class TimeSettingViewController: UIViewController {
         }
     }
 
-    @objc private func onClick() {
+    @objc private func onClickTimerSetting() {
         delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
-        navigationController?.popViewController(animated: true)
+        let tagViewController = TagModalViewController()
+        navigationController?.pushViewController(tagViewController, animated: true)
     }
 }
 
@@ -200,12 +202,8 @@ extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDeleg
         updateCellPositions()
         print(indexPath.row)
         if indexPath.row >= 5 {
-            print("현재 버튼 상태 : " + String(isHiddenTimeButton))
-            print("-----------------------------------")
             isHiddenTimeButton = false
         } else {
-            print("현재 버튼 상태 : " + String(isHiddenTimeButton))
-            print("-----------------------------------")
             isHiddenTimeButton = true
         }
     }

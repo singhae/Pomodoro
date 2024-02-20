@@ -85,6 +85,7 @@ final class MainViewController: UIViewController {
     }
 
     private func updateTimeLabel() {
+        print(pomodoroTimeManager.maxTime)
         let minutes = (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60
         let seconds = (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) % 60
         timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
