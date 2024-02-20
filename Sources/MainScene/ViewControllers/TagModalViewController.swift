@@ -12,20 +12,17 @@ import UIKit
 final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     private var tagCollectionView: TagCollectionView?
     private let dataSource = TagCollectionViewData.data
-    
     private let horizontalStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 10
         $0.alignment = .center
         $0.distribution = .equalSpacing
     }
-    
     private let label = UILabel().then {
         $0.text = "태그선택"
         $0.textColor = .white
         $0.font = UIFont.boldSystemFont(ofSize: 26)
     }
-    
     private let circleButton = UIButton().then {
         $0.setImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
         $0.contentMode = .scaleAspectFit
@@ -34,26 +31,18 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         $0.layer.cornerRadius = 10
         $0.clipsToBounds = true
     }
-    
     private let mainStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 20
         $0.alignment = .fill
     }
-    
     // MARK: - TODO
-    
     @objc private func circleButtonTapped() {}
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         configureCollectionView()
-        
         registerCollectionView()
-        
         configureCollectionViewDelegate()
-        
         configureLayout()
     }
     
@@ -65,7 +54,7 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         if let tagCollectionView {
             mainStackView.addArrangedSubview(tagCollectionView)
         }
-        
+
         view.addSubview(mainStackView)
         
         mainStackView.snp.makeConstraints { make in
