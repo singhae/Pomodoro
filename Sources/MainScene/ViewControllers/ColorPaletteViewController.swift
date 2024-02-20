@@ -9,8 +9,10 @@ import SnapKit
 import Then
 import UIKit
 
-class ColorPaletteViewController: UIViewController {
-    private var colors: [UIColor] = [.red, .orange, .yellow, .green, .blue, .purple, .black, .white]
+final class ColorPaletteViewController: UIViewController {
+    
+    private var colors: [UIColor] = [.red, .orange, .yellow,
+                                     .green, .blue, .purple, .black, .white]
     
     private lazy var collectionView = UICollectionView(frame: .zero,
                                                        collectionViewLayout: UICollectionViewFlowLayout()).then {
@@ -43,13 +45,14 @@ class ColorPaletteViewController: UIViewController {
 
 extension ColorPaletteViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_: UICollectionView,
-                        numberOfItemsInSection _: Int) -> Int {
+                        numberOfItemsInSection _: Int) -> Int
+    {
         colors.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
+    {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath)
         cell.backgroundColor = colors[indexPath.item]
         cell.layer.cornerRadius = 25

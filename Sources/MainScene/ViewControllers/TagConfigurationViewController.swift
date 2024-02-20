@@ -9,7 +9,7 @@ import SnapKit
 import Then
 import UIKit
 
-class TagConfigurationViewController: UIViewController, UITextFieldDelegate {
+final class TagConfigurationViewController: UIViewController, UITextFieldDelegate {
     private let textField = UITextField().then {
         $0.borderStyle = .roundedRect
         $0.placeholder = "태그를 입력하세요"

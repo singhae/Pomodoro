@@ -121,6 +121,8 @@
 			isa = PBXGroup;
 			children = (
 				0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */,
+				CEDCA0E82B67D015005C18EA /* TagCollectionViewCell.swift */,
+				CEDCA0E62B67D015005C18EA /* TagCollectionView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -229,9 +231,7 @@
 			children = (
 				CEDCA0E42B67D015005C18EA /* TimeSettingViewController.swift */,
 				CEDCA0E52B67D015005C18EA /* MainViewController.swift */,
-				CEDCA0E62B67D015005C18EA /* TagCollectionView.swift */,
 				CEDCA0E72B67D015005C18EA /* TagModalViewController.swift */,
-				CEDCA0E82B67D015005C18EA /* TagCollectionViewCell.swift */,
 				CEDCA0E92B67D015005C18EA /* TagCollectionViewData.swift */,
 				CEDCA0EA2B67D015005C18EA /* MainPageViewController.swift */,
 				4DC229892B7E2C0900D06ABB /* TagConfigurationViewController.swift */,
