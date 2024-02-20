@@ -10,10 +10,8 @@ import Then
 import UIKit
 
 final class ColorPaletteViewController: UIViewController {
-    
     private var colors: [UIColor] = [.red, .orange, .yellow,
                                      .green, .blue, .purple, .black, .white]
-    
     private lazy var collectionView = UICollectionView(frame: .zero,
                                                        collectionViewLayout: UICollectionViewFlowLayout()).then {
         let layout = UICollectionViewFlowLayout()
