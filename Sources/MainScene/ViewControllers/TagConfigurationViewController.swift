@@ -52,7 +52,6 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         // FIXME: 디버깅
         print("textField의 현재 값: \(textField.text ?? "nil")")
-
         self.textField.resignFirstResponder()
         dismiss(animated: true, completion: nil)
         print("text 필드 비활성화")
@@ -88,7 +87,6 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
             make.left.equalToSuperview().inset(20)
             make.right.equalToSuperview().inset(70)
             make.height.equalTo(44)
-            // FIXME: 하프 모달로 구현
         }
 
         saveTagButton.snp.makeConstraints { make in

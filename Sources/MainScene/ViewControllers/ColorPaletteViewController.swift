@@ -32,6 +32,7 @@ final class ColorPaletteViewController: UIViewController {
         view.backgroundColor = .white
         setupCollectionView()
     }
+    
     private func setupCollectionView() {
         view.addSubview(collectionView)
         collectionView.snp.makeConstraints { make in
