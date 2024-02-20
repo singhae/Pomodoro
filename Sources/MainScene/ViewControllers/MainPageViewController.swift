@@ -27,6 +27,7 @@ final class MainPageViewController: UIViewController {
 
     private lazy var dataViewControllers: [UIViewController] = [
         SettingViewController(),
+//        BreakViewController(),
         MainViewController(),
         DashBoardTabViewController()
     ]
@@ -40,7 +41,6 @@ final class MainPageViewController: UIViewController {
     private func setupPageViewController() {
         addChild(pageViewController)
         view.addSubview(pageViewController.view)
-
         pageViewController.view.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

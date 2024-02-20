@@ -12,7 +12,6 @@ import UIKit
 final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     private var tagCollectionView: TagCollectionView?
     private let dataSource = TagCollectionViewData.data
-
     private let horizontalStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 10
@@ -23,7 +22,6 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     private let label = UILabel().then {
         $0.text = "태그선택"
         $0.textColor = .white
-        // $0.font = UIFont.systemFont(ofSize: 28)
         $0.font = UIFont.boldSystemFont(ofSize: 26)
     }
 
@@ -45,30 +43,22 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     // MARK: - TODO
 
     @objc private func circleButtonTapped() {}
-
     override func viewDidLoad() {
         super.viewDidLoad()
-
         configureCollectionView()
-
         registerCollectionView()
-
         configureCollectionViewDelegate()
-
         configureLayout()
     }
 
     private func configureLayout() {
         horizontalStackView.addArrangedSubview(label)
         horizontalStackView.addArrangedSubview(circleButton)
-
         mainStackView.addArrangedSubview(horizontalStackView)
         if let tagCollectionView {
             mainStackView.addArrangedSubview(tagCollectionView)
         }
-
         view.addSubview(mainStackView)
-
         mainStackView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
@@ -104,7 +94,7 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
 }
 
 protocol TagCreationDelegate: AnyObject {
-    func didCreateTag(tag: String)
+    func createTag(tag: String)
 }
 
 extension TagModalViewController: UICollectionViewDataSource,
@@ -121,7 +111,6 @@ extension TagModalViewController: UICollectionViewDataSource,
         let individualPadding = totalPadding / 2
         let width = (collectionView.bounds.width - totalPadding) / 2
         let height: CGFloat = 70
-
         return CGSize(width: width - individualPadding, height: height)
     }
 
@@ -155,8 +144,10 @@ extension TagModalViewController: UICollectionViewDataSource,
         tagConfigView.delegate = self // 이 부분이 중요
         present(tagConfigView, animated: true, completion: nil)
     }
+}
 
-    func didCreateTag(tag: String) {
+extension TagModalViewController: TagCreationDelegate {
+    func createTag(tag: String) {
         TagCollectionViewData.data.append(tag)
         print("태그 추가")
         print("Updated data: \(TagCollectionViewData.data)")
