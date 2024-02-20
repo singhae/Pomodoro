@@ -18,11 +18,13 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         $0.alignment = .center
         $0.distribution = .equalSpacing
     }
+
     private let label = UILabel().then {
         $0.text = "태그선택"
         $0.textColor = .white
         $0.font = UIFont.boldSystemFont(ofSize: 26)
     }
+
     private let circleButton = UIButton().then {
         $0.setImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
         $0.contentMode = .scaleAspectFit
@@ -31,12 +33,15 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         $0.layer.cornerRadius = 10
         $0.clipsToBounds = true
     }
+
     private let mainStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 20
         $0.alignment = .fill
     }
+
     // MARK: - TODO
+
     @objc private func circleButtonTapped() {}
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,6 +50,7 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         configureCollectionViewDelegate()
         configureLayout()
     }
+
     private func configureLayout() {
         horizontalStackView.addArrangedSubview(label)
         horizontalStackView.addArrangedSubview(circleButton)
@@ -57,6 +63,7 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
             make.edges.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
     }
+
     private func configureCollectionView() {
         let collectionViewLayer = UICollectionViewFlowLayout()
         collectionViewLayer.sectionInset = UIEdgeInsets(top: 5.0, left: 7.0, bottom: 5.0, right: 7.0)
@@ -65,19 +72,21 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         let tagCollectionView = TagCollectionView(frame: .zero, collectionViewLayout: collectionViewLayer)
         tagCollectionView.backgroundColor = .secondarySystemBackground
         view.addSubview(tagCollectionView)
-        
+
         tagCollectionView.snp.makeConstraints { make in
             make.top.equalTo(120)
             make.left.right.bottom.equalToSuperview().inset(40)
         }
         self.tagCollectionView = tagCollectionView
     }
+
     private func registerCollectionView() {
         tagCollectionView?.register(
             TagCollectionViewCell.self,
             forCellWithReuseIdentifier: TagCollectionViewCell.id
         )
     }
+
     private func configureCollectionViewDelegate() {
         tagCollectionView?.dataSource = self
         tagCollectionView?.delegate = self
@@ -94,7 +103,7 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
         layout _: UICollectionViewLayout,
         sizeForItemAt _: IndexPath
     ) ->
-    CGSize {
+        CGSize {
         let padding: CGFloat = 10
         let totalPadding = padding * (2 - 1)
         let individualPadding = totalPadding / 2
@@ -102,12 +111,14 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
         let height: CGFloat = 70
         return CGSize(width: width - individualPadding, height: height)
     }
+
     func collectionView(
         _: UICollectionView,
         numberOfItemsInSection _: Int
     ) -> Int {
         dataSource.count
     }
+
     func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
@@ -118,10 +129,11 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
         ) as? TagCollectionViewCell else {
             return UICollectionViewCell()
         }
-        
+
         cell.tagLabel.text = dataSource[indexPath.item]
         return cell
     }
+
     func collectionView(
         _: UICollectionView,
         didSelectItemAt _: IndexPath

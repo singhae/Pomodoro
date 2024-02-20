@@ -14,7 +14,7 @@ final class ColorPaletteViewController: UIViewController {
                                      .green, .blue, .purple, .black, .white]
     private lazy var collectionView = UICollectionView(frame: .zero,
                                                        collectionViewLayout:
-                                                        UICollectionViewFlowLayout()).then {
+                                                       UICollectionViewFlowLayout()).then {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: 50, height: 50)
         layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
@@ -45,6 +45,7 @@ extension ColorPaletteViewController: UICollectionViewDataSource, UICollectionVi
     func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
         colors.count
     }
+
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath)
