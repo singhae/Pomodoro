@@ -69,7 +69,6 @@ final class MainViewController: UIViewController {
         addSubviews()
         setupConstraints()
 
-        print("Current: \(pomodoroTimeManager.currentTime), Max: \(pomodoroTimeManager.maxTime)")
         if pomodoroTimeManager.maxTime > pomodoroTimeManager.currentTime {
             updateTimeLabel()
             startTimer()
@@ -85,7 +84,6 @@ final class MainViewController: UIViewController {
     }
 
     private func updateTimeLabel() {
-        print(pomodoroTimeManager.maxTime)
         let minutes = (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60
         let seconds = (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) % 60
         timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
@@ -131,7 +129,6 @@ extension MainViewController {
             progressBar.isHidden = true
             longPressTime = 0.0
             progressBar.progress = 0.0
-
             longPressTimer?.invalidate()
         }
     }
@@ -167,7 +164,6 @@ extension MainViewController {
     }
 
     @objc private func startTimer() {
-        print("CurrentTime: \(pomodoroTimeManager.currentTime), MaxTime: \(pomodoroTimeManager.maxTime)")
         longPressTime = 0.0
         progressBar.progress = 0.0
 
