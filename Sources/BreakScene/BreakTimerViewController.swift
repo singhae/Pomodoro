@@ -1,23 +1,29 @@
 //
-//  MainViewController.swift
+//  BreakTimerViewController.swift
 //  Pomodoro
 //
-//  Created by 진세진 on 2023/11/06.
-//  Copyright © 2023 io.hgu. All rights reserved.
+//  Created by 김하람 on 2/19/24.
 //
+
+// final class BreakTimerViewController: UIViewController {
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+//        view.backgroundColor = .systemYellow
+//    }
+// }
 
 import PanModal
 import SnapKit
 import Then
 import UIKit
 
-final class MainViewController: UIViewController {
+final class BreakTimerViewController: UIViewController {
     private var timer: Timer?
     private var notificationId: String?
+    private var currentTime = 0
+    private var maxTime = 0
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
-
-    let pomodoroTimeManager = PomodoroTimeManager.shared
 
     private let timeLabel = UILabel().then {
         $0.textAlignment = .center
@@ -69,13 +75,7 @@ final class MainViewController: UIViewController {
         addSubviews()
         setupConstraints()
 
-        print("Current: \(pomodoroTimeManager.currentTime), Max: \(pomodoroTimeManager.maxTime)")
-        if pomodoroTimeManager.maxTime > pomodoroTimeManager.currentTime {
-            updateTimeLabel()
-            startTimer()
-        }
-
-        setupLongPress(isEnable: false)
+        longPressSetting(isEnable: false)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -85,8 +85,8 @@ final class MainViewController: UIViewController {
     }
 
     private func updateTimeLabel() {
-        let minutes = (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60
-        let seconds = (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) % 60
+        let minutes = (maxTime - currentTime) / 60
+        let seconds = (maxTime - currentTime) % 60
         timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
 
         if let id = notificationId {
@@ -97,14 +97,14 @@ final class MainViewController: UIViewController {
 
 // MARK: - Action
 
-extension MainViewController {
+extension BreakTimerViewController {
     @objc private func openTagModal() {
         let modalViewController = TagModalViewController()
         modalViewController.modalPresentationStyle = .fullScreen
         presentPanModal(modalViewController)
     }
 
-    private func setupLongPress(isEnable: Bool) {
+    private func longPressSetting(isEnable: Bool) {
         let longPressGestureRecognizer = UILongPressGestureRecognizer(
             target: self,
             action: #selector(handleLongPress)
@@ -152,8 +152,8 @@ extension MainViewController {
 
     @objc private func stopTimer() {
         timer?.invalidate()
-        pomodoroTimeManager.currentTime = 0
-        pomodoroTimeManager.maxTime = 0
+        currentTime = 0
+        maxTime = 0
         updateTimeLabel()
         longPressGuideLabel.isHidden = true
         countButton.isHidden = false
@@ -166,29 +166,30 @@ extension MainViewController {
     }
 
     @objc private func startTimer() {
-        print("CurrentTime: \(pomodoroTimeManager.currentTime), MaxTime: \(pomodoroTimeManager.maxTime)")
         longPressTime = 0.0
         progressBar.progress = 0.0
 
-        setupLongPress(isEnable: true)
+        longPressSetting(isEnable: true)
 
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             self.longPressGuideLabel.isHidden = false
             self.countButton.isHidden = true
             self.timeButton.isHidden = true
 
-            if self.pomodoroTimeManager.currentTime > self.pomodoroTimeManager.maxTime {
+            let minutes = (self.maxTime - self.currentTime) / 60
+            let seconds = (self.maxTime - self.currentTime) % 60
+
+            self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
+            self.currentTime += 1
+
+            if self.currentTime > self.maxTime {
                 timer.invalidate()
                 self.longPressGuideLabel.isHidden = true
                 self.countButton.isHidden = false
                 self.timeButton.isHidden = false
+                let breakVC = BreakViewController()
+                self.navigationController?.pushViewController(breakVC, animated: true)
             }
-            self.pomodoroTimeManager.currentTime += 1
-
-            let minutes = (self.pomodoroTimeManager.maxTime - self.pomodoroTimeManager.currentTime) / 60
-            let seconds = (self.pomodoroTimeManager.maxTime - self.pomodoroTimeManager.currentTime) % 60
-
-            self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
         }
         timer?.fire()
 
@@ -202,7 +203,7 @@ extension MainViewController {
             identifier: notificationId!,
             content: content,
             trigger: UNTimeIntervalNotificationTrigger(
-                timeInterval: TimeInterval(pomodoroTimeManager.maxTime),
+                timeInterval: TimeInterval(maxTime),
                 repeats: false
             )
         )
@@ -217,7 +218,7 @@ extension MainViewController {
 
 // MARK: - UI
 
-extension MainViewController {
+extension BreakTimerViewController {
     private func addSubviews() {
         view.addSubview(countButton)
         view.addSubview(timeLabel)
@@ -256,18 +257,8 @@ extension MainViewController {
     }
 }
 
-extension TagModalViewController: PanModalPresentable {
-    var panScrollable: UIScrollView? {
-        nil
-    }
-
-    var shortFormHeight: PanModalHeight {
-        .contentHeight(UIScreen.main.bounds.height * 0.4)
-    }
-}
-
-extension MainViewController: TimeSettingViewControllerDelegate {
+extension BreakTimerViewController: TimeSettingViewControllerDelegate {
     func didSelectTime(time: Int) {
-        pomodoroTimeManager.maxTime = time * 60
+        maxTime = time * 60
     }
 }
