@@ -48,7 +48,6 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     // MARK: - 삭제 기능(+ 버튼)
 
     @objc private func ellipseButtonTapped() {}
-
     override func viewDidLoad() {
         super.viewDidLoad()
         configureCollectionView()
