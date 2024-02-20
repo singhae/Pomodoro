@@ -42,15 +42,12 @@ final class ColorPaletteViewController: UIViewController {
 }
 
 extension ColorPaletteViewController: UICollectionViewDataSource, UICollectionViewDelegate {
-    func collectionView(_: UICollectionView,
-                        numberOfItemsInSection _: Int) -> Int
-    {
+    func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int{
         colors.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
-    {
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath)
         cell.backgroundColor = colors[indexPath.item]
         cell.layer.cornerRadius = 25
