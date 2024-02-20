@@ -52,7 +52,6 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         if let tagCollectionView {
             mainStackView.addArrangedSubview(tagCollectionView)
         }
-
         view.addSubview(mainStackView)
         mainStackView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide).inset(20)
@@ -101,7 +100,6 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
         let individualPadding = totalPadding / 2
         let width = (collectionView.bounds.width - totalPadding) / 2
         let height: CGFloat = 70
-        
         return CGSize(width: width - individualPadding, height: height)
     }
     func collectionView(
@@ -110,7 +108,6 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
     ) -> Int {
         dataSource.count
     }
-    
     func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
@@ -125,7 +122,6 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
         cell.tagLabel.text = dataSource[indexPath.item]
         return cell
     }
-    
     func collectionView(
         _: UICollectionView,
         didSelectItemAt _: IndexPath
