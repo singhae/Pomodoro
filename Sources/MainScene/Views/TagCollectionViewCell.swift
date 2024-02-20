@@ -39,6 +39,12 @@ class TagCollectionViewCell: UICollectionViewCell {
         fatalError("Not implemented required init?(coder: NSCoder)")
     }
 
+    // FIXME:
+    func configureWithTag(_ tag: Tag) {
+        dataLabel.text = tag.tagName // 태그 이름 설정
+        dataLabel.backgroundColor = tag.tagColor // 태그 색상으로 배경색 설정
+    }
+
     private func configure() {
         dataLabel = UILabel()
         dataLabel.font = UIFont.systemFont(ofSize: 15)
