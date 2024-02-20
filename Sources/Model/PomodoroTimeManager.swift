@@ -6,11 +6,15 @@
 //
 
 import Foundation
+import UserNotifications
 
 final class PomodoroTimeManager {
     static let shared = PomodoroTimeManager()
 
     private init() {}
+
+    private var pomodoroTimer: Timer?
+    private var notificationId: String?
 
     private let userDefaults = UserDefaults.standard
 
@@ -20,7 +24,47 @@ final class PomodoroTimeManager {
         currentTime = curr
     }
 
-    var maxTime = 0
+    func add1secToCurrentTime() {
+        currentTime += 1
+    }
+
+    private(set) var maxTime = 0
+
+    func setupMaxTime(time: Int) {
+        maxTime = time
+    }
+
+    func startTimer(timerBlock: @escaping ((Timer, Int, Int) -> Void)) {
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            timerBlock(timer, self.currentTime, self.maxTime)
+        }
+
+        notificationId = UUID().uuidString
+
+        let content = UNMutableNotificationContent()
+        content.title = "시간 종료!"
+        content.body = "시간이 종료되었습니다. 휴식을 취해주세요."
+
+        let request = UNNotificationRequest(
+            identifier: notificationId!,
+            content: content,
+            trigger: UNTimeIntervalNotificationTrigger(
+                timeInterval: TimeInterval(maxTime),
+                repeats: false
+            )
+        )
+
+        UNUserNotificationCenter.current()
+            .add(request)
+    }
+
+    func stopTimer(completion: () -> Void) {
+        pomodoroTimer?.invalidate()
+        currentTime = 0
+        maxTime = 0
+
+        completion()
+    }
 
     func saveTimerInfo() {
         let lastSavedDate = Date.now
