@@ -14,6 +14,7 @@
 		21D85CCD2B831E5B00E2FAA8 /* BreakViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D85CCC2B831E5B00E2FAA8 /* BreakViewController.swift */; };
 		21D85CD02B8325AC00E2FAA8 /* SetBreakTimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D85CCF2B8325AC00E2FAA8 /* SetBreakTimeViewController.swift */; };
 		4DC2298A2B7E2C0900D06ABB /* TagConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC229892B7E2C0900D06ABB /* TagConfigurationViewController.swift */; };
+		4DC3FBA32B846E40002566F9 /* ColorPaletteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC3FBA22B846E40002566F9 /* ColorPaletteViewController.swift */; };
 		CE4F2B032B6DE0D7000E5420 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = CE4F2B022B6DE0D7000E5420 /* .swiftlint.yml */; };
 		CEB721942B6DECC7001AB9C1 /* PomodoroTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB721932B6DECC7001AB9C1 /* PomodoroTests.swift */; };
 		CEDCA0FD2B67D015005C18EA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEDCA0D32B67D015005C18EA /* LaunchScreen.storyboard */; };
@@ -63,6 +64,7 @@
 		21D85CCC2B831E5B00E2FAA8 /* BreakViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakViewController.swift; sourceTree = "<group>"; };
 		21D85CCF2B8325AC00E2FAA8 /* SetBreakTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetBreakTimeViewController.swift; sourceTree = "<group>"; };
 		4DC229892B7E2C0900D06ABB /* TagConfigurationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagConfigurationViewController.swift; sourceTree = "<group>"; };
+		4DC3FBA22B846E40002566F9 /* ColorPaletteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPaletteViewController.swift; sourceTree = "<group>"; };
 		CE4F2B022B6DE0D7000E5420 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		CEB721912B6DECC7001AB9C1 /* PomodoroTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PomodoroTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEB721932B6DECC7001AB9C1 /* PomodoroTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroTests.swift; sourceTree = "<group>"; };
@@ -119,6 +121,8 @@
 			isa = PBXGroup;
 			children = (
 				0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */,
+				CEDCA0E82B67D015005C18EA /* TagCollectionViewCell.swift */,
+				CEDCA0E62B67D015005C18EA /* TagCollectionView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -227,12 +231,11 @@
 			children = (
 				CEDCA0E42B67D015005C18EA /* TimeSettingViewController.swift */,
 				CEDCA0E52B67D015005C18EA /* MainViewController.swift */,
-				CEDCA0E62B67D015005C18EA /* TagCollectionView.swift */,
 				CEDCA0E72B67D015005C18EA /* TagModalViewController.swift */,
-				CEDCA0E82B67D015005C18EA /* TagCollectionViewCell.swift */,
 				CEDCA0E92B67D015005C18EA /* TagCollectionViewData.swift */,
 				CEDCA0EA2B67D015005C18EA /* MainPageViewController.swift */,
 				4DC229892B7E2C0900D06ABB /* TagConfigurationViewController.swift */,
+				4DC3FBA22B846E40002566F9 /* ColorPaletteViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -460,7 +463,6 @@
 				21D85CCD2B831E5B00E2FAA8 /* BreakViewController.swift in Sources */,
 				21B21B842B73E050008FFDCB /* DashboardBaseViewController.swift in Sources */,
 				CEDCA1172B67D015005C18EA /* TagList.swift in Sources */,
-				0DF629682B692E2200BFE39F /* DashboardPieChartCell.swift in Sources */,
 				CEDCA10C2B67D015005C18EA /* TagCollectionViewData.swift in Sources */,
 				CEDCA1182B67D015005C18EA /* Option.swift in Sources */,
 				CEDCA1052B67D015005C18EA /* AppDelegate.swift in Sources */,
@@ -470,10 +472,10 @@
 				CEDCA1012B67D015005C18EA /* SettingViewController.swift in Sources */,
 				CEDCA1032B67D015005C18EA /* LongBreakModalViewController.swift in Sources */,
 				CEDCA1022B67D015005C18EA /* ShortBreakModalViewController.swift in Sources */,
-				0DF6296A2B692E5C00BFE39F /* DashboardStatusCell.swift in Sources */,
 				CEDCA1162B67D015005C18EA /* Pomodoro.swift in Sources */,
 				CEDCA1082B67D015005C18EA /* MainViewController.swift in Sources */,
 				CEDCA10D2B67D015005C18EA /* MainPageViewController.swift in Sources */,
+				4DC3FBA32B846E40002566F9 /* ColorPaletteViewController.swift in Sources */,
 				CEDCA10A2B67D015005C18EA /* TagModalViewController.swift in Sources */,
 				CEDCA1092B67D015005C18EA /* TagCollectionView.swift in Sources */,
 				CEDCA10B2B67D015005C18EA /* TagCollectionViewCell.swift in Sources */,
