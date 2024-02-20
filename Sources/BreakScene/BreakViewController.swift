@@ -44,7 +44,7 @@ final class BreakViewController: UIViewController {
     }
 
     @objc func breakButtonTapped() {
-        let breakTimeVC = BreakTimeViewController()
+        let breakTimeVC = BreakTimerViewController()
         navigationController?.pushViewController(breakTimeVC, animated: true)
     }
 }
