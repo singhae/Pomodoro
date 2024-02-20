@@ -66,7 +66,6 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         if let tagCollectionView {
             mainStackView.addArrangedSubview(tagCollectionView)
         }
-
         view.addSubview(mainStackView)
 
         mainStackView.snp.makeConstraints { make in
@@ -119,7 +118,6 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
         let individualPadding = totalPadding / 2
         let width = (collectionView.bounds.width - totalPadding) / 2
         let height: CGFloat = 70
-
         return CGSize(width: width - individualPadding, height: height)
     }
 
