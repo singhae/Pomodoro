@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class BreakTimerViewController: UIViewController {
+final class BreakTimeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
