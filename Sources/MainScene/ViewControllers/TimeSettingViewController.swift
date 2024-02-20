@@ -200,7 +200,6 @@ extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDeleg
 
     func collectionView(_: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         updateCellPositions()
-        print(indexPath.row)
         if indexPath.row >= 5 {
             isHiddenTimeButton = false
         } else {
