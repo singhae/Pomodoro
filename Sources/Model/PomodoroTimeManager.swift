@@ -6,62 +6,92 @@
 //
 
 import Foundation
-import UIKit
+import UserNotifications
 
-class PomodoroTimeManager {
+final class PomodoroTimeManager {
     static let shared = PomodoroTimeManager()
 
     private init() {}
 
+    private var pomodoroTimer: Timer?
+    private var notificationId: String?
+
     private let userDefaults = UserDefaults.standard
 
-    var currentTime = 0
-    var maxTime = 0
-    private var elapsedTime = 0
+    private(set) var currentTime = 0
+
+    func setupCurrentTime(curr: Int) {
+        currentTime = curr
+    }
+
+    func add1secToCurrentTime() {
+        currentTime += 1
+    }
+
+    private(set) var maxTime = 0
+
+    func setupMaxTime(time: Int) {
+        maxTime = time
+    }
+
+    func startTimer(timerBlock: @escaping ((Timer, Int, Int) -> Void)) {
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            timerBlock(timer, self.currentTime, self.maxTime)
+        }
+
+        notificationId = UUID().uuidString
+
+        let content = UNMutableNotificationContent()
+        content.title = "시간 종료!"
+        content.body = "시간이 종료되었습니다. 휴식을 취해주세요."
+
+        let request = UNNotificationRequest(
+            identifier: notificationId!,
+            content: content,
+            trigger: UNTimeIntervalNotificationTrigger(
+                timeInterval: TimeInterval(maxTime),
+                repeats: false
+            )
+        )
+
+        UNUserNotificationCenter.current()
+            .add(request)
+    }
+
+    func stopTimer(completion: () -> Void) {
+        pomodoroTimer?.invalidate()
+        currentTime = 0
+        maxTime = 0
+
+        completion()
+    }
 
     func saveTimerInfo() {
-        // 현재 실제 시각 및 남은 타이머 시간 정보 저장
-        print("SAVE INFOS..")
-        let realTime = Date()
-        elapsedTime = 0
+        let lastSavedDate = Date.now
 
-        userDefaults.set(realTime, forKey: "realTime")
+        userDefaults.set(lastSavedDate, forKey: "realTime")
         userDefaults.set(currentTime, forKey: "currentTime")
         userDefaults.set(maxTime, forKey: "maxTime")
     }
 
     func restoreTimerInfo() {
-        // 앱 재시작 시에 타이머 정보 불러오기
         guard let previousTime = userDefaults.object(forKey: "realTime") as? Date,
-              let reCurrentTime = userDefaults.object(forKey: "currentTime") as? Int,
-              let reMaxTime = userDefaults.object(forKey: "maxTime") as? Int
+              let existCurrentTime = userDefaults.object(forKey: "currentTime") as? Int,
+              let existMaxTime = userDefaults.object(forKey: "maxTime") as? Int
         else {
             return
         }
 
-        // 재시작 시 현재 시간
-        let realTime = Date()
-        // 남은 시간
-        elapsedTime = Int(realTime.timeIntervalSince(previousTime))
-        let updatedCurrTime = reCurrentTime + elapsedTime
-        maxTime = reMaxTime
+        let realTime = Date.now
 
-        print("TIMER INVALIDATE")
+        let updatedCurrTime = existCurrentTime + Int(realTime.timeIntervalSince(previousTime))
+        maxTime = existMaxTime
 
-        // 타이머 업데이트
-        print("elapsedTime: \(elapsedTime), updatedTime: \(updatedCurrTime)")
-        print("maxTime: \(maxTime), currentTime: \(currentTime)")
         if maxTime > updatedCurrTime {
             currentTime = updatedCurrTime
         } else {
             maxTime = 0
             currentTime = 0
         }
-    }
-
-    var isTimerExpired: Bool {
-        // 남은 타이머 시간 초과 여부 확인
-//        return (maxTime < currentTime)
-        false
     }
 }
