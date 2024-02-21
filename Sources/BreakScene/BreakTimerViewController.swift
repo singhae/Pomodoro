@@ -64,7 +64,7 @@ final class BreakTimerViewController: UIViewController {
         let minutes = (maxTime - currentTime) / 60
         let seconds = (maxTime - currentTime) % 60
         timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
-    
+
         if let id = notificationId {
             UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id])
         }
@@ -93,7 +93,7 @@ extension BreakTimerViewController {
 
     @objc private func handleLongPress(gestureRecognizer: UILongPressGestureRecognizer) {
         progressBar.isHidden = false
-        
+
         longPressTimer?.invalidate()
         longPressTimer = Timer.scheduledTimer(timeInterval: 0.02,
                                               target: self,
@@ -101,7 +101,7 @@ extension BreakTimerViewController {
                                               userInfo: nil,
                                               repeats: true)
         longPressTimer?.fire()
-        
+
         if gestureRecognizer.state == .cancelled || gestureRecognizer.state == .ended {
             progressBar.isHidden = true
             longPressTime = 0.0
@@ -110,7 +110,7 @@ extension BreakTimerViewController {
             longPressTimer?.invalidate()
         }
     }
-    
+
     @objc private func setProgress() {
         longPressTime += 0.02
         progressBar.setProgress(longPressTime, animated: true)
@@ -125,7 +125,7 @@ extension BreakTimerViewController {
             stopTimer()
         }
     }
-    
+
     @objc private func stopTimer() {
         timer?.invalidate()
         currentTime = 0
