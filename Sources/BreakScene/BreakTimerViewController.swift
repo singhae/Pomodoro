@@ -18,12 +18,10 @@ final class BreakTimerViewController: UIViewController {
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
     private var timerHeightConstraint: Constraint?
-    
     private let timeLabel = UILabel().then {
         $0.textAlignment = .center
         $0.font = UIFont.systemFont(ofSize: 60, weight: .heavy)
     }
-    
     private let longPressGuideLabel = UILabel().then {
         $0.text = "길게 클릭해서 타이머를 정지할 수 있어요"
         $0.textAlignment = .center
@@ -31,7 +29,6 @@ final class BreakTimerViewController: UIViewController {
         $0.font = UIFont.systemFont(ofSize: 16)
         $0.isHidden = true
     }
-    
     private let progressBar = UIProgressView().then {
         $0.progressViewStyle = .default
         $0.trackTintColor = .lightGray
@@ -39,17 +36,14 @@ final class BreakTimerViewController: UIViewController {
         $0.progress = 0.0
         $0.isHidden = true
     }
-    
     private lazy var breakLabel = UILabel().then {
         $0.text = "휴식시간"
         $0.textColor = .black
         $0.font = UIFont.systemFont(ofSize: 60, weight: .heavy)
     }
-    
     private lazy var timerBackground = UIView().then {
         $0.backgroundColor = .red
     }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
