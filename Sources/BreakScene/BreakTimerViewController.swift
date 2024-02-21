@@ -14,7 +14,7 @@ final class BreakTimerViewController: UIViewController {
     private var timer: Timer?
     private var notificationId: String?
     private var currentTime = 0
-    private var maxTime = 0
+    private var maxTime = 25 * 60
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
 
@@ -67,7 +67,7 @@ final class BreakTimerViewController: UIViewController {
         view.backgroundColor = .white
         addSubviews()
         setupConstraints()
-
+        startTimer()
         longPressSetting(isEnable: false)
     }
 
