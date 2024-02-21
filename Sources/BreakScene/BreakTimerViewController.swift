@@ -44,6 +44,7 @@ final class BreakTimerViewController: UIViewController {
     private lazy var timerBackground = UIView().then {
         $0.backgroundColor = .red
     }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -52,18 +53,18 @@ final class BreakTimerViewController: UIViewController {
         startTimer()
         longPressSetting(isEnable: false)
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateTimeLabel()
         // FIXME: Remove startTimer() after implementing time setup
     }
-    
+
     private func updateTimeLabel() {
         let minutes = (maxTime - currentTime) / 60
         let seconds = (maxTime - currentTime) % 60
         timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
-        
+    
         if let id = notificationId {
             UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id])
         }
@@ -78,7 +79,7 @@ extension BreakTimerViewController {
         modalViewController.modalPresentationStyle = .fullScreen
         presentPanModal(modalViewController)
     }
-    
+
     private func longPressSetting(isEnable: Bool) {
         let longPressGestureRecognizer = UILongPressGestureRecognizer(
             target: self,
@@ -89,7 +90,7 @@ extension BreakTimerViewController {
         longPressGestureRecognizer.minimumPressDuration = 0.2
         view.addGestureRecognizer(longPressGestureRecognizer)
     }
-    
+
     @objc private func handleLongPress(gestureRecognizer: UILongPressGestureRecognizer) {
         progressBar.isHidden = false
         
