@@ -200,6 +200,8 @@ extension MainViewController {
                 self.longPressGuideLabel.isHidden = true
                 self.countButton.isHidden = false
                 self.timeButton.isHidden = false
+                let breakVC = BreakViewController()
+                self.navigationController?.pushViewController(breakVC, animated: true)
             }
 
             self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
