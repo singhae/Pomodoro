@@ -19,20 +19,20 @@ final class DashboardPieChartCell: UICollectionViewCell {
     }
 
     private let donutPieChartView = PieChartView().then { chart in
-        chart.noDataText = "출력 데이터가 없습니다."
-        chart.noDataFont = .systemFont(ofSize: 20)
+//        chart.noDataText = "출력 데이터가 없습니다."
+//        chart.noDataFont = .systemFont(ofSize: 20)
         chart.noDataTextColor = .black
         chart.holeColor = .systemGray3
-        chart.backgroundColor = .systemGray3
-        chart.legend.font = .systemFont(ofSize: 15)
-        chart.legend.verticalAlignment = .bottom
-        chart.legend.neededHeight = 10
-        chart.legend.neededWidth = 100
+        chart.backgroundColor = .red
+//        chart.legend.font = .systemFont(ofSize: 15)
+//        chart.legend.verticalAlignment = .bottom
+//        chart.legend.neededHeight = 10
+//        chart.legend.neededWidth = 100
         chart.drawSlicesUnderHoleEnabled = false
         chart.holeRadiusPercent = 0.55
         chart.drawEntryLabelsEnabled = false
         chart.highlightPerTapEnabled = false
-        chart.chartDescription.textColor = .red
+//        chart.chartDescription.textColor = .red
     }
 
     @available(*, unavailable)
@@ -68,8 +68,9 @@ final class DashboardPieChartCell: UICollectionViewCell {
             make.width.height.equalToSuperview().multipliedBy(0.8)
         }
         donutPieChartView.snp.makeConstraints { make in
-            make.centerX.centerY.equalToSuperview()
-            make.width.height.equalToSuperview().multipliedBy(1.1)
+            make.center.equalToSuperview()
+            make.width.equalToSuperview()
+            make.height.equalTo(donutPieChartView.snp.width)
         }
     }
 
@@ -106,7 +107,8 @@ final class DashboardPieChartCell: UICollectionViewCell {
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
         donutPieChartView.data = pieChartData
         let totalFocusTime = focusTimePerTag.reduce(0) { $0 + $1.value }
-        updatePieChartText(totalFocusTime: totalFocusTime)
+//        updatePieChartText(totalFocusTime: totalFocusTime)
+        setTotalFocusTime(totalFocusTime: totalFocusTime)
     }
 
     private func updatePieChartText(totalFocusTime: Int) {
@@ -122,6 +124,29 @@ final class DashboardPieChartCell: UICollectionViewCell {
         }
         totalTimeText += "\(minutes)분"
         donutPieChartView.centerText = totalTimeText
+    }
+
+    private func setTotalFocusTime(totalFocusTime: Int) {
+        let days = totalFocusTime / (24 * 60)
+        let hours = (totalFocusTime % (24 * 60)) / 60
+        let minutes = totalFocusTime % 60
+        let totalFocusTimeLabel = UILabel().then {
+            donutPieChartView.addSubview($0)
+            var labelText = "합계 "
+            if days > 0 {
+                labelText += "\(days)일 "
+            }
+            if hours > 0 || days > 0 {
+                labelText += "\(hours)시간 "
+            }
+            labelText += "\(minutes)분"
+            $0.text = labelText
+
+            $0.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.centerY.equalToSuperview()
+            }
+        }
     }
 
     private func getDateRange(for date: Date, dateType: DashboardDateType) -> (start: Date, end: Date) {
