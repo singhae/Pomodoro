@@ -208,7 +208,8 @@ class DashboardBaseViewController: UIViewController {
         case .day:
             if components.year == targetComponents.year,
                components.month == targetComponents.month,
-               components.day == targetComponents.day {
+               components.day == targetComponents.day
+            {
                 dateFormatter.dateFormat = "MM월 dd일, 오늘"
             } else {
                 dateFormatter.dateFormat = "MM월 dd일"

@@ -66,7 +66,8 @@ final class DashboardStatusCell: UICollectionViewCell {
     }
 
     private func getStartAndEndDate(for date: Date, of component: Calendar.Component)
-        -> (start: Date, end: Date) {
+        -> (start: Date, end: Date)
+    {
         let calendar = Calendar.current
         guard let dateInterval = calendar.dateInterval(of: component, for: date) else {
             return (date, date)

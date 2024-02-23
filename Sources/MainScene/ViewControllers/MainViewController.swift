@@ -6,7 +6,6 @@
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
 
-import PanModal
 import SnapKit
 import Then
 import UIKit
@@ -122,7 +121,7 @@ extension MainViewController {
     @objc private func openTagModal() {
         let modalViewController = TagModalViewController()
         modalViewController.modalPresentationStyle = .fullScreen
-        presentPanModal(modalViewController)
+        present(modalViewController, animated: true, completion: nil)
     }
 
     private func setupLongPress(isEnable: Bool) {
@@ -247,16 +246,6 @@ extension MainViewController {
             make.bottom.equalTo(longPressGuideLabel).offset(-50)
             make.width.equalToSuperview().multipliedBy(0.8)
         }
-    }
-}
-
-extension TagModalViewController: PanModalPresentable {
-    var panScrollable: UIScrollView? {
-        nil
-    }
-
-    var shortFormHeight: PanModalHeight {
-        .contentHeight(UIScreen.main.bounds.height * 0.4)
     }
 }
 

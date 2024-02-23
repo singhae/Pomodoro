@@ -45,7 +45,6 @@
 		CEDCA1212B67D131005C18EA /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA1202B67D131005C18EA /* Then */; };
 		CEDCA1242B67D18C005C18EA /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA1232B67D18C005C18EA /* SnapKit */; };
 		CEDCA1292B67D1E4005C18EA /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA1282B67D1E4005C18EA /* DGCharts */; };
-		CEDCA12E2B67D263005C18EA /* PanModal in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA12D2B67D263005C18EA /* PanModal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -113,7 +112,6 @@
 			files = (
 				CEDCA1242B67D18C005C18EA /* SnapKit in Frameworks */,
 				CEDCA1212B67D131005C18EA /* Then in Frameworks */,
-				CEDCA12E2B67D263005C18EA /* PanModal in Frameworks */,
 				CEDCA1292B67D1E4005C18EA /* DGCharts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -341,7 +339,6 @@
 				CEDCA1202B67D131005C18EA /* Then */,
 				CEDCA1232B67D18C005C18EA /* SnapKit */,
 				CEDCA1282B67D1E4005C18EA /* DGCharts */,
-				CEDCA12D2B67D263005C18EA /* PanModal */,
 			);
 			productName = Pomodoro;
 			productReference = CEDCA0BB2B67CFD8005C18EA /* Pomodoro.app */;
@@ -380,7 +377,6 @@
 				CEDCA11F2B67D131005C18EA /* XCRemoteSwiftPackageReference "Then" */,
 				CEDCA1222B67D18C005C18EA /* XCRemoteSwiftPackageReference "SnapKit" */,
 				CEDCA1272B67D1E4005C18EA /* XCRemoteSwiftPackageReference "Charts" */,
-				CEDCA12C2B67D263005C18EA /* XCRemoteSwiftPackageReference "PanModal" */,
 			);
 			productRefGroup = CEDCA0BC2B67CFD8005C18EA /* Products */;
 			projectDirPath = "";
@@ -807,14 +803,6 @@
 				minimumVersion = 5.0.0;
 			};
 		};
-		CEDCA12C2B67D263005C18EA /* XCRemoteSwiftPackageReference "PanModal" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/slackhq/PanModal.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.7;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -832,11 +820,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CEDCA1272B67D1E4005C18EA /* XCRemoteSwiftPackageReference "Charts" */;
 			productName = DGCharts;
-		};
-		CEDCA12D2B67D263005C18EA /* PanModal */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CEDCA12C2B67D263005C18EA /* XCRemoteSwiftPackageReference "PanModal" */;
-			productName = PanModal;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
