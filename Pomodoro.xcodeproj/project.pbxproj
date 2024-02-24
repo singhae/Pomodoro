@@ -10,6 +10,7 @@
 		0DF629662B691ABA00BFE39F /* TimerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */; };
 		213F30532B6BE72300FAF5F2 /* DashboardPieChartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */; };
 		213F30552B6BE73900FAF5F2 /* DashboardStatusCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */; };
+		215A67852B8A1CA900ED9FA7 /* PomodoroDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 215A67842B8A1CA900ED9FA7 /* PomodoroDesignSystem */; };
 		21B21B842B73E050008FFDCB /* DashboardBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B21B832B73E050008FFDCB /* DashboardBaseViewController.swift */; };
 		21D85CCD2B831E5B00E2FAA8 /* BreakViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D85CCC2B831E5B00E2FAA8 /* BreakViewController.swift */; };
 		21D85CD42B84B54700E2FAA8 /* PomodoroTimeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D85CD32B84B54700E2FAA8 /* PomodoroTimeManager.swift */; };
@@ -111,6 +112,7 @@
 			files = (
 				CEDCA1242B67D18C005C18EA /* SnapKit in Frameworks */,
 				CEDCA1212B67D131005C18EA /* Then in Frameworks */,
+				215A67852B8A1CA900ED9FA7 /* PomodoroDesignSystem in Frameworks */,
 				CEDCA12E2B67D263005C18EA /* PanModal in Frameworks */,
 				CEDCA1292B67D1E4005C18EA /* DGCharts in Frameworks */,
 			);
@@ -339,6 +341,7 @@
 				CEDCA1232B67D18C005C18EA /* SnapKit */,
 				CEDCA1282B67D1E4005C18EA /* DGCharts */,
 				CEDCA12D2B67D263005C18EA /* PanModal */,
+				215A67842B8A1CA900ED9FA7 /* PomodoroDesignSystem */,
 			);
 			productName = Pomodoro;
 			productReference = CEDCA0BB2B67CFD8005C18EA /* Pomodoro.app */;
@@ -378,6 +381,7 @@
 				CEDCA1222B67D18C005C18EA /* XCRemoteSwiftPackageReference "SnapKit" */,
 				CEDCA1272B67D1E4005C18EA /* XCRemoteSwiftPackageReference "Charts" */,
 				CEDCA12C2B67D263005C18EA /* XCRemoteSwiftPackageReference "PanModal" */,
+				215A67832B8A1CA900ED9FA7 /* XCRemoteSwiftPackageReference "PomodoroDesignSystem" */,
 			);
 			productRefGroup = CEDCA0BC2B67CFD8005C18EA /* Products */;
 			projectDirPath = "";
@@ -771,6 +775,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		215A67832B8A1CA900ED9FA7 /* XCRemoteSwiftPackageReference "PomodoroDesignSystem" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/HGU-iOS-Study-Group/PomodoroDesignSystem.git";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.0.2;
+			};
+		};
 		CEDCA11A2B67D0AB005C18EA /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-swift.git";
@@ -814,6 +826,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		215A67842B8A1CA900ED9FA7 /* PomodoroDesignSystem */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 215A67832B8A1CA900ED9FA7 /* XCRemoteSwiftPackageReference "PomodoroDesignSystem" */;
+			productName = PomodoroDesignSystem;
+		};
 		CEDCA1202B67D131005C18EA /* Then */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CEDCA11F2B67D131005C18EA /* XCRemoteSwiftPackageReference "Then" */;
