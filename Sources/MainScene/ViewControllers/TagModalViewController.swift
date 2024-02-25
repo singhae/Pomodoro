@@ -74,8 +74,10 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         collectionViewLayer.sectionInset = UIEdgeInsets(top: 5.0, left: 7.0, bottom: 5.0, right: 7.0)
         collectionViewLayer.minimumLineSpacing = 5
         collectionViewLayer.minimumInteritemSpacing = 1
+
         let tagCollectionView = TagCollectionView(frame: .zero, collectionViewLayout: collectionViewLayer)
         tagCollectionView.backgroundColor = .secondarySystemBackground
+
         view.addSubview(tagCollectionView)
 
         tagCollectionView.snp.makeConstraints { make in
@@ -118,7 +120,6 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
         _: UICollectionView,
         numberOfItemsInSection _: Int
     ) -> Int {
-        // dataSource.count
         tagList.tagList.count
     }
 
@@ -126,15 +127,6 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
-        //        guard let cell = collectionView.dequeueReusableCell(
-        //            withReuseIdentifier: TagCollectionViewCell.id,
-        //            for: indexPath
-        //        ) as? TagCollectionViewCell else {
-        //            return UICollectionViewCell()
-        //        }
-        //
-        //        cell.tagLabel.text = dataSource[indexPath.item]
-        //        return cell
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TagCollectionViewCell.id, for: indexPath) as? TagCollectionViewCell else {
             return UICollectionViewCell()
         }

@@ -120,7 +120,7 @@ extension MainViewController {
 
     @objc private func openTagModal() {
         let modalViewController = TagModalViewController()
-        modalViewController.modalPresentationStyle = .fullScreen
+        modalViewController.modalPresentationStyle = .automatic
         present(modalViewController, animated: true, completion: nil)
     }
 
