@@ -98,15 +98,24 @@ final class DashboardPieChartCell: UICollectionViewCell {
     func setPieChartData(for date: Date, dateType: DashboardDateType) {
         let (startDate, endDate) = getDateRange(for: date, dateType: dateType)
         let focusTimePerTag = calculateFocusTimePerTag(from: startDate, to: endDate)
-        let pieChartDataEntries = focusTimePerTag.map {
-            PieChartDataEntry(value: Double($0.value), label: $0.key)
+        let sortedFocusTimePerTag = focusTimePerTag.sorted { $0.value > $1.value }
+        let pieChartDataEntries = sortedFocusTimePerTag.map {
+            PieChartDataEntry(value: Double($1), label: $0)
         }
+
         let pieChartDataSet = PieChartDataSet(entries: pieChartDataEntries, label: "").then {
-            $0.colors = [.systemTeal, .systemPink, .systemIndigo]
+            var colors: [UIColor] = [.systemTeal, .systemPink, .systemIndigo]
+            var dataSetColors: [UIColor] = []
+            for index in 0 ..< pieChartDataEntries.count {
+                let color = colors[index % colors.count]
+                dataSetColors.append(color)
+            }
+            $0.colors = dataSetColors
             $0.drawValuesEnabled = false
         }
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
         donutPieChartView.data = pieChartData
+
         let totalFocusTime = focusTimePerTag.reduce(0) { $0 + $1.value }
         updatePieChartText(totalFocusTime: totalFocusTime)
         updateLegendLabel(with: focusTimePerTag)
@@ -129,15 +138,16 @@ final class DashboardPieChartCell: UICollectionViewCell {
     private func updateLegendLabel(with focusTimePerTag: [String: Int]) {
         print("calculate<> = \(focusTimePerTag)")
         legendStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        let sortedFocusTime = focusTimePerTag.sorted { $0.value > $1.value }
 
-        for (tagId, focusTime) in focusTimePerTag.sorted(by: { $0.key < $1.key }) {
+        for (tagId, focusTime) in sortedFocusTime {
             let label = UILabel()
-            label.text = "\(tagId): \(focusTime)분"
+            label.text = "\(tagId): \(focusTime)분" // 태그 ID와 집중 시간을 텍스트로 설정
             label.font = UIFont.systemFont(ofSize: 20)
             legendStackView.addArrangedSubview(label)
         }
 
-        tagLabelHeightConstraint?.update(offset: 360 + 25 * focusTimePerTag.count)
+        tagLabelHeightConstraint?.update(offset: 360 + 25 * sortedFocusTime.count)
         UIView.animate(withDuration: 0) {
             self.layoutIfNeeded()
         }
