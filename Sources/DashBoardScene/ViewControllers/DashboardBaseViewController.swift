@@ -279,5 +279,3 @@ extension DashboardBaseViewController: UICollectionViewDataSource {
         }
     }
 }
-
-
