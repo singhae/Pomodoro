@@ -22,6 +22,7 @@ final class BreakTimerViewController: UIViewController {
         $0.textAlignment = .center
         $0.font = UIFont.systemFont(ofSize: 60, weight: .heavy)
     }
+
     private let longPressGuideLabel = UILabel().then {
         $0.text = "길게 클릭해서 타이머를 정지할 수 있어요"
         $0.textAlignment = .center
@@ -29,6 +30,7 @@ final class BreakTimerViewController: UIViewController {
         $0.font = UIFont.systemFont(ofSize: 16)
         $0.isHidden = true
     }
+
     private let progressBar = UIProgressView().then {
         $0.progressViewStyle = .default
         $0.trackTintColor = .lightGray
@@ -36,11 +38,13 @@ final class BreakTimerViewController: UIViewController {
         $0.progress = 0.0
         $0.isHidden = true
     }
+
     private lazy var breakLabel = UILabel().then {
         $0.text = "휴식시간"
         $0.textColor = .black
         $0.font = UIFont.systemFont(ofSize: 60, weight: .heavy)
     }
+
     private lazy var timerBackground = UIView().then {
         $0.backgroundColor = .red
     }
@@ -77,7 +81,7 @@ extension BreakTimerViewController {
     @objc private func openTagModal() {
         let modalViewController = TagModalViewController()
         modalViewController.modalPresentationStyle = .fullScreen
-        presentPanModal(modalViewController)
+        present(modalViewController, animated: true, completion: nil)
     }
 
     private func longPressSetting(isEnable: Bool) {
@@ -106,7 +110,7 @@ extension BreakTimerViewController {
             progressBar.isHidden = true
             longPressTime = 0.0
             progressBar.progress = 0.0
-            
+
             longPressTimer?.invalidate()
         }
     }
@@ -114,13 +118,13 @@ extension BreakTimerViewController {
     @objc private func setProgress() {
         longPressTime += 0.02
         progressBar.setProgress(longPressTime, animated: true)
-        
+
         if longPressTime >= 1 {
             longPressTime = 0.0
             progressBar.progress = 0.0
-            
+
             longPressTimer?.invalidate()
-            
+
             progressBar.isHidden = true
             stopTimer()
         }
@@ -133,12 +137,12 @@ extension BreakTimerViewController {
         updateTimeLabel()
         longPressGuideLabel.isHidden = true
     }
-    
+
     @objc private func timeSetting() {
         let timeSettingviewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
         navigationController?.pushViewController(timeSettingviewController, animated: true)
     }
-    
+
     @objc private func startTimer() {
         longPressTime = 0.0
         progressBar.progress = 0.0
@@ -149,7 +153,7 @@ extension BreakTimerViewController {
             let seconds = (self.maxTime - self.currentTime) % 60
             self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
             self.currentTime += 1
-            
+
             if self.currentTime > self.maxTime {
                 timer.invalidate()
                 self.longPressGuideLabel.isHidden = true
@@ -194,7 +198,7 @@ extension BreakTimerViewController {
         view.addSubview(longPressGuideLabel)
         view.addSubview(progressBar)
     }
-    
+
     private func setupConstraints() {
         breakLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()

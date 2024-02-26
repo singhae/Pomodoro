@@ -52,8 +52,7 @@ extension ColorPaletteViewController: UICollectionViewDataSource, UICollectionVi
     }
 
     func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
-    {
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath)
         cell.backgroundColor = colors[indexPath.item]
         cell.layer.cornerRadius = 25
@@ -63,8 +62,7 @@ extension ColorPaletteViewController: UICollectionViewDataSource, UICollectionVi
 
     // FIXME: 색상 클릭시 색상 데이터 전송
     func collectionView(_: UICollectionView,
-                        didSelectItemAt indexPath: IndexPath)
-    {
+                        didSelectItemAt indexPath: IndexPath) {
         let selectedColor = colors[indexPath.item]
         delegate?.selectedColor(selectedColor)
         dismiss(animated: true, completion: nil)
