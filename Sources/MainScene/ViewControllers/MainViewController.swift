@@ -120,8 +120,9 @@ extension MainViewController {
 
     @objc private func openTagModal() {
         let modalViewController = TagModalViewController()
-        modalViewController.modalPresentationStyle = .automatic
-        present(modalViewController, animated: true, completion: nil)
+        let navigationController = UINavigationController(rootViewController: modalViewController)
+        navigationController.modalPresentationStyle = .automatic
+        present(navigationController, animated: true, completion: nil)
     }
 
     private func setupLongPress(isEnable: Bool) {
