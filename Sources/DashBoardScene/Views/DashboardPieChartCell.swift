@@ -104,7 +104,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         }
 
         let pieChartDataSet = PieChartDataSet(entries: pieChartDataEntries, label: "").then {
-            var colors: [UIColor] = [.systemTeal, .systemPink, .systemIndigo]
+            let colors: [UIColor] = [.systemTeal, .systemPink, .systemIndigo]
             var dataSetColors: [UIColor] = []
             for index in 0 ..< pieChartDataEntries.count {
                 let color = colors[index % colors.count]
@@ -142,7 +142,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
 
         for (tagId, focusTime) in sortedFocusTime {
             let label = UILabel()
-            label.text = "\(tagId): \(focusTime)분" // 태그 ID와 집중 시간을 텍스트로 설정
+            label.text = "\(tagId): \(focusTime)분"
             label.font = UIFont.systemFont(ofSize: 20)
             legendStackView.addArrangedSubview(label)
         }
