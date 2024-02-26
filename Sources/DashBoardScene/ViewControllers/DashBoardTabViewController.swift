@@ -40,11 +40,11 @@ final class DashBoardTabViewController: UIViewController {
         segmentedControl.backgroundColor = .white
         let normalTextAttributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: UIColor.black,
-            .font: UIFont.systemFont(ofSize: 20, weight: .bold),
+            .font: UIFont.systemFont(ofSize: 20, weight: .bold)
         ]
         let selectedTextAttributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: UIColor.red,
-            .font: UIFont.systemFont(ofSize: 20, weight: .bold),
+            .font: UIFont.systemFont(ofSize: 20, weight: .bold)
         ]
         segmentedControl.setTitleTextAttributes(normalTextAttributes, for: .normal)
         segmentedControl.setTitleTextAttributes(selectedTextAttributes, for: .selected)
@@ -78,8 +78,7 @@ final class DashBoardTabViewController: UIViewController {
 
     @objc private func segmentChanged() {
         if let selectedViewController = DashboardDateType(
-            rawValue: tabBarControl.selectedSegmentIndex)
-        {
+            rawValue: tabBarControl.selectedSegmentIndex) {
             displayViewController(selectedViewController)
         }
     }

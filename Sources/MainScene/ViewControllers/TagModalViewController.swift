@@ -105,9 +105,7 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
         _ collectionView: UICollectionView,
         layout _: UICollectionViewLayout,
         sizeForItemAt _: IndexPath
-    ) ->
-        CGSize
-    {
+    ) -> CGSize {
         let padding: CGFloat = 10
         let totalPadding = padding * (2 - 1)
         let individualPadding = totalPadding / 2
@@ -127,7 +125,10 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TagCollectionViewCell.id, for: indexPath) as? TagCollectionViewCell else {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: TagCollectionViewCell.id,
+            for: indexPath
+        ) as? TagCollectionViewCell else {
             return UICollectionViewCell()
         }
 
