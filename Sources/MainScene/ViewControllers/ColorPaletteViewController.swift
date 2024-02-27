@@ -23,7 +23,7 @@ final class ColorPaletteViewController: UIViewController {
         .blue,
         .purple,
         .black,
-        .white
+        .white,
     ]
     private lazy var collectionView = UICollectionView(
         frame: .zero,
@@ -43,7 +43,7 @@ final class ColorPaletteViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .pomodoro.blackMedium
         setupCollectionView()
     }
 

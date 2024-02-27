@@ -6,6 +6,7 @@
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
 
+import PomodoroDesignSystem
 import SnapKit
 import Then
 import UIKit
@@ -78,7 +79,7 @@ final class MainViewController: UIViewController {
             object: nil
         )
 
-        view.backgroundColor = .white
+        view.backgroundColor = .pomodoro.background
         addSubviews()
         setupConstraints()
 

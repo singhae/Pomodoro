@@ -43,7 +43,7 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         $0.setImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
         $0.contentMode = .scaleAspectFit
         $0.tintColor = .black
-        $0.backgroundColor = .white
+        $0.backgroundColor = .pomodoro.background
         $0.layer.cornerRadius = 10
         $0.clipsToBounds = true
     }
