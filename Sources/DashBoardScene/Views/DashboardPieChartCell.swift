@@ -20,7 +20,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         view.layer.cornerRadius = 20
         view.backgroundColor = .systemGray3
     }
-
+    
     private let donutPieChartView = PieChartView().then { chart in
         chart.noDataText = "출력 데이터가 없습니다."
         chart.noDataFont = .systemFont(ofSize: 20)
@@ -33,12 +33,12 @@ final class DashboardPieChartCell: UICollectionViewCell {
         chart.highlightPerTapEnabled = false
         chart.legend.enabled = false
     }
-
+    
     @available(*, unavailable)
     required init?(coder _: NSCoder) {
         fatalError()
     }
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(pieBackgroundView)
@@ -49,7 +49,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         setLegendLabel()
         setPieChartData(for: Date(), dateType: .day)
     }
-
+    
     private func calculateFocusTimePerTag(for selectedDate: Date) -> [String: Int] {
         let calendar = Calendar.current
         var focusTimePerTag = [String: Int]()
@@ -61,7 +61,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         }
         return focusTimePerTag
     }
-
+    
     private func setupPieChart() {
         pieBackgroundView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -74,7 +74,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
             make.height.equalTo(donutPieChartView.snp.width)
         }
     }
-
+    
     private func entryData(values: [Double]) -> [ChartDataEntry] {
         var pieDataEntries: [ChartDataEntry] = []
         for index in 0 ..< values.count {
@@ -83,7 +83,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         }
         return pieDataEntries
     }
-
+    
     private func calculateFocusTimePerTag(from startDate: Date, to endDate: Date) -> [String: Int] {
         var focusTimePerTag = [String: Int]()
         let filteredSessions = PomodoroData.dummyData.filter { session in
@@ -94,7 +94,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         }
         return focusTimePerTag
     }
-
+    
     func setPieChartData(for date: Date, dateType: DashboardDateType) {
         let (startDate, endDate) = getDateRange(for: date, dateType: dateType)
         let focusTimePerTag = calculateFocusTimePerTag(from: startDate, to: endDate)
@@ -102,7 +102,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         let pieChartDataEntries = sortedFocusTimePerTag.map {
             PieChartDataEntry(value: Double($1), label: $0)
         }
-
+        
         let pieChartDataSet = PieChartDataSet(entries: pieChartDataEntries, label: "").then {
             let colors: [UIColor] = [.systemTeal, .systemPink, .systemIndigo]
             var dataSetColors: [UIColor] = []
@@ -115,44 +115,56 @@ final class DashboardPieChartCell: UICollectionViewCell {
         }
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
         donutPieChartView.data = pieChartData
-
+        
         let totalFocusTime = focusTimePerTag.reduce(0) { $0 + $1.value }
         updatePieChartText(totalFocusTime: totalFocusTime)
         updateLegendLabel(with: focusTimePerTag)
     }
-
+    
     private func setLegendLabel() {
         legendStackView.axis = .vertical
         legendStackView.distribution = .equalSpacing
         legendStackView.alignment = .leading
         legendStackView.spacing = 8
         legendStackView.backgroundColor = .clear
-
+        
         donutPieChartView.addSubview(legendStackView)
         legendStackView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.top.equalTo(donutPieChartView.snp.bottom)
         }
     }
-
+    
     private func updateLegendLabel(with focusTimePerTag: [String: Int]) {
-        print("calculate<> = \(focusTimePerTag)")
         legendStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         let sortedFocusTime = focusTimePerTag.sorted { $0.value > $1.value }
-
+        let totalFocusTime = sortedFocusTime.reduce(0) { $0 + $1.value }
         for (tagId, focusTime) in sortedFocusTime {
             let label = UILabel()
-            label.text = "\(tagId): \(focusTime)분"
             label.font = UIFont.systemFont(ofSize: 20)
+            let days = focusTime / (24 * 60)
+            let hours = (focusTime % (24 * 60)) / 60
+            let minutes = focusTime % 60
+            var timeText = ""
+            if days > 0 {
+                timeText += "\(days)일 "
+            }
+            if hours > 0 || days > 0 {
+                timeText += "\(hours)시간 "
+            }
+            timeText += "\(minutes)분"
+            let percentage = (Double(focusTime) / Double(totalFocusTime)) * 100
+            label.text = "\(tagId): \(timeText) (\(String(format: "%.0f", percentage))%)"
+            
             legendStackView.addArrangedSubview(label)
         }
-
+        
         tagLabelHeightConstraint?.update(offset: 360 + 25 * sortedFocusTime.count)
         UIView.animate(withDuration: 0) {
             self.layoutIfNeeded()
         }
     }
-
+    
     private func updatePieChartText(totalFocusTime: Int) {
         let days = totalFocusTime / (24 * 60)
         let hours = (totalFocusTime % (24 * 60)) / 60
@@ -167,7 +179,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         totalTimeText += "\(minutes)분"
         donutPieChartView.centerText = totalTimeText
     }
-
+    
     private func getDateRange(for date: Date, dateType: DashboardDateType) -> (start: Date, end: Date) {
         let calendar = Calendar.current
         switch dateType {
@@ -180,7 +192,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         case .week:
             guard let startOfWeek = calendar.date(
                 from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)),
-                let endOfWeek = calendar.date(byAdding: .day, value: 7, to: startOfWeek)
+                  let endOfWeek = calendar.date(byAdding: .day, value: 7, to: startOfWeek)
             else {
                 return (date, date)
             }
@@ -188,8 +200,8 @@ final class DashboardPieChartCell: UICollectionViewCell {
         case .month:
             guard let monthStartDate = calendar.date(
                 from: calendar.dateComponents([.year, .month], from: date)),
-                let nextMonthDate = calendar.date(byAdding: .month, value: 1, to: monthStartDate),
-                let monthEndDate = calendar.date(byAdding: .day, value: -1, to: nextMonthDate)
+                  let nextMonthDate = calendar.date(byAdding: .month, value: 1, to: monthStartDate),
+                  let monthEndDate = calendar.date(byAdding: .day, value: -1, to: nextMonthDate)
             else {
                 return (date, date)
             }
