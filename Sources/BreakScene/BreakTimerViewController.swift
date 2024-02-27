@@ -134,7 +134,7 @@ extension BreakTimerViewController {
         currentTime = 0
         maxTime = 0
         updateTimeLabel()
-        router.nextToSetp(navigationController: navigationController ?? UINavigationController())
+        router.moveToNextStep(navigationController: navigationController ?? UINavigationController())
         longPressGuideLabel.isHidden = true
     }
 
@@ -156,7 +156,9 @@ extension BreakTimerViewController {
             self.currentTime += 1
             if self.currentTime > self.maxTime {
                 timer.invalidate()
-                self.router.nextToSetp(navigationController: self.navigationController ?? UINavigationController())
+                self.router.moveToNextStep(
+                    navigationController: self.navigationController ?? UINavigationController()
+                )
                 self.longPressGuideLabel.isHidden = true
             } else {
                 let timerHeight = self.view.frame.height * CGFloat(self.currentTime) / CGFloat(self.maxTime)

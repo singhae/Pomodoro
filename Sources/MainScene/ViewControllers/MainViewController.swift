@@ -82,7 +82,7 @@ final class MainViewController: UIViewController {
         addSubviews()
         setupConstraints()
 
-        if pomodoroTimeManager.maxTime != 0 {
+        if pomodoroTimeManager.maxTime != .zero {
             updateTimeLabel()
             startTimer()
         }
@@ -213,7 +213,7 @@ extension MainViewController {
                 guard let router = self.router else {
                     return
                 }
-                router.nextToSetp(
+                router.moveToNextStep(
                     navigationController:
                     self.navigationController ?? UINavigationController()
                 )
