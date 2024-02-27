@@ -1,5 +1,5 @@
 //
-//  SetBreakTimeViewController.swift
+//  BreakTimerViewController.swift
 //  Pomodoro
 //
 //  Created by 김하람 on 2/19/24.

@@ -1,5 +1,5 @@
 //
-//  PomodoroTimeManager.swift
+//  PomodoroTimeManagers.swift
 //  Pomodoro
 //
 //  Created by 김현기 on 2/13/24.
