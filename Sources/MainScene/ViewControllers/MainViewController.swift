@@ -269,6 +269,6 @@ extension MainViewController: TimeSettingViewControllerDelegate {
 extension MainViewController: TagSelectionDelegate {
     func tagSelected(tag: String) {
         // TODO: 선택된 태그 정보 전달
-        print("선택된 태그: \(tag)")
+        
     }
 }
