@@ -5,7 +5,6 @@
 //  Created by 김하람 on 2/19/24.
 //
 
-import PanModal
 import SnapKit
 import Then
 import UIKit
