@@ -56,7 +56,6 @@ final class BreakTimerViewController: UIViewController {
         setupConstraints()
         startTimer()
         longPressSetting(isEnable: false)
-        print("====>> \(timeLabel.frame.minY)")
     }
 
     override func viewDidAppear(_ animated: Bool) {
