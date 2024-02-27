@@ -19,6 +19,15 @@
       }
     },
     {
+      "identity" : "pomodorodesignsystem",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/HGU-iOS-Study-Group/PomodoroDesignSystem.git",
+      "state" : {
+        "revision" : "f3b75ae6518f3578ed2d3ce0a48622832b056287",
+        "version" : "0.0.2"
+      }
+    },
+    {
       "identity" : "realm-core",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/realm/realm-core.git",
@@ -34,7 +43,6 @@
       "state" : {
         "revision" : "55466ae0fb29c5f21866792f05c1fc0c590d7c29",
         "version" : "10.47.0"
-
       }
     },
     {

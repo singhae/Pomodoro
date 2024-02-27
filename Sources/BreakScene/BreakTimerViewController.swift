@@ -14,7 +14,7 @@ final class BreakTimerViewController: UIViewController {
     private var timer: Timer?
     private var notificationId: String?
     private var currentTime = 0
-    private var maxTime = 5 * 60
+    private var maxTime = 25 * 60
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
     private var timerHeightConstraint: Constraint?
@@ -144,6 +144,7 @@ extension BreakTimerViewController {
     }
 
     @objc private func startTimer() {
+        let timeLabelMinY = timeLabel.frame.minY + breakLabel.frame.maxY
         longPressTime = 0.0
         progressBar.progress = 0.0
         longPressSetting(isEnable: true)
@@ -153,17 +154,22 @@ extension BreakTimerViewController {
             let seconds = (self.maxTime - self.currentTime) % 60
             self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
             self.currentTime += 1
-
             if self.currentTime > self.maxTime {
                 timer.invalidate()
                 self.longPressGuideLabel.isHidden = true
             } else {
                 let timerHeight = self.view.frame.height * CGFloat(self.currentTime) / CGFloat(self.maxTime)
+
                 DispatchQueue.main.async {
                     self.timerHeightConstraint?.update(offset: timerHeight)
                     UIView.animate(withDuration: 1.0) {
                         self.view.layoutIfNeeded()
                     }
+                }
+                if timeLabelMinY >= timerHeight {
+                    self.timeLabel.textColor = .black
+                } else {
+                    self.timeLabel.textColor = .white
                 }
             }
         }

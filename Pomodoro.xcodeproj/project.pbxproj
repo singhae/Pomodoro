@@ -392,6 +392,7 @@
 				CEDCA11F2B67D131005C18EA /* XCRemoteSwiftPackageReference "Then" */,
 				CEDCA1222B67D18C005C18EA /* XCRemoteSwiftPackageReference "SnapKit" */,
 				CEDCA1272B67D1E4005C18EA /* XCRemoteSwiftPackageReference "Charts" */,
+
 				215A67832B8A1CA900ED9FA7 /* XCRemoteSwiftPackageReference "PomodoroDesignSystem" */,
 			);
 			productRefGroup = CEDCA0BC2B67CFD8005C18EA /* Products */;

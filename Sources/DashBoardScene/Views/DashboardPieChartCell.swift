@@ -7,12 +7,15 @@
 //
 
 import DGCharts
+import SnapKit
 import UIKit
 
 final class DashboardPieChartCell: UICollectionViewCell {
     private var selectedDate: Date = .init()
     private var dayData: [String] = []
     private var priceData: [Double] = [10]
+    var tagLabelHeightConstraint: Constraint?
+    let legendStackView = UIStackView()
     private let pieBackgroundView = UIView().then { view in
         view.layer.cornerRadius = 20
         view.backgroundColor = .systemGray3
@@ -22,17 +25,13 @@ final class DashboardPieChartCell: UICollectionViewCell {
         chart.noDataText = "출력 데이터가 없습니다."
         chart.noDataFont = .systemFont(ofSize: 20)
         chart.noDataTextColor = .black
-        chart.holeColor = .systemGray3
-        chart.backgroundColor = .systemGray3
-        chart.legend.font = .systemFont(ofSize: 15)
-        chart.legend.verticalAlignment = .bottom
-        chart.legend.neededHeight = 10
-        chart.legend.neededWidth = 100
+        chart.holeColor = .clear
+        chart.backgroundColor = .clear
         chart.drawSlicesUnderHoleEnabled = false
         chart.holeRadiusPercent = 0.55
         chart.drawEntryLabelsEnabled = false
         chart.highlightPerTapEnabled = false
-        chart.chartDescription.textColor = .red
+        chart.legend.enabled = false
     }
 
     @available(*, unavailable)
@@ -44,9 +43,10 @@ final class DashboardPieChartCell: UICollectionViewCell {
         super.init(frame: frame)
         contentView.addSubview(pieBackgroundView)
         pieBackgroundView.addSubview(donutPieChartView)
-        backgroundColor = .systemGray3
+        backgroundColor = .clear
         layer.cornerRadius = 20
         setupPieChart()
+        setLegendLabel()
         setPieChartData(for: Date(), dateType: .day)
     }
 
@@ -64,12 +64,14 @@ final class DashboardPieChartCell: UICollectionViewCell {
 
     private func setupPieChart() {
         pieBackgroundView.snp.makeConstraints { make in
-            make.centerX.centerY.equalToSuperview()
-            make.width.height.equalToSuperview().multipliedBy(0.8)
+            make.centerX.equalToSuperview()
+            make.width.equalToSuperview()
+            self.tagLabelHeightConstraint = make.height.equalTo(0).constraint
         }
         donutPieChartView.snp.makeConstraints { make in
-            make.centerX.centerY.equalToSuperview()
-            make.width.height.equalToSuperview().multipliedBy(1.1)
+            make.centerX.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.8)
+            make.height.equalTo(donutPieChartView.snp.width)
         }
     }
 
@@ -96,17 +98,71 @@ final class DashboardPieChartCell: UICollectionViewCell {
     func setPieChartData(for date: Date, dateType: DashboardDateType) {
         let (startDate, endDate) = getDateRange(for: date, dateType: dateType)
         let focusTimePerTag = calculateFocusTimePerTag(from: startDate, to: endDate)
-        let pieChartDataEntries = focusTimePerTag.map {
-            PieChartDataEntry(value: Double($0.value), label: $0.key)
+        let sortedFocusTimePerTag = focusTimePerTag.sorted { $0.value > $1.value }
+        let pieChartDataEntries = sortedFocusTimePerTag.map {
+            PieChartDataEntry(value: Double($1), label: $0)
         }
+
         let pieChartDataSet = PieChartDataSet(entries: pieChartDataEntries, label: "").then {
-            $0.colors = [.systemTeal, .systemPink, .systemIndigo]
+            let colors: [UIColor] = [.systemTeal, .systemPink, .systemIndigo]
+            var dataSetColors: [UIColor] = []
+            for index in 0 ..< pieChartDataEntries.count {
+                let color = colors[index % colors.count]
+                dataSetColors.append(color)
+            }
+            $0.colors = dataSetColors
             $0.drawValuesEnabled = false
         }
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
         donutPieChartView.data = pieChartData
+
         let totalFocusTime = focusTimePerTag.reduce(0) { $0 + $1.value }
         updatePieChartText(totalFocusTime: totalFocusTime)
+        updateLegendLabel(with: focusTimePerTag)
+    }
+
+    private func setLegendLabel() {
+        legendStackView.axis = .vertical
+        legendStackView.distribution = .equalSpacing
+        legendStackView.alignment = .leading
+        legendStackView.spacing = 8
+        legendStackView.backgroundColor = .clear
+
+        donutPieChartView.addSubview(legendStackView)
+        legendStackView.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.top.equalTo(donutPieChartView.snp.bottom)
+        }
+    }
+
+    private func updateLegendLabel(with focusTimePerTag: [String: Int]) {
+        legendStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        let sortedFocusTime = focusTimePerTag.sorted { $0.value > $1.value }
+        let totalFocusTime = sortedFocusTime.reduce(0) { $0 + $1.value }
+        for (tagId, focusTime) in sortedFocusTime {
+            let label = UILabel()
+            label.font = UIFont.systemFont(ofSize: 20)
+            let days = focusTime / (24 * 60)
+            let hours = (focusTime % (24 * 60)) / 60
+            let minutes = focusTime % 60
+            var timeText = ""
+            if days > 0 {
+                timeText += "\(days)일 "
+            }
+            if hours > 0 || days > 0 {
+                timeText += "\(hours)시간 "
+            }
+            timeText += "\(minutes)분"
+            let percentage = (Double(focusTime) / Double(totalFocusTime)) * 100
+            label.text = "\(tagId): \(timeText) (\(String(format: "%.0f", percentage))%)"
+
+            legendStackView.addArrangedSubview(label)
+        }
+
+        tagLabelHeightConstraint?.update(offset: 360 + 25 * sortedFocusTime.count)
+        UIView.animate(withDuration: 0) {
+            self.layoutIfNeeded()
+        }
     }
 
     private func updatePieChartText(totalFocusTime: Int) {
