@@ -9,12 +9,26 @@ import SnapKit
 import Then
 import UIKit
 
+protocol ColorPaletteDelegate: AnyObject {
+    func selectedColor(_ color: UIColor)
+}
+
 final class ColorPaletteViewController: UIViewController {
-    private var colors: [UIColor] = [.red, .orange, .yellow,
-                                     .green, .blue, .purple, .black, .white]
-    private lazy var collectionView = UICollectionView(frame: .zero,
-                                                       collectionViewLayout:
-                                                       UICollectionViewFlowLayout()).then {
+    weak var delegate: ColorPaletteDelegate?
+    private var colors: [UIColor] = [
+        .red,
+        .orange,
+        .yellow,
+        .green,
+        .blue,
+        .purple,
+        .black,
+        .white
+    ]
+    private lazy var collectionView = UICollectionView(
+        frame: .zero,
+        collectionViewLayout: UICollectionViewFlowLayout()
+    ).then {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: 50, height: 50)
         layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
@@ -46,17 +60,24 @@ extension ColorPaletteViewController: UICollectionViewDataSource, UICollectionVi
         colors.count
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath)
         cell.backgroundColor = colors[indexPath.item]
         cell.layer.cornerRadius = 25
         cell.layer.masksToBounds = true
         return cell
     }
+
     // FIXME: 색상 클릭시 색상 데이터 전송
-    //    func collectionView(_: UICollectionView,
-    //                        didSelectItemAt indexPath: IndexPath)
-    //    {
-    //    }
+    func collectionView(
+        _: UICollectionView,
+        didSelectItemAt indexPath: IndexPath
+    ) {
+        let selectedColor = colors[indexPath.item]
+        delegate?.selectedColor(selectedColor)
+        dismiss(animated: true, completion: nil)
+    }
 }

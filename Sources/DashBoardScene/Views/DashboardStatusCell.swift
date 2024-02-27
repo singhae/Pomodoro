@@ -65,8 +65,10 @@ final class DashboardStatusCell: UICollectionViewCell {
         backgroundColor = .black
     }
 
-    private func getStartAndEndDate(for date: Date, of component: Calendar.Component)
-        -> (start: Date, end: Date) {
+    private func getStartAndEndDate(
+        for date: Date,
+        of component: Calendar.Component
+    ) -> (start: Date, end: Date) {
         let calendar = Calendar.current
         guard let dateInterval = calendar.dateInterval(of: component, for: date) else {
             return (date, date)
@@ -110,19 +112,21 @@ final class DashboardStatusCell: UICollectionViewCell {
         let calendar = Calendar.current
         switch dateType {
         case .day:
-            return (date, calendar.date(byAdding: .day, value: 1, to: date)!)
+            return (date, calendar.date(byAdding: .day, value: 1, to: date) ?? .now)
         case .week:
             let startOfWeek = calendar.date(
-                from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date))!
-            let endOfWeek = calendar.date(byAdding: .weekOfYear, value: 1, to: startOfWeek)!
+                from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)) ?? .now
+            let endOfWeek = calendar.date(byAdding: .weekOfYear, value: 1, to: startOfWeek) ?? .now
             return (startOfWeek, endOfWeek)
         case .month:
-            let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: date))!
-            let endOfMonth = calendar.date(byAdding: .month, value: 1, to: startOfMonth)!
+            let startOfMonth = calendar.date(
+                from: calendar.dateComponents([.year, .month], from: date)
+            ) ?? .now
+            let endOfMonth = calendar.date(byAdding: .month, value: 1, to: startOfMonth) ?? .now
             return (startOfMonth, endOfMonth)
         case .year:
-            let startOfYear = calendar.date(from: calendar.dateComponents([.year], from: date))!
-            let endOfYear = calendar.date(byAdding: .year, value: 1, to: startOfYear)!
+            let startOfYear = calendar.date(from: calendar.dateComponents([.year], from: date)) ?? .now
+            let endOfYear = calendar.date(byAdding: .year, value: 1, to: startOfYear) ?? .now
             return (startOfYear, endOfYear)
         }
     }
