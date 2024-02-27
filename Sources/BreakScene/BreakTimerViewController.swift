@@ -173,6 +173,9 @@ extension BreakTimerViewController {
             }
         }
         timer?.fire()
+    }
+
+    private func configureNotification() {
         notificationId = UUID().uuidString
         let content = UNMutableNotificationContent()
         content.title = "시간 종료!"
