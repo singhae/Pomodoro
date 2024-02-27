@@ -14,7 +14,7 @@ final class MainViewController: UIViewController {
     private var notificationId: String?
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
-
+    var router: PomodoroRouter?
     let pomodoroTimeManager = PomodoroTimeManager.shared
 
     private let timeLabel = UILabel().then {
@@ -82,7 +82,7 @@ final class MainViewController: UIViewController {
         addSubviews()
         setupConstraints()
 
-        if pomodoroTimeManager.maxTime > pomodoroTimeManager.currentTime {
+        if pomodoroTimeManager.maxTime != .zero {
             updateTimeLabel()
             startTimer()
         }
@@ -203,16 +203,21 @@ extension MainViewController {
 
             let minutes = (maxTime - currentTime) / 60
             let seconds = (maxTime - currentTime) % 60
-
             if minutes == 0, seconds == 0 {
                 timer.invalidate()
                 self.longPressGuideLabel.isHidden = true
                 self.countButton.isHidden = false
                 self.timeButton.isHidden = false
-                let breakVC = BreakViewController()
-                self.navigationController?.pushViewController(breakVC, animated: true)
-            }
 
+                self.router = PomodoroRouter()
+                guard let router = self.router else {
+                    return
+                }
+                router.moveToNextStep(
+                    navigationController:
+                    self.navigationController ?? UINavigationController()
+                )
+            }
             self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
         })
     }
