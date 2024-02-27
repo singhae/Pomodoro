@@ -265,3 +265,10 @@ extension MainViewController: TimeSettingViewControllerDelegate {
         pomodoroTimeManager.setupMaxTime(time: time * 60)
     }
 }
+
+extension MainViewController: TagSelectionDelegate {
+    func tagSelected(tag: String) {
+        // TODO: 선택된 태그 정보 전달
+        print("선택된 태그: \(tag)")
+    }
+}

@@ -8,15 +8,22 @@
 import SnapKit
 import Then
 import UIKit
+import PomodoroDesignSystem
 
 protocol TagCreationDelegate: AnyObject {
     func createTag(tag: String)
+}
+
+protocol TagSelectionDelegate: AnyObject {
+    func tagSelected(tag: String)
 }
 
 final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     private var tagCollectionView: TagCollectionView?
     private let dataSource = TagCollectionViewData.data
     private var tagList = TagList()
+
+    weak var selectionDelegate: TagSelectionDelegate?
 
     private func configureNavigationBar() {
         navigationItem.title = "태그 설정"
@@ -54,6 +61,13 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         $0.alignment = .fill
     }
 
+    private lazy var timeSettingbutton = UIButton().then {
+        $0.setTitle("설정 완료", for: .normal)
+        $0.setTitleColor(.black, for: .normal)
+        // $0.isHidden = isHiddenTimeButton
+        // $0.addTarget(self, action: #selector(onClickTimerSetting), for: .touchUpInside)
+    }
+
     // MARK: - 삭제 기능(+ 버튼)
 
     @objc private func dismissModal() {
@@ -62,15 +76,24 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
 
     @objc private func ellipseButtonTapped() {}
 
+    @objc private func completeSettingButtonTapped() {
+        let selectedTag = "선택된 태그"
+        selectionDelegate?.tagSelected(tag: selectedTag)
+        dismiss(animated: true, completion: nil)
+        let mainViewController = MainViewController()
+        navigationController?.pushViewController(mainViewController, animated: true)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        // 네비게이션 바
         navigationController?.isNavigationBarHidden = false
         configureNavigationBar()
         configureCollectionView()
         registerCollectionView()
         configureCollectionViewDelegate()
         configureLayout()
+
+        timeSettingbutton.addTarget(self, action: #selector(completeSettingButtonTapped), for: .touchUpInside)
     }
 
     private func configureLayout() {
@@ -81,8 +104,15 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
             mainStackView.addArrangedSubview(tagCollectionView)
         }
         view.addSubview(mainStackView)
+        view.addSubview(timeSettingbutton)
+
         mainStackView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide).inset(20)
+        }
+
+        timeSettingbutton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
         }
     }
 
@@ -168,6 +198,7 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
 extension TagModalViewController: TagCreationDelegate {
     func createTag(tag: String) {
         TagCollectionViewData.data.append(tag)
+        // TODO: 추가된 태그 정보값 전달
         print("태그 추가")
         print("Updated data: \(TagCollectionViewData.data)")
         tagCollectionView?.reloadData()
