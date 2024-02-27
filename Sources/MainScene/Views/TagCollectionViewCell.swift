@@ -39,9 +39,10 @@ class TagCollectionViewCell: UICollectionViewCell {
         fatalError("Not implemented required init?(coder: NSCoder)")
     }
 
+    // FIXME: 여기 고쳐야 함 - 현기
     func configureWithTag(_ tag: Tag) {
         dataLabel.text = tag.tagName
-        dataLabel.backgroundColor = tag.tagColor
+        dataLabel.backgroundColor = .cyan
     }
 
     private func configure() {

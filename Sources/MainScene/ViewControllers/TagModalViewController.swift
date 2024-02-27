@@ -13,10 +13,11 @@ protocol TagCreationDelegate: AnyObject {
     func createTag(tag: String)
 }
 
+// FIXME: 여기 주석 처리 한거 다 고쳐야 함 - 현기
 final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     private var tagCollectionView: TagCollectionView?
     private let dataSource = TagCollectionViewData.data
-    private var tagList = TagList()
+//    private var tagList = TagList()
     private let horizontalStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 10
@@ -48,6 +49,7 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     // MARK: - 삭제 기능(+ 버튼)
 
     @objc private func ellipseButtonTapped() {}
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureCollectionView()
@@ -118,7 +120,8 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
         _: UICollectionView,
         numberOfItemsInSection _: Int
     ) -> Int {
-        tagList.tagList.count
+        2
+//        tagList.tagList.count
     }
 
     func collectionView(
@@ -132,7 +135,8 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
             return UICollectionViewCell()
         }
 
-        let tag = tagList.tagList[indexPath.item]
+//        let tag = tagList.tagList[indexPath.item]
+        let tag = Tag(tagName: "집중", tagColor: "one", position: 0)
         cell.configureWithTag(tag)
 
         return cell

@@ -102,10 +102,12 @@ final class TimeSettingViewController: UIViewController {
         }
     }
 
+    // FIXME: 이거 테스트용으로 변경함 - 현기
     @objc private func onClickTimerSetting() {
         delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
-        let tagViewController = TagModalViewController()
-        navigationController?.pushViewController(tagViewController, animated: true)
+//        let tagViewController = TagModalViewController()
+//        navigationController?.pushViewController(tagViewController, animated: true)
+        navigationController?.popToRootViewController(animated: true)
     }
 }
 
