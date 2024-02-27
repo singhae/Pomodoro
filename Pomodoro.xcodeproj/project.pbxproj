@@ -137,13 +137,6 @@
 			path = BreakScene;
 			sourceTree = "<group>";
 		};
-		CEA734002B8CA9AE00145301 /* New Group */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "New Group";
-			sourceTree = "<group>";
-		};
 		CEA734012B8CA9B600145301 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
@@ -194,7 +187,6 @@
 		CEDCA0D82B67D015005C18EA /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				CEA734002B8CA9AE00145301 /* New Group */,
 				21D85CCE2B83258300E2FAA8 /* BreakScene */,
 				CEDCA0D92B67D015005C18EA /* SettingsScene */,
 				CEDCA0DF2B67D015005C18EA /* App */,
@@ -392,7 +384,6 @@
 				CEDCA11F2B67D131005C18EA /* XCRemoteSwiftPackageReference "Then" */,
 				CEDCA1222B67D18C005C18EA /* XCRemoteSwiftPackageReference "SnapKit" */,
 				CEDCA1272B67D1E4005C18EA /* XCRemoteSwiftPackageReference "Charts" */,
-
 				215A67832B8A1CA900ED9FA7 /* XCRemoteSwiftPackageReference "PomodoroDesignSystem" */,
 			);
 			productRefGroup = CEDCA0BC2B67CFD8005C18EA /* Products */;
