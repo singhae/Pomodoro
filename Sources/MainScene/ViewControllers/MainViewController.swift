@@ -11,7 +11,6 @@ import Then
 import UIKit
 
 final class MainViewController: UIViewController {
-//    private var timer: Timer?
     private var notificationId: String?
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
@@ -65,15 +64,19 @@ final class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(didEnterBackground),
-                                               name: UIApplication.didEnterBackgroundNotification,
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didEnterBackground),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
 
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(didEnterForeground),
-                                               name: UIApplication.willEnterForegroundNotification,
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didEnterForeground),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
 
         view.backgroundColor = .white
         addSubviews()
@@ -97,9 +100,11 @@ final class MainViewController: UIViewController {
     }
 
     private func updateTimeLabel() {
-        timeLabel.text = String(format: "%02d:%02d",
-                                (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60,
-                                (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) % 60)
+        timeLabel.text = String(
+            format: "%02d:%02d",
+            (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60,
+            (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) % 60
+        )
 
         if let id = notificationId {
             UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id])
@@ -113,9 +118,11 @@ extension MainViewController {
     @objc func didEnterBackground() {}
 
     @objc func didEnterForeground() {
-        timeLabel.text = String(format: "%02d:%02d",
-                                (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60,
-                                (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) % 60)
+        timeLabel.text = String(
+            format: "%02d:%02d",
+            (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60,
+            (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) % 60
+        )
     }
 
     @objc private func openTagModal() {
@@ -140,11 +147,13 @@ extension MainViewController {
         progressBar.isHidden = false
 
         longPressTimer?.invalidate()
-        longPressTimer = Timer.scheduledTimer(timeInterval: 0.02,
-                                              target: self,
-                                              selector: #selector(setProgress),
-                                              userInfo: nil,
-                                              repeats: true)
+        longPressTimer = Timer.scheduledTimer(
+            timeInterval: 0.02,
+            target: self,
+            selector: #selector(setProgress),
+            userInfo: nil,
+            repeats: true
+        )
         longPressTimer?.fire()
 
         if gestureRecognizer.state == .cancelled || gestureRecognizer.state == .ended {

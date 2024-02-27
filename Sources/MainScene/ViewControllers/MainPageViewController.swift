@@ -30,7 +30,7 @@ final class MainPageViewController: UIViewController {
         BreakViewController(),
 //        SettingViewController(),
         MainViewController(),
-        DashBoardTabViewController(),
+        DashBoardTabViewController()
     ]
 
     private lazy var pageViewController: UIPageViewController = .init(
