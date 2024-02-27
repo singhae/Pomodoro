@@ -10,12 +10,12 @@
       }
     },
     {
-      "identity" : "panmodal",
+      "identity" : "pomodorodesignsystem",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/slackhq/PanModal.git",
+      "location" : "https://github.com/HGU-iOS-Study-Group/PomodoroDesignSystem.git",
       "state" : {
-        "revision" : "b012aecb6b67a8e46369227f893c12544846613f",
-        "version" : "1.2.7"
+        "revision" : "f3b75ae6518f3578ed2d3ce0a48622832b056287",
+        "version" : "0.0.2"
       }
     },
     {

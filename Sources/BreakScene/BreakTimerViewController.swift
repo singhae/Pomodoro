@@ -80,7 +80,7 @@ extension BreakTimerViewController {
     @objc private func openTagModal() {
         let modalViewController = TagModalViewController()
         modalViewController.modalPresentationStyle = .fullScreen
-        presentPanModal(modalViewController)
+        present(modalViewController, animated: true, completion: nil)
     }
 
     private func longPressSetting(isEnable: Bool) {

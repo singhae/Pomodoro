@@ -13,7 +13,6 @@
 		215A67852B8A1CA900ED9FA7 /* PomodoroDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 215A67842B8A1CA900ED9FA7 /* PomodoroDesignSystem */; };
 		21B21B842B73E050008FFDCB /* DashboardBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B21B832B73E050008FFDCB /* DashboardBaseViewController.swift */; };
 		21D85CCD2B831E5B00E2FAA8 /* BreakViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D85CCC2B831E5B00E2FAA8 /* BreakViewController.swift */; };
-		21D85CD42B84B54700E2FAA8 /* PomodoroTimeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D85CD32B84B54700E2FAA8 /* PomodoroTimeManager.swift */; };
 		21D85CD82B84C05A00E2FAA8 /* BreakTimerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D85CD72B84C05A00E2FAA8 /* BreakTimerViewController.swift */; };
 		4DC2298A2B7E2C0900D06ABB /* TagConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC229892B7E2C0900D06ABB /* TagConfigurationViewController.swift */; };
 		4DC3FBA32B846E40002566F9 /* ColorPaletteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC3FBA22B846E40002566F9 /* ColorPaletteViewController.swift */; };
@@ -45,7 +44,6 @@
 		CEDCA1212B67D131005C18EA /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA1202B67D131005C18EA /* Then */; };
 		CEDCA1242B67D18C005C18EA /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA1232B67D18C005C18EA /* SnapKit */; };
 		CEDCA1292B67D1E4005C18EA /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA1282B67D1E4005C18EA /* DGCharts */; };
-		CEDCA12E2B67D263005C18EA /* PanModal in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA12D2B67D263005C18EA /* PanModal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,12 +57,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0DC41B422B82667A002FB140 /* PomodoroTimeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PomodoroTimeManager.swift; sourceTree = "<group>"; };
 		0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerCollectionViewCell.swift; sourceTree = "<group>"; };
 		213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardPieChartCell.swift; sourceTree = "<group>"; };
 		213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStatusCell.swift; sourceTree = "<group>"; };
 		21B21B832B73E050008FFDCB /* DashboardBaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardBaseViewController.swift; sourceTree = "<group>"; };
 		21D85CCC2B831E5B00E2FAA8 /* BreakViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakViewController.swift; sourceTree = "<group>"; };
-		21D85CD32B84B54700E2FAA8 /* PomodoroTimeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroTimeManager.swift; sourceTree = "<group>"; };
 		21D85CD72B84C05A00E2FAA8 /* BreakTimerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BreakTimerViewController.swift; sourceTree = "<group>"; };
 		4DC229892B7E2C0900D06ABB /* TagConfigurationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagConfigurationViewController.swift; sourceTree = "<group>"; };
 		4DC3FBA22B846E40002566F9 /* ColorPaletteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPaletteViewController.swift; sourceTree = "<group>"; };
@@ -113,7 +111,6 @@
 				CEDCA1242B67D18C005C18EA /* SnapKit in Frameworks */,
 				CEDCA1212B67D131005C18EA /* Then in Frameworks */,
 				215A67852B8A1CA900ED9FA7 /* PomodoroDesignSystem in Frameworks */,
-				CEDCA12E2B67D263005C18EA /* PanModal in Frameworks */,
 				CEDCA1292B67D1E4005C18EA /* DGCharts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -138,6 +135,21 @@
 				21D85CD72B84C05A00E2FAA8 /* BreakTimerViewController.swift */,
 			);
 			path = BreakScene;
+			sourceTree = "<group>";
+		};
+		CEA734002B8CA9AE00145301 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "New Group";
+			sourceTree = "<group>";
+		};
+		CEA734012B8CA9B600145301 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				0DC41B422B82667A002FB140 /* PomodoroTimeManager.swift */,
+			);
+			path = Managers;
 			sourceTree = "<group>";
 		};
 		CEB721922B6DECC7001AB9C1 /* PomodoroTests */ = {
@@ -182,6 +194,7 @@
 		CEDCA0D82B67D015005C18EA /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				CEA734002B8CA9AE00145301 /* New Group */,
 				21D85CCE2B83258300E2FAA8 /* BreakScene */,
 				CEDCA0D92B67D015005C18EA /* SettingsScene */,
 				CEDCA0DF2B67D015005C18EA /* App */,
@@ -247,6 +260,7 @@
 		CEDCA0EB2B67D015005C18EA /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				CEA734012B8CA9B600145301 /* Managers */,
 				CEDCA0EC2B67D015005C18EA /* Extensions */,
 			);
 			path = Common;
@@ -295,7 +309,6 @@
 				CEDCA0FA2B67D015005C18EA /* TagList.swift */,
 				CEDCA0FB2B67D015005C18EA /* Option.swift */,
 				CEDCA0FC2B67D015005C18EA /* DashBoard.swift */,
-				21D85CD32B84B54700E2FAA8 /* PomodoroTimeManager.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -340,7 +353,6 @@
 				CEDCA1202B67D131005C18EA /* Then */,
 				CEDCA1232B67D18C005C18EA /* SnapKit */,
 				CEDCA1282B67D1E4005C18EA /* DGCharts */,
-				CEDCA12D2B67D263005C18EA /* PanModal */,
 				215A67842B8A1CA900ED9FA7 /* PomodoroDesignSystem */,
 			);
 			productName = Pomodoro;
@@ -380,7 +392,7 @@
 				CEDCA11F2B67D131005C18EA /* XCRemoteSwiftPackageReference "Then" */,
 				CEDCA1222B67D18C005C18EA /* XCRemoteSwiftPackageReference "SnapKit" */,
 				CEDCA1272B67D1E4005C18EA /* XCRemoteSwiftPackageReference "Charts" */,
-				CEDCA12C2B67D263005C18EA /* XCRemoteSwiftPackageReference "PanModal" */,
+
 				215A67832B8A1CA900ED9FA7 /* XCRemoteSwiftPackageReference "PomodoroDesignSystem" */,
 			);
 			productRefGroup = CEDCA0BC2B67CFD8005C18EA /* Products */;
@@ -471,7 +483,6 @@
 				21B21B842B73E050008FFDCB /* DashboardBaseViewController.swift in Sources */,
 				CEDCA1172B67D015005C18EA /* TagList.swift in Sources */,
 				CEDCA10C2B67D015005C18EA /* TagCollectionViewData.swift in Sources */,
-				21D85CD42B84B54700E2FAA8 /* PomodoroTimeManager.swift in Sources */,
 				CEDCA1182B67D015005C18EA /* Option.swift in Sources */,
 				21D85CD82B84C05A00E2FAA8 /* BreakTimerViewController.swift in Sources */,
 				CEDCA1052B67D015005C18EA /* AppDelegate.swift in Sources */,
@@ -815,14 +826,6 @@
 				minimumVersion = 5.0.0;
 			};
 		};
-		CEDCA12C2B67D263005C18EA /* XCRemoteSwiftPackageReference "PanModal" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/slackhq/PanModal.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.7;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -845,11 +848,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CEDCA1272B67D1E4005C18EA /* XCRemoteSwiftPackageReference "Charts" */;
 			productName = DGCharts;
-		};
-		CEDCA12D2B67D263005C18EA /* PanModal */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CEDCA12C2B67D263005C18EA /* XCRemoteSwiftPackageReference "PanModal" */;
-			productName = PanModal;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
