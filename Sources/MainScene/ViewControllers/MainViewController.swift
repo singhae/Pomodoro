@@ -6,6 +6,7 @@
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
 
+import PomodoroDesignSystem
 import SnapKit
 import Then
 import UIKit
@@ -48,7 +49,7 @@ final class MainViewController: UIViewController {
             for: .touchUpInside
         )
     }
-
+    
     private lazy var countButton = UIButton(type: .roundedRect).then {
         $0.setTitle("카운트 시작", for: .normal)
         $0.setTitleColor(.black, for: .normal)
@@ -78,7 +79,8 @@ final class MainViewController: UIViewController {
             object: nil
         )
 
-        view.backgroundColor = .white
+        view.backgroundColor = .pomodoro.background
+        
         addSubviews()
         setupConstraints()
 
@@ -239,6 +241,9 @@ extension MainViewController {
         tagButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(timeLabel.snp.bottom).offset(20)
+            make.left.equalTo(30)
+            make.right.equalTo(-30)
+            make.height.equalTo(50)
         }
         longPressGuideLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
