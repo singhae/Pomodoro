@@ -14,18 +14,19 @@ protocol TagCreationDelegate: AnyObject {
     func createTag(tag: String)
 }
 
-protocol TagSelectionDelegate: AnyObject {
+protocol TagModalViewControllerDelegate: AnyObject {
     func tagSelected(tag: String)
 }
 
-//TODO: - 뒤 화면 축소되는 효과 제거
+// TODO: - 뒤 화면 축소되는 효과 제거
 
-final class TagModalViewController: UIViewController, UICollectionViewDelegate {
+final class TagModalViewController: UIViewController {
     private var tagCollectionView: TagCollectionView?
     private let dataSource = TagCollectionViewData.data
     private var tagList = TagList()
 
-    private weak var selectionDelegate: TagSelectionDelegate?
+    private weak var selectionDelegate:
+        TagModalViewControllerDelegate?
 
     private func configureNavigationBar() {
         navigationItem.title = "태그 설정"
@@ -63,7 +64,7 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         $0.alignment = .fill
     }
 
-    private lazy var timeSettingbutton = UIButton().then {
+    private lazy var tagSettingCompletedButton = UIButton().then {
         $0.setTitle("설정 완료", for: .normal)
         $0.setTitleColor(.black, for: .normal)
     }
@@ -74,15 +75,13 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         dismiss(animated: true, completion: nil)
     }
 
-    @objc private func ellipseButtonTapped() {}
+    @objc private func didTapEllipsisButton() {}
 
     @objc private func didTapSettingCompleteButton() {
+        // TODO: selectedTag -> 태그 선택 값으로 변경
         let selectedTag = "선택된 태그"
         selectionDelegate?.tagSelected(tag: selectedTag)
-        dismiss(animated: true) {
-        let mainViewController = MainViewController()
-            self.navigationController?.pushViewController(mainViewController, animated: true)
-        }
+        dismiss(animated: true)
     }
 
     override func viewDidLoad() {
@@ -92,29 +91,31 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         configureNavigationBar()
         configureCollectionView()
         registerCollectionView()
-        configureCollectionViewDelegate()
         configureLayout()
 
-        timeSettingbutton.addTarget(self, action: #selector(didTapSettingCompleteButton), for: .touchUpInside)
+        tagCollectionView?.dataSource = self
+        tagCollectionView?.delegate = self
+
+        tagSettingCompletedButton.addTarget(self, action: #selector(didTapSettingCompleteButton), for: .touchUpInside)
     }
 
     private func configureLayout() {
         horizontalStackView.addArrangedSubview(label)
         horizontalStackView.addArrangedSubview(ellipseButton)
         mainStackView.addArrangedSubview(horizontalStackView)
-        
+
         if let tagCollectionView {
             mainStackView.addArrangedSubview(tagCollectionView)
         }
         view.addSubview(mainStackView)
-        
-        view.addSubview(timeSettingbutton)
+
+        view.addSubview(tagSettingCompletedButton)
 
         mainStackView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
 
-        timeSettingbutton.snp.makeConstraints { make in
+        tagSettingCompletedButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
         }
@@ -144,14 +145,9 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
             forCellWithReuseIdentifier: TagCollectionViewCell.id
         )
     }
-
-    private func configureCollectionViewDelegate() {
-        tagCollectionView?.dataSource = self
-        tagCollectionView?.delegate = self
-    }
 }
 
-extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension TagModalViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(
         _ collectionView: UICollectionView,
         layout _: UICollectionViewLayout,
@@ -203,6 +199,5 @@ extension TagModalViewController: TagCreationDelegate {
     func createTag(tag: String) {
         TagCollectionViewData.data.append(tag)
         // TODO: 추가된 태그 정보값 전달
-        
     }
 }
