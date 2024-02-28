@@ -17,9 +17,8 @@ protocol TagCreationDelegate: AnyObject {
 protocol TagModalViewControllerDelegate: AnyObject {
     func tagSelected(tag: String)
 }
-  
+
 // TODO: - 뒤 화면 축소되는 효과 제거
- 
 // FIXME: 여기 주석 처리 한거 다 고쳐야 함 - 현기
 final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     private var tagCollectionView: TagCollectionView?
