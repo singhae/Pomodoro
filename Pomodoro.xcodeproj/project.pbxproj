@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0DC41B432B82667A002FB140 /* PomodoroTimeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC41B422B82667A002FB140 /* PomodoroTimeManager.swift */; };
+		0DC41B452B8C9AB7002FB140 /* PomodoroRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC41B442B8C9AB7002FB140 /* PomodoroRouter.swift */; };
 		0DF629662B691ABA00BFE39F /* TimerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */; };
 		213F30532B6BE72300FAF5F2 /* DashboardPieChartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */; };
 		213F30552B6BE73900FAF5F2 /* DashboardStatusCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */; };
@@ -59,6 +61,7 @@
 
 /* Begin PBXFileReference section */
 		0DC41B422B82667A002FB140 /* PomodoroTimeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PomodoroTimeManager.swift; sourceTree = "<group>"; };
+		0DC41B442B8C9AB7002FB140 /* PomodoroRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroRouter.swift; sourceTree = "<group>"; };
 		0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerCollectionViewCell.swift; sourceTree = "<group>"; };
 		213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardPieChartCell.swift; sourceTree = "<group>"; };
 		213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStatusCell.swift; sourceTree = "<group>"; };
@@ -138,13 +141,6 @@
 			path = BreakScene;
 			sourceTree = "<group>";
 		};
-		CEA734002B8CA9AE00145301 /* New Group */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "New Group";
-			sourceTree = "<group>";
-		};
 		CEA734012B8CA9B600145301 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
@@ -195,7 +191,6 @@
 		CEDCA0D82B67D015005C18EA /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				CEA734002B8CA9AE00145301 /* New Group */,
 				21D85CCE2B83258300E2FAA8 /* BreakScene */,
 				CEDCA0D92B67D015005C18EA /* SettingsScene */,
 				CEDCA0DF2B67D015005C18EA /* App */,
@@ -310,6 +305,8 @@
 				CEDCA0FA2B67D015005C18EA /* TagList.swift */,
 				CEDCA0FB2B67D015005C18EA /* Option.swift */,
 				CEDCA0FC2B67D015005C18EA /* DashBoard.swift */,
+				21D85CD32B84B54700E2FAA8 /* PomodoroTimeManager.swift */,
+				0DC41B442B8C9AB7002FB140 /* PomodoroRouter.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -487,6 +484,7 @@
 				CEDCA1182B67D015005C18EA /* Option.swift in Sources */,
 				21D85CD82B84C05A00E2FAA8 /* BreakTimerViewController.swift in Sources */,
 				CEDCA1052B67D015005C18EA /* AppDelegate.swift in Sources */,
+				0DC41B452B8C9AB7002FB140 /* PomodoroRouter.swift in Sources */,
 				CEDCA1062B67D015005C18EA /* SceneDelegate.swift in Sources */,
 				CEDCA10E2B67D015005C18EA /* UIColor+HexCode.swift in Sources */,
 				213F30532B6BE72300FAF5F2 /* DashboardPieChartCell.swift in Sources */,
