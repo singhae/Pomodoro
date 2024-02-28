@@ -96,7 +96,9 @@ final class TagModalViewController: UIViewController {
         tagCollectionView?.dataSource = self
         tagCollectionView?.delegate = self
 
-        tagSettingCompletedButton.addTarget(self, action: #selector(didTapSettingCompleteButton), for: .touchUpInside)
+        tagSettingCompletedButton.addTarget(self,
+                                            action: #selector(didTapSettingCompleteButton),
+                                            for: .touchUpInside)
     }
 
     private func configureLayout() {
@@ -147,7 +149,10 @@ final class TagModalViewController: UIViewController {
     }
 }
 
-extension TagModalViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension TagModalViewController: UICollectionViewDelegate,
+    UICollectionViewDataSource,
+    UICollectionViewDelegateFlowLayout
+{
     func collectionView(
         _ collectionView: UICollectionView,
         layout _: UICollectionViewLayout,
