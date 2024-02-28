@@ -8,7 +8,6 @@
 
 import Foundation
 
-// FIXME:
 enum TagCollectionViewData {
     // MARK: - FIXME
 

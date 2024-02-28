@@ -5,6 +5,7 @@
 //  Created by SonSinghae on 2023/11/17.
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
+import PomodoroDesignSystem
 import SnapKit
 import Then
 import UIKit
@@ -13,10 +14,18 @@ protocol TagCreationDelegate: AnyObject {
     func createTag(tag: String)
 }
 
+protocol TagModalViewControllerDelegate: AnyObject {
+    func tagSelected(tag: String)
+}
+
+// TODO: - 뒤 화면 축소되는 효과 제거
+// FIXME: 여기 주석 처리 한거 다 고쳐야 함 - 현기
 final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     private var tagCollectionView: TagCollectionView?
     private let dataSource = TagCollectionViewData.data
-    private var tagList = TagList()
+
+    private weak var selectionDelegate:
+        TagModalViewControllerDelegate?
 
     private func configureNavigationBar() {
         navigationItem.title = "태그 설정"
@@ -43,7 +52,7 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         $0.setImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
         $0.contentMode = .scaleAspectFit
         $0.tintColor = .black
-        $0.backgroundColor = .white
+        $0.backgroundColor = .pomodoro.background
         $0.layer.cornerRadius = 10
         $0.clipsToBounds = true
     }
@@ -54,35 +63,62 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         $0.alignment = .fill
     }
 
+    private lazy var tagSettingCompletedButton = UIButton().then {
+        $0.setTitle("설정 완료", for: .normal)
+        $0.setTitleColor(.black, for: .normal)
+    }
+
     // MARK: - 삭제 기능(+ 버튼)
 
     @objc private func dismissModal() {
         dismiss(animated: true, completion: nil)
     }
 
-    @objc private func ellipseButtonTapped() {}
+    @objc private func didTapEllipsisButton() {}
+
+    @objc private func didTapSettingCompleteButton() {
+        // TODO: selectedTag -> 태그 선택 값으로 변경
+        let selectedTag = "선택된 태그"
+        selectionDelegate?.tagSelected(tag: selectedTag)
+        dismiss(animated: true)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // 네비게이션 바
+        view.backgroundColor = .pomodoro.background
         navigationController?.isNavigationBarHidden = false
         configureNavigationBar()
         configureCollectionView()
         registerCollectionView()
-        configureCollectionViewDelegate()
         configureLayout()
+
+        tagCollectionView?.dataSource = self
+        tagCollectionView?.delegate = self
+
+        tagSettingCompletedButton.addTarget(self,
+                                            action: #selector(didTapSettingCompleteButton),
+                                            for: .touchUpInside)
     }
 
     private func configureLayout() {
         horizontalStackView.addArrangedSubview(label)
         horizontalStackView.addArrangedSubview(ellipseButton)
         mainStackView.addArrangedSubview(horizontalStackView)
+
         if let tagCollectionView {
             mainStackView.addArrangedSubview(tagCollectionView)
         }
         view.addSubview(mainStackView)
+
+        view.addSubview(tagSettingCompletedButton)
+
         mainStackView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide).inset(20)
+        }
+
+        tagSettingCompletedButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
         }
     }
 
@@ -93,7 +129,7 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         collectionViewLayer.minimumInteritemSpacing = 1
 
         let tagCollectionView = TagCollectionView(frame: .zero, collectionViewLayout: collectionViewLayer)
-        tagCollectionView.backgroundColor = .secondarySystemBackground
+        tagCollectionView.backgroundColor = .pomodoro.background
 
         view.addSubview(tagCollectionView)
 
@@ -110,14 +146,11 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
             forCellWithReuseIdentifier: TagCollectionViewCell.id
         )
     }
-
-    private func configureCollectionViewDelegate() {
-        tagCollectionView?.dataSource = self
-        tagCollectionView?.delegate = self
-    }
 }
 
-extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension TagModalViewController: UICollectionViewDelegate,
+    UICollectionViewDataSource,
+    UICollectionViewDelegateFlowLayout {
     func collectionView(
         _ collectionView: UICollectionView,
         layout _: UICollectionViewLayout,
@@ -135,7 +168,8 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
         _: UICollectionView,
         numberOfItemsInSection _: Int
     ) -> Int {
-        tagList.tagList.count
+        0
+//        tagList.tagList.count
     }
 
     func collectionView(
@@ -149,7 +183,7 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
             return UICollectionViewCell()
         }
 
-        let tag = tagList.tagList[indexPath.item]
+        let tag = Tag(tagName: "집중", tagColor: "one", position: 0)
         cell.configureWithTag(tag)
 
         return cell
@@ -168,8 +202,6 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
 extension TagModalViewController: TagCreationDelegate {
     func createTag(tag: String) {
         TagCollectionViewData.data.append(tag)
-        print("태그 추가")
-        print("Updated data: \(TagCollectionViewData.data)")
-        tagCollectionView?.reloadData()
+        // TODO: 추가된 태그 정보값 전달
     }
 }

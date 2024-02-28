@@ -6,21 +6,28 @@
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
 
-import Foundation
-
-// import RealmSwift
+import RealmSwift
 import UIKit
 
-class Pomodoro {
-    var phase: Int
-    var currentTag: String
-    var participateDate: Date
-    var success: Bool
+class Pomodoro: Object {
+    @Persisted(primaryKey: true) var id: Int
+    @Persisted var phase: Int // 1 -> 2 -> 3 -> 4 순으로 가되, 뽀모도로가 모두 완료되면 (성공이든, 실패이든 0으로 변경)
+    @Persisted var currentTag: String
+    @Persisted var participateDate: Date
+    @Persisted var isSuccess: Bool
 
-    init(phase: Int, currentTag: String = "집중", participateDate: Date = Date(), success: Bool = false) {
+    convenience init(
+        id: Int,
+        phase: Int = 1,
+        currentTag: String = "DEFAULT",
+        participateDate: Date = Date.now,
+        isSuccess: Bool = false
+    ) {
+        self.init()
+        self.id = id
         self.phase = phase
         self.currentTag = currentTag
         self.participateDate = participateDate
-        self.success = success
+        self.isSuccess = isSuccess
     }
 }
