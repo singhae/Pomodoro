@@ -19,11 +19,10 @@ protocol TagModalViewControllerDelegate: AnyObject {
 }
 
 // TODO: - 뒤 화면 축소되는 효과 제거
-
-final class TagModalViewController: UIViewController {
+// FIXME: 여기 주석 처리 한거 다 고쳐야 함 - 현기
+final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     private var tagCollectionView: TagCollectionView?
     private let dataSource = TagCollectionViewData.data
-    private var tagList = TagList()
 
     private weak var selectionDelegate:
         TagModalViewControllerDelegate?
@@ -169,7 +168,8 @@ extension TagModalViewController: UICollectionViewDelegate,
         _: UICollectionView,
         numberOfItemsInSection _: Int
     ) -> Int {
-        tagList.tagList.count
+        0
+//        tagList.tagList.count
     }
 
     func collectionView(
@@ -183,7 +183,7 @@ extension TagModalViewController: UICollectionViewDelegate,
             return UICollectionViewCell()
         }
 
-        let tag = tagList.tagList[indexPath.item]
+        let tag = Tag(tagName: "집중", tagColor: "one", position: 0)
         cell.configureWithTag(tag)
 
         return cell

@@ -12,6 +12,8 @@ import Then
 import UIKit
 
 final class DashboardStatusCell: UICollectionViewCell {
+    private let database = DatabaseManager.shared
+
     private let participateLabel = UILabel()
     private let countLabel = UILabel()
     private let achieveLabel = UILabel()
@@ -93,14 +95,18 @@ final class DashboardStatusCell: UICollectionViewCell {
         }()
 
         let (startDate, endDate) = getStartAndEndDate(for: date, of: component)
-        let filteredData = PomodoroData.dummyData.filter { $0.participateDate >= startDate &&
+
+        let data = database.read(Pomodoro.self)
+        print(data)
+
+        let filteredData = data.filter { $0.participateDate >= startDate &&
             $0.participateDate < endDate
         }
         let participateDates = Set(filteredData.map { Calendar.current.startOfDay(for: $0.participateDate) })
         let totalParticipateCount = participateDates.count
         let filteredDataCount = filteredData.count
-        let totalSuccessCount = filteredData.filter(\.success).count
-        let totalFailureCount = filteredData.filter { !$0.success }.count
+        let totalSuccessCount = filteredData.filter(\.isSuccess).count
+        let totalFailureCount = filteredData.filter { !$0.isSuccess }.count
 
         participateLabel.text = "참여일 \(totalParticipateCount)"
         countLabel.text = "횟수 \(filteredDataCount)"

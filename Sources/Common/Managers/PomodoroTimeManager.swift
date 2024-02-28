@@ -24,20 +24,30 @@ final class PomodoroTimeManager {
         currentTime = curr
     }
 
-    func add1secToCurrentTime() {
-        currentTime += 1
-    }
-
     private(set) var maxTime = 0
 
     func setupMaxTime(time: Int) {
         maxTime = time
     }
 
+    private(set) var isRestored: Bool = false
+
+    func setupIsRestored(bool: Bool) {
+        isRestored = bool
+    }
+
+    private(set) var isStarted: Bool = false
+
+    func setupIsStarted(bool: Bool) {
+        isStarted = bool
+    }
+
     func startTimer(timerBlock: @escaping ((Timer, Int, Int) -> Void)) {
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-            timerBlock(timer, self.currentTime, self.maxTime)
+        pomodoroTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            timerBlock(timer, self.currentTime + 1, self.maxTime)
+            self.currentTime += 1
         }
+        pomodoroTimer?.fire()
 
         notificationId = UUID().uuidString
 
@@ -68,6 +78,7 @@ final class PomodoroTimeManager {
 
     func saveTimerInfo() {
         let lastSavedDate = Date.now
+        isRestored = false
 
         userDefaults.set(lastSavedDate, forKey: "realTime")
         userDefaults.set(currentTime, forKey: "currentTime")
@@ -88,6 +99,7 @@ final class PomodoroTimeManager {
         maxTime = existMaxTime
 
         if maxTime > updatedCurrTime {
+            isRestored = true
             currentTime = updatedCurrTime
         } else {
             maxTime = 0
