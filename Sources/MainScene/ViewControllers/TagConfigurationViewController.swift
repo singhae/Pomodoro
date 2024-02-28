@@ -5,6 +5,7 @@
 //  Created by SonSinghae on 2024/02/15.
 //
 
+import PomodoroDesignSystem
 import SnapKit
 import Then
 import UIKit
@@ -20,7 +21,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
 
     private let saveTagButton = UIButton().then {
-        $0.backgroundColor = UIColor.systemGray
+        $0.backgroundColor = .pomodoro.background
         $0.setTitleColor(.white, for: .normal)
         $0.layer.cornerRadius = 10
     }
@@ -29,7 +30,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .pomodoro.background
         textField.delegate = self
         setupViews()
         setupConstraints()
