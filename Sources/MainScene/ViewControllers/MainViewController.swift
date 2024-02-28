@@ -6,6 +6,7 @@
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
 
+import PomodoroDesignSystem
 import SnapKit
 import Then
 import UIKit
@@ -78,7 +79,7 @@ final class MainViewController: UIViewController {
             object: nil
         )
 
-        view.backgroundColor = .white
+        view.backgroundColor = .pomodoro.background
         addSubviews()
         setupConstraints()
 
@@ -267,5 +268,11 @@ extension MainViewController {
 extension MainViewController: TimeSettingViewControllerDelegate {
     func didSelectTime(time: Int) {
         pomodoroTimeManager.setupMaxTime(time: time * 60)
+    }
+}
+
+extension MainViewController: TagModalViewControllerDelegate {
+    func tagSelected(tag _: String) {
+        // TODO: 선택된 태그 정보 전달
     }
 }
