@@ -97,7 +97,6 @@ final class MainViewController: UIViewController {
         super.viewDidAppear(animated)
         updateTimeLabel()
 
-        // FIXME: 다른 조건 사용해야 함 Boolean 이라든지..
         if pomodoroTimeManager.isRestored == true {
             print("ISRESTORED")
             pomodoroTimeManager.setupIsRestored(bool: false)
@@ -210,6 +209,26 @@ extension MainViewController {
         navigationController?.pushViewController(timeSettingviewController, animated: true)
     }
 
+    func setupNotification() {
+        notificationId = UUID().uuidString
+
+        let content = UNMutableNotificationContent()
+        content.title = "시간 종료!"
+        content.body = "시간이 종료되었습니다. 휴식을 취해주세요."
+
+        let request = UNNotificationRequest(
+            identifier: notificationId!,
+            content: content,
+            trigger: UNTimeIntervalNotificationTrigger(
+                timeInterval: TimeInterval(pomodoroTimeManager.maxTime),
+                repeats: false
+            )
+        )
+
+        UNUserNotificationCenter.current()
+            .add(request)
+    }
+
     @objc private func startTimer() {
         longPressTime = 0.0
         progressBar.progress = 0.0
@@ -257,24 +276,7 @@ extension MainViewController {
             self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
         })
 
-        notificationId = UUID().uuidString
-        notificationId = UUID().uuidString
-
-        let content = UNMutableNotificationContent()
-        content.title = "시간 종료!"
-        content.body = "시간이 종료되었습니다. 휴식을 취해주세요."
-
-        let request = UNNotificationRequest(
-            identifier: notificationId!,
-            content: content,
-            trigger: UNTimeIntervalNotificationTrigger(
-                timeInterval: TimeInterval(pomodoroTimeManager.maxTime),
-                repeats: false
-            )
-        )
-
-        UNUserNotificationCenter.current()
-            .add(request)
+        setupNotification()
     }
 }
 
