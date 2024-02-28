@@ -12,12 +12,14 @@ import Then
 import UIKit
 
 final class MainViewController: UIViewController {
-    private var notificationId: String?
-    private var longPressTimer: Timer?
-    private var longPressTime: Float = 0.0
 
     let pomodoroTimeManager = PomodoroTimeManager.shared
     let database = DatabaseManager.shared
+
+    private var notificationId: String?
+    private var longPressTimer: Timer?
+    private var longPressTime: Float = 0.0
+    var router: PomodoroRouter?
 
     private var currentPomodoro: Pomodoro?
 
@@ -138,8 +140,9 @@ extension MainViewController {
 
     @objc private func openTagModal() {
         let modalViewController = TagModalViewController()
-        modalViewController.modalPresentationStyle = .automatic
-        present(modalViewController, animated: true, completion: nil)
+        let navigationController = UINavigationController(rootViewController: modalViewController)
+        navigationController.modalPresentationStyle = .automatic
+        present(navigationController, animated: true, completion: nil)
     }
 
     private func setupLongPress(isEnable: Bool) {
@@ -147,9 +150,11 @@ extension MainViewController {
             target: self,
             action: #selector(handleLongPress)
         )
+
         longPressGestureRecognizer.isEnabled = isEnable
         longPressGestureRecognizer.allowableMovement = .infinity
         longPressGestureRecognizer.minimumPressDuration = 0.2
+
         view.addGestureRecognizer(longPressGestureRecognizer)
     }
 
@@ -175,7 +180,7 @@ extension MainViewController {
     }
 
     @objc private func setProgress() {
-        longPressTime += 0.02
+        longPressTime += 0.01
         progressBar.setProgress(longPressTime, animated: true)
 
         if longPressTime >= 1 {
@@ -194,9 +199,8 @@ extension MainViewController {
             progressBar.isHidden = true
 
             pomodoroTimeManager.stopTimer {
-                longPressGuideLabel.isHidden = true
-                countButton.isHidden = false
-                timeButton.isHidden = false
+                setupUIWhenTimerStart(isStopped: true)
+                setupLongPress(isEnable: false)
             }
 
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
@@ -229,6 +233,18 @@ extension MainViewController {
             .add(request)
     }
 
+    func setupUIWhenTimerStart(isStopped: Bool) {
+        if isStopped == false {
+            longPressGuideLabel.isHidden = false
+            countButton.isHidden = true
+            timeButton.isHidden = true
+        } else {
+            longPressGuideLabel.isHidden = true
+            countButton.isHidden = false
+            timeButton.isHidden = false
+        }
+    }
+
     @objc private func startTimer() {
         longPressTime = 0.0
         progressBar.progress = 0.0
@@ -247,18 +263,14 @@ extension MainViewController {
         }
 
         pomodoroTimeManager.startTimer(timerBlock: { timer, currentTime, maxTime in
-            self.longPressGuideLabel.isHidden = false
-            self.countButton.isHidden = true
-            self.timeButton.isHidden = true
+            self.setupUIWhenTimerStart(isStopped: false)
 
             let minutes = (maxTime - currentTime) / 60
             let seconds = (maxTime - currentTime) % 60
 
             if minutes == 0, seconds == 0 {
                 timer.invalidate()
-                self.longPressGuideLabel.isHidden = true
-                self.countButton.isHidden = false
-                self.timeButton.isHidden = false
+                self.setupUIWhenTimerStart(isStopped: true)
 
                 self.database.update(self.currentPomodoro!) { updatedPomodoro in
                     updatedPomodoro.phase += 1
@@ -269,8 +281,16 @@ extension MainViewController {
                     }
                 }
 
-                let breakVC = BreakViewController()
-                self.navigationController?.pushViewController(breakVC, animated: true)
+                self.setupLongPress(isEnable: false)
+
+                self.router = PomodoroRouter()
+                guard let router = self.router else {
+                    return
+                }
+                router.moveToNextStep(
+                    navigationController:
+                    self.navigationController ?? UINavigationController()
+                )
             }
 
             self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)

@@ -17,7 +17,15 @@ protocol TagCreationDelegate: AnyObject {
 final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     private var tagCollectionView: TagCollectionView?
     private let dataSource = TagCollectionViewData.data
-//    private var tagList = TagList()
+
+    private func configureNavigationBar() {
+        navigationItem.title = "태그 설정"
+        let dismissButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .close, target: self, action: #selector(dismissModal)
+        )
+        navigationItem.leftBarButtonItem = dismissButtonItem
+    }
+
     private let horizontalStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 10
@@ -26,9 +34,9 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     }
 
     private let label = UILabel().then {
-        $0.text = "태그선택"
-        $0.textColor = .white
-        $0.font = UIFont.boldSystemFont(ofSize: 26)
+        $0.text = "나의 태그"
+        $0.textColor = .black
+        $0.font = UIFont.boldSystemFont(ofSize: 10)
     }
 
     private let ellipseButton = UIButton().then {
@@ -48,10 +56,17 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
 
     // MARK: - 삭제 기능(+ 버튼)
 
+    @objc private func dismissModal() {
+        dismiss(animated: true, completion: nil)
+    }
+
     @objc private func ellipseButtonTapped() {}
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // 네비게이션 바
+        navigationController?.isNavigationBarHidden = false
+        configureNavigationBar()
         configureCollectionView()
         registerCollectionView()
         configureCollectionViewDelegate()
@@ -120,7 +135,7 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
         _: UICollectionView,
         numberOfItemsInSection _: Int
     ) -> Int {
-        2
+        0
 //        tagList.tagList.count
     }
 
@@ -135,7 +150,6 @@ extension TagModalViewController: UICollectionViewDataSource, UICollectionViewDe
             return UICollectionViewCell()
         }
 
-//        let tag = tagList.tagList[indexPath.item]
         let tag = Tag(tagName: "집중", tagColor: "one", position: 0)
         cell.configureWithTag(tag)
 

@@ -18,6 +18,7 @@ final class TimeSettingViewController: UIViewController {
     private var centerIndexPath: IndexPath?
     private let timeSelectRange = 5
     var selectedTime: Int = 0
+    private var isSelectedCellBiggerfive: Bool = true
 
     private var isHiddenTimeButton = true {
         didSet {
@@ -102,12 +103,11 @@ final class TimeSettingViewController: UIViewController {
         }
     }
 
-    // FIXME: 이거 테스트용으로 변경함 - 현기
     @objc private func onClickTimerSetting() {
         delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
-//        let tagViewController = TagModalViewController()
-//        navigationController?.pushViewController(tagViewController, animated: true)
-        navigationController?.popToRootViewController(animated: true)
+        // let tagViewController = TagModalViewController()
+        let tagViewController = MainViewController()
+        navigationController?.pushViewController(tagViewController, animated: true)
     }
 }
 

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0DC41B432B82667A002FB140 /* PomodoroTimeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC41B422B82667A002FB140 /* PomodoroTimeManager.swift */; };
+		0DC41B452B8C9AB7002FB140 /* PomodoroRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC41B442B8C9AB7002FB140 /* PomodoroRouter.swift */; };
 		0DF629662B691ABA00BFE39F /* TimerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */; };
 		14DB05DB2B8D0629007AA0A3 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 14DB05DA2B8D0629007AA0A3 /* Realm */; };
 		14DB05DD2B8D0629007AA0A3 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 14DB05DC2B8D0629007AA0A3 /* RealmSwift */; };
@@ -20,6 +22,7 @@
 		21D85CD82B84C05A00E2FAA8 /* BreakTimerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D85CD72B84C05A00E2FAA8 /* BreakTimerViewController.swift */; };
 		4DC2298A2B7E2C0900D06ABB /* TagConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC229892B7E2C0900D06ABB /* TagConfigurationViewController.swift */; };
 		4DC3FBA32B846E40002566F9 /* ColorPaletteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC3FBA22B846E40002566F9 /* ColorPaletteViewController.swift */; };
+		CE220F9A2B8E08E900EDC32D /* PomodoroTimeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC41B422B82667A002FB140 /* PomodoroTimeManager.swift */; };
 		CE4F2B032B6DE0D7000E5420 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = CE4F2B022B6DE0D7000E5420 /* .swiftlint.yml */; };
 		CEB721942B6DECC7001AB9C1 /* PomodoroTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB721932B6DECC7001AB9C1 /* PomodoroTests.swift */; };
 		CEDCA0FD2B67D015005C18EA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEDCA0D32B67D015005C18EA /* LaunchScreen.storyboard */; };
@@ -62,6 +65,7 @@
 
 /* Begin PBXFileReference section */
 		0DC41B422B82667A002FB140 /* PomodoroTimeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PomodoroTimeManager.swift; sourceTree = "<group>"; };
+		0DC41B442B8C9AB7002FB140 /* PomodoroRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroRouter.swift; sourceTree = "<group>"; };
 		0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerCollectionViewCell.swift; sourceTree = "<group>"; };
 		14DB05DE2B8D06AC007AA0A3 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardPieChartCell.swift; sourceTree = "<group>"; };
@@ -309,6 +313,8 @@
 				CEDCA0FA2B67D015005C18EA /* Tag.swift */,
 				CEDCA0FB2B67D015005C18EA /* Option.swift */,
 				CEDCA0FC2B67D015005C18EA /* DashBoard.swift */,
+				21D85CD32B84B54700E2FAA8 /* PomodoroTimeManager.swift */,
+				0DC41B442B8C9AB7002FB140 /* PomodoroRouter.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -479,7 +485,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				14FE3C292B8D0A24006D8C78 /* PomodoroTimeManager.swift in Sources */,
+				CE220F9A2B8E08E900EDC32D /* PomodoroTimeManager.swift in Sources */,
 				CEDCA1192B67D015005C18EA /* DashBoard.swift in Sources */,
 				14FE3C2A2B8DD380006D8C78 /* DatabaseManager.swift in Sources */,
 				21D85CCD2B831E5B00E2FAA8 /* BreakViewController.swift in Sources */,
@@ -489,6 +495,7 @@
 				CEDCA1182B67D015005C18EA /* Option.swift in Sources */,
 				21D85CD82B84C05A00E2FAA8 /* BreakTimerViewController.swift in Sources */,
 				CEDCA1052B67D015005C18EA /* AppDelegate.swift in Sources */,
+				0DC41B452B8C9AB7002FB140 /* PomodoroRouter.swift in Sources */,
 				CEDCA1062B67D015005C18EA /* SceneDelegate.swift in Sources */,
 				CEDCA10E2B67D015005C18EA /* UIColor+HexCode.swift in Sources */,
 				213F30532B6BE72300FAF5F2 /* DashboardPieChartCell.swift in Sources */,
