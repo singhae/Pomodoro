@@ -148,8 +148,7 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     }
 }
 
-extension TagModalViewController: UICollectionViewDelegate,
-    UICollectionViewDataSource,
+extension TagModalViewController: UICollectionViewDataSource,
     UICollectionViewDelegateFlowLayout {
     func collectionView(
         _ collectionView: UICollectionView,

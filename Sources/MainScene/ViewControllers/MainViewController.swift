@@ -12,7 +12,6 @@ import Then
 import UIKit
 
 final class MainViewController: UIViewController {
-
     let pomodoroTimeManager = PomodoroTimeManager.shared
     let database = DatabaseManager.shared
 
@@ -54,7 +53,7 @@ final class MainViewController: UIViewController {
             for: .touchUpInside
         )
     }
-    
+
     private lazy var countButton = UIButton(type: .roundedRect).then {
         $0.setTitle("카운트 시작", for: .normal)
         $0.setTitleColor(.black, for: .normal)
