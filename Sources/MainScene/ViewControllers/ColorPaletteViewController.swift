@@ -43,7 +43,7 @@ final class ColorPaletteViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .pomodoro.blackMedium
         setupCollectionView()
     }
 

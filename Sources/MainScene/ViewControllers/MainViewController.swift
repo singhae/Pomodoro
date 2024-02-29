@@ -69,8 +69,6 @@ final class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .pomodoro.background
-
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(didEnterBackground),
@@ -85,6 +83,7 @@ final class MainViewController: UIViewController {
             object: nil
         )
 
+        view.backgroundColor = .pomodoro.background
         addSubviews()
         setupConstraints()
 
@@ -344,5 +343,11 @@ extension MainViewController {
 extension MainViewController: TimeSettingViewControllerDelegate {
     func didSelectTime(time: Int) {
         pomodoroTimeManager.setupMaxTime(time: time * 60)
+    }
+}
+
+extension MainViewController: TagModalViewControllerDelegate {
+    func tagSelected(tag _: String) {
+        // TODO: 선택된 태그 정보 전달
     }
 }
