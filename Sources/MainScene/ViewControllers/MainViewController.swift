@@ -12,7 +12,6 @@ import Then
 import UIKit
 
 final class MainViewController: UIViewController {
-
     let pomodoroTimeManager = PomodoroTimeManager.shared
     let database = DatabaseManager.shared
 
@@ -22,6 +21,14 @@ final class MainViewController: UIViewController {
     var router: PomodoroRouter?
 
     private var currentPomodoro: Pomodoro?
+
+    private lazy var longPressGestureRecognizer = UILongPressGestureRecognizer(
+        target: self,
+        action: #selector(handleLongPress)
+    ).then {
+        view.addGestureRecognizer($0)
+        $0.isEnabled = false
+    }
 
     private let timeLabel = UILabel().then {
         $0.textAlignment = .center
@@ -145,16 +152,9 @@ extension MainViewController {
     }
 
     private func setupLongPress(isEnable: Bool) {
-        let longPressGestureRecognizer = UILongPressGestureRecognizer(
-            target: self,
-            action: #selector(handleLongPress)
-        )
-
         longPressGestureRecognizer.isEnabled = isEnable
         longPressGestureRecognizer.allowableMovement = .infinity
         longPressGestureRecognizer.minimumPressDuration = 0.2
-
-        view.addGestureRecognizer(longPressGestureRecognizer)
     }
 
     @objc private func handleLongPress(gestureRecognizer: UILongPressGestureRecognizer) {
