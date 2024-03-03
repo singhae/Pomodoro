@@ -13,7 +13,7 @@ final class BreakTimerViewController: UIViewController {
     private var timer: Timer?
     private var notificationId: String?
     private var currentTime = 0
-    private var maxTime = 25 * 60
+    private var maxTime = 60
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
     private var timerHeightConstraint: Constraint?
@@ -169,10 +169,10 @@ extension BreakTimerViewController {
                         self.view.layoutIfNeeded()
                     }
                 }
-                if timeLabelMinY >= timerHeight {
+                if (self.view.frame.height * 3) / 5 >= timerHeight {
                     self.timeLabel.textColor = .black
                 } else {
-                    self.timeLabel.textColor = .white
+                    self.timeLabel.textColor = .blue
                 }
             }
         }
