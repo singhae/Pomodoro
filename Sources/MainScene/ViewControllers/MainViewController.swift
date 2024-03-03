@@ -12,7 +12,6 @@ import Then
 import UIKit
 
 final class MainViewController: UIViewController {
-
     let pomodoroTimeManager = PomodoroTimeManager.shared
     let database = DatabaseManager.shared
 
