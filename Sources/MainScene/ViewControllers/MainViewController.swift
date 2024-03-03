@@ -44,7 +44,7 @@ final class MainViewController: UIViewController {
     }
 
     private lazy var tagButton = UIButton().then {
-        $0.setTitle("하람", for: .normal)
+        $0.setTitle("Tag", for: .normal)
         $0.setTitleColor(.black, for: .normal)
         $0.titleLabel?.font = .text1()
         $0.addTarget(
