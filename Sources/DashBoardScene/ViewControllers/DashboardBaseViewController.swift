@@ -34,7 +34,7 @@ class DashboardBaseViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .pomodoro.background
         setupDateLabel()
         setupArrowButtons()
         setupCollectionView()
@@ -61,13 +61,14 @@ class DashboardBaseViewController: UIViewController {
     lazy var dateLabel = UILabel().then {
         $0.text = dateFormatter.string(from: selectedDate)
         $0.textAlignment = .center
-        $0.textColor = .black
+        $0.textColor = .pomodoro.blackHigh
+        $0.font = .heading2(size: 17.44)
     }
 
     private lazy var previousButton = UIButton().then {
         $0.setImage(
             UIImage(
-                systemName: "arrowtriangle.backward"
+                systemName: "arrowtriangle.left.fill"
             )?.withTintColor(.black, renderingMode: .alwaysOriginal),
             for: .normal
         )
@@ -77,7 +78,7 @@ class DashboardBaseViewController: UIViewController {
     private lazy var nextButton = UIButton().then {
         $0.setImage(
             UIImage(
-                systemName: "arrowtriangle.right"
+                systemName: "arrowtriangle.right.fill"
             )?.withTintColor(.black, renderingMode: .alwaysOriginal),
             for: .normal
         )
@@ -188,7 +189,7 @@ class DashboardBaseViewController: UIViewController {
 
     private func setupCollectionView() {
         view.addSubview(collectionView)
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .pomodoro.background
         collectionView.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
             make.top.equalTo(dateLabel.snp.bottom)

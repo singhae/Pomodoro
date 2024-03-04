@@ -18,19 +18,68 @@ final class DashBoardTabViewController: UIViewController {
     }
 
     private let containerView = UIView()
+    private let titleLabel = UILabel()
+    private let appIconStackView = UIStackView()
+    private let totalParticipateDate = UILabel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .pomodoro.background
+        setupTopView()
         setupSegmentedControl()
         setupContainerView()
         segmentChanged()
     }
 
+    private func setupTopView() {
+        let logoIcon = UIImageView().then {
+            $0.image = UIImage(named: "dashboardIcon")
+        }
+        let appName = UILabel().then {
+            $0.text = "뽀모도로"
+            $0.textColor = .pomodoro.primary900
+            $0.font = .text1(size: 15.27)
+        }
+
+        appIconStackView.then {
+            view.addSubview($0)
+            $0.addArrangedSubview(logoIcon)
+            $0.addArrangedSubview(appName)
+            $0.spacing = 5
+            $0.axis = .horizontal
+            $0.snp.makeConstraints { make in
+                make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+                make.leading.equalTo(30)
+            }
+        }
+
+        titleLabel.then {
+            view.addSubview($0)
+            $0.text = "나의 통계"
+            $0.textColor = .pomodoro.blackHigh
+            $0.font = .heading3(size: 18)
+            $0.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.top.equalTo(appIconStackView.snp.bottom).offset(20)
+            }
+        }
+
+        totalParticipateDate.then {
+            view.addSubview($0)
+            $0.text = "총 00일 뽀모도로 하셨어요!"
+            $0.font = .heading3(size: 15.7)
+            $0.textColor = .pomodoro.primary900
+            $0.snp.makeConstraints { make in
+                make.top.equalTo(titleLabel.snp.bottom).offset(20)
+                make.leading.equalTo(40)
+            }
+        }
+    }
+
     private func setupContainerView() {
         view.addSubview(containerView)
         containerView.snp.makeConstraints { make in
-            make.top.equalTo(tabBarControl.snp.bottom).offset(30)
+            make.top.equalTo(tabBarControl.snp.bottom).offset(20)
             make.left.right.bottom.equalToSuperview()
         }
     }
@@ -55,7 +104,7 @@ final class DashBoardTabViewController: UIViewController {
     private func setupSegmentedControl() {
         view.addSubview(tabBarControl)
         tabBarControl.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.top.equalTo(totalParticipateDate.snp.bottom).offset(10)
             make.centerX.equalToSuperview()
             make.height.equalTo(40)
             make.width.equalTo(300)
