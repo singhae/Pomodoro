@@ -87,13 +87,15 @@ final class DashBoardTabViewController: UIViewController {
     private let tabBarControl: UISegmentedControl = {
         let segmentedControl = UISegmentedControl(items: ["일", "주", "월", "년"])
         segmentedControl.backgroundColor = .white
+        segmentedControl.selectedSegmentTintColor = .pomodoro.primary900
+        segmentedControl.layer.cornerRadius = 50
         let normalTextAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: UIColor.black,
-            .font: UIFont.systemFont(ofSize: 20, weight: .bold)
+            .foregroundColor: UIColor.pomodoro.blackHigh,
+            .font: UIFont.heading5(size: 15.7)
         ]
         let selectedTextAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: UIColor.red,
-            .font: UIFont.systemFont(ofSize: 20, weight: .bold)
+            .foregroundColor: UIColor.white,
+            .font: UIFont.heading5(size: 15.7)
         ]
         segmentedControl.setTitleTextAttributes(normalTextAttributes, for: .normal)
         segmentedControl.setTitleTextAttributes(selectedTextAttributes, for: .selected)
@@ -107,7 +109,8 @@ final class DashBoardTabViewController: UIViewController {
             make.top.equalTo(totalParticipateDate.snp.bottom).offset(10)
             make.centerX.equalToSuperview()
             make.height.equalTo(40)
-            make.width.equalTo(300)
+            make.leading.equalTo(30)
+            make.trailing.equalTo(-30)
         }
         tabBarControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
     }

@@ -37,6 +37,17 @@ final class DashboardStatusCell: UICollectionViewCell {
             make.top.equalToSuperview().offset(topOffset)
             make.centerX.equalToSuperview().offset(centerXOffset)
         }
+
+        let circleView = UIView().then {
+            contentView.addSubview($0)
+            $0.layer.cornerRadius = 50
+            $0.backgroundColor = .systemRed
+            $0.snp.makeConstraints { make in
+                make.width.height.equalTo(100)
+                make.top.equalToSuperview().offset(topOffset)
+                make.centerX.equalToSuperview().offset(centerXOffset)
+            }
+        }
     }
 
     private func setupDivider(isHorizontal: Bool, length: CGFloat, offset: CGFloat) {
@@ -60,9 +71,6 @@ final class DashboardStatusCell: UICollectionViewCell {
         setupLabel(participateLabel, topOffset: 70, centerXOffset: -100)
         setupLabel(countLabel, topOffset: 70, centerXOffset: 50)
         setupLabel(achieveLabel, topOffset: 160, centerXOffset: -100)
-        setupLabel(failLabel, topOffset: 160, centerXOffset: 50)
-        setupDivider(isHorizontal: true, length: 325, offset: 130)
-        setupDivider(isHorizontal: false, length: 155, offset: 50)
         layer.cornerRadius = 20
         backgroundColor = .black
     }
