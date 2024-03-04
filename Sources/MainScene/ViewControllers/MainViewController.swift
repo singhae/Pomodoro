@@ -22,6 +22,12 @@ final class MainViewController: UIViewController {
 
     private var currentPomodoro: Pomodoro?
 
+    lazy var currentStepLabel = UILabel().then {
+        print(router?.setUpCurrentStepLabel() ?? "error")
+        $0.text = router?.setUpCurrentStepLabel()
+        $0.textAlignment = .center
+    }
+
     private let timeLabel = UILabel().then {
         $0.textAlignment = .center
         $0.font = UIFont.systemFont(ofSize: 60, weight: .heavy)
@@ -69,6 +75,9 @@ final class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        router = PomodoroRouter()
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(didEnterBackground),
@@ -202,6 +211,9 @@ extension MainViewController {
                 setupLongPress(isEnable: false)
             }
 
+            router?.initPomodoroCount()
+            currentStepLabel.text = " "
+
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
             updateTimeLabel()
         }
@@ -281,21 +293,23 @@ extension MainViewController {
                 }
 
                 self.setupLongPress(isEnable: false)
-
-                self.router = PomodoroRouter()
-                guard let router = self.router else {
-                    return
-                }
-                router.moveToNextStep(
-                    navigationController:
-                    self.navigationController ?? UINavigationController()
-                )
+                self.setUpPomodoroRouter()
             }
 
             self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
         })
 
         setupNotification()
+    }
+
+    private func setUpPomodoroRouter() {
+        guard let router else {
+            return
+        }
+        router.moveToNextStep(
+            navigationController:
+            navigationController ?? UINavigationController()
+        )
     }
 }
 
@@ -309,9 +323,14 @@ extension MainViewController {
         view.addSubview(timeButton)
         view.addSubview(longPressGuideLabel)
         view.addSubview(progressBar)
+        view.addSubview(currentStepLabel)
     }
 
     private func setupConstraints() {
+        currentStepLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(timeLabel.snp.top).offset(-20)
+        }
         tagButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(timeLabel.snp.bottom).offset(20)
@@ -345,7 +364,7 @@ extension MainViewController {
 
 extension MainViewController: TimeSettingViewControllerDelegate {
     func didSelectTime(time: Int) {
-        pomodoroTimeManager.setupMaxTime(time: time * 60)
+        pomodoroTimeManager.setupMaxTime(time: time)
     }
 }
 
