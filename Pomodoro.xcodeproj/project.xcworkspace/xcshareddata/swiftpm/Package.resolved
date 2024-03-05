@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/HGU-iOS-Study-Group/PomodoroDesignSystem.git",
       "state" : {
-        "revision" : "c4dee77bf7ca34887f01eda7d9366d7cbd9b186d",
-        "version" : "0.0.3"
+        "branch" : "main",
+        "revision" : "d228c8b8c296a89050965101b63955e745b5662d"
       }
     },
     {

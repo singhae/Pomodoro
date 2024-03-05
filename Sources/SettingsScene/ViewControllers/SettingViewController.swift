@@ -6,11 +6,14 @@
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
 
+import PomodoroDesignSystem
 import SnapKit
 import Then
 import UIKit
 
 final class SettingViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+    let database = DatabaseManager.shared
+
     private enum SettingOption: CaseIterable {
         case shortBreak, longBreak, completionVibrate, dataReset, timerEffect, serviceReview, OSLicense
 
@@ -42,13 +45,32 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
     private lazy var tableView = UITableView(frame: .zero, style: .plain).then {
         $0.dataSource = self
         $0.delegate = self
+        $0.backgroundColor = .pomodoro.background
+        $0.contentInset = UIEdgeInsets(top: 0, left: -17, bottom: 0, right: 0)
+        $0.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 17)
         $0.register(UITableViewCell.self, forCellReuseIdentifier: "OptionCell")
         $0.isScrollEnabled = false
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .pomodoro.background
+
+        print(database.getLocationOfDefaultRealm())
+        let options = database.read(Option.self)
+        if options.isEmpty {
+            database.write(
+                Option(
+                    shortBreakTime: 5,
+                    longBreakTime: 20,
+                    isVibrate: false,
+                    isTimerEffect: true
+                )
+            )
+            print("Option Realm Initialized..")
+        }
+
+        print("Realm Option: \(database.read(Option.self))")
 
         addSubViews()
         setupConstraints()
@@ -61,12 +83,17 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
     }
 
     func tableView(_: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .value1, reuseIdentifier: "OptionCell")
+        let cell = UITableViewCell(
+            style: .value1,
+            reuseIdentifier: "OptionCell"
+        )
+        cell.backgroundColor = .pomodoro.background
         var config = cell.defaultContentConfiguration()
         let option = SettingOption.allCases[indexPath.row]
 
         config.text = option.title
         cell.textLabel?.text = option.title
+//        cell.textLabel?.font =
 
         switch SettingOption.allCases[indexPath.row] {
         case .shortBreak:
@@ -75,7 +102,7 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
             cell.detailTextLabel?.text = config.secondaryText
         case .longBreak:
             cell.accessoryType = .disclosureIndicator
-            config.secondaryText = "30min"
+            config.secondaryText = "20min"
             cell.detailTextLabel?.text = config.secondaryText
         case .completionVibrate:
             _ = UISwitch(frame: .zero).then {
@@ -154,8 +181,8 @@ extension SettingViewController {
 
         tableView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(50)
-            make.leading.equalToSuperview().offset(10)
-            make.trailing.equalToSuperview().inset(20)
+            make.leading.equalToSuperview().offset(26)
+            make.trailing.equalToSuperview().inset(9)
             make.bottom.equalToSuperview()
         }
     }
