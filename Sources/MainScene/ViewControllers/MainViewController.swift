@@ -46,7 +46,7 @@ final class MainViewController: UIViewController {
     private lazy var tagButton = UIButton().then {
         $0.setTitle("Tag", for: .normal)
         $0.setTitleColor(.black, for: .normal)
-        $0.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+        $0.titleLabel?.font = UIFont.pomodoroFont.heading1(size: 30)
         $0.addTarget(
             self,
             action: #selector(openTagModal),
@@ -56,6 +56,7 @@ final class MainViewController: UIViewController {
 
     private lazy var countButton = UIButton(type: .roundedRect).then {
         $0.setTitle("카운트 시작", for: .normal)
+        $0.titleLabel?.font = UIFont.pomodoroFont.heading2(size: 20)
         $0.setTitleColor(.black, for: .normal)
         $0.addTarget(self, action: #selector(startTimer), for: .touchUpInside)
     }
@@ -314,6 +315,9 @@ extension MainViewController {
         tagButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(timeLabel.snp.bottom).offset(20)
+            make.left.equalTo(30)
+            make.right.equalTo(-30)
+            make.height.equalTo(50)
         }
         longPressGuideLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()

@@ -171,10 +171,10 @@ final class DashboardPieChartCell: UICollectionViewCell {
         let minutes = totalFocusTime % 60
         var totalTimeText = "합계\n"
         if days > 0 {
-            totalTimeText += "\(days)일 "
+            totalTimeText += "\(days)일"
         }
         if hours > 0 || days > 0 {
-            totalTimeText += "\(hours)시간 "
+            totalTimeText += "\(hours)시간"
         }
         totalTimeText += "\(minutes)분"
         donutPieChartView.centerText = totalTimeText
