@@ -125,6 +125,7 @@ extension BreakTimerViewController {
             longPressTimer?.invalidate()
 
             progressBar.isHidden = true
+            router.initPomodoroCount()
             stopTimer()
         }
     }

@@ -19,12 +19,11 @@ final class MainViewController: UIViewController {
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
     var router: PomodoroRouter?
-
+    private lazy var pomodoroStepManager = PomodoroStepTimerManager(router: self.router ?? PomodoroRouter())
     private var currentPomodoro: Pomodoro?
 
     lazy var currentStepLabel = UILabel().then {
-        print(router?.setUpCurrentStepLabel() ?? "error")
-        $0.text = router?.setUpCurrentStepLabel()
+        $0.text = pomodoroStepManager.setUpCurrentStepLabel()
         $0.textAlignment = .center
     }
 
@@ -75,8 +74,6 @@ final class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        router = PomodoroRouter()
 
         NotificationCenter.default.addObserver(
             self,
@@ -212,7 +209,7 @@ extension MainViewController {
             }
 
             router?.initPomodoroCount()
-            currentStepLabel.text = " "
+            currentStepLabel.text = nil
 
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
             updateTimeLabel()
@@ -303,6 +300,7 @@ extension MainViewController {
     }
 
     private func setUpPomodoroRouter() {
+        router = PomodoroRouter()
         guard let router else {
             return
         }
