@@ -30,47 +30,56 @@ final class DashboardStatusCell: UICollectionViewCell {
         setupUI()
     }
 
-    private func setupLabel(_ label: UILabel, topOffset: CGFloat, centerXOffset: CGFloat) {
-        label.textColor = .white
-        contentView.addSubview(label)
-        label.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(topOffset)
-            make.centerX.equalToSuperview().offset(centerXOffset)
-        }
-
+    private func setupLabel(_ titleLabel: String, contentLabel: UILabel) -> UIView {
         let circleView = UIView().then {
             contentView.addSubview($0)
-            $0.layer.cornerRadius = 50
-            $0.backgroundColor = .systemRed
+            $0.backgroundColor = .white
             $0.snp.makeConstraints { make in
-                make.width.height.equalTo(100)
-                make.top.equalToSuperview().offset(topOffset)
-                make.centerX.equalToSuperview().offset(centerXOffset)
+                make.width.height.equalTo(120)
             }
+            $0.layer.cornerRadius = 60
         }
-    }
+        let titleLabel = UILabel().then {
+            circleView.addSubview($0)
+            $0.text = titleLabel
+            $0.textColor = .darkGray
+        }
 
-    private func setupDivider(isHorizontal: Bool, length: CGFloat, offset: CGFloat) {
-        let divider = UIView()
-        divider.backgroundColor = .white
-        contentView.addSubview(divider)
-        divider.snp.makeConstraints { make in
-            if isHorizontal {
-                make.width.equalTo(length)
-                make.height.equalTo(1)
-            } else {
-                make.width.equalTo(1)
-                make.height.equalTo(length)
-            }
-            make.top.equalToSuperview().offset(offset)
+        circleView.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
+            make.top.equalTo(30)
         }
+
+        contentLabel.then {
+            circleView.addSubview($0)
+            $0.text = contentLabel.text
+            $0.textColor = .black
+            $0.font = UIFont.heading3()
+            $0.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.top.equalTo(titleLabel.snp.bottom).offset(10)
+            }
+        }
+        return circleView
     }
 
     private func setupUI() {
-        setupLabel(participateLabel, topOffset: 70, centerXOffset: -100)
-        setupLabel(countLabel, topOffset: 70, centerXOffset: 50)
-        setupLabel(achieveLabel, topOffset: 160, centerXOffset: -100)
+        let circleStackView = UIStackView().then {
+            contentView.addSubview($0)
+
+            $0.addArrangedSubview(setupLabel("횟수", contentLabel: countLabel))
+            $0.addArrangedSubview(setupLabel("실패", contentLabel: failLabel))
+            $0.addArrangedSubview(setupLabel("달성", contentLabel: achieveLabel))
+            $0.axis = .horizontal
+            $0.distribution = .fillEqually
+            $0.spacing = 10
+            $0.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.centerY.equalToSuperview()
+            }
+        }
+
         layer.cornerRadius = 20
         backgroundColor = .black
     }
@@ -116,10 +125,13 @@ final class DashboardStatusCell: UICollectionViewCell {
         let totalSuccessCount = filteredData.filter(\.isSuccess).count
         let totalFailureCount = filteredData.filter { !$0.isSuccess }.count
 
-        participateLabel.text = "참여일 \(totalParticipateCount)"
-        countLabel.text = "횟수 \(filteredDataCount)"
-        achieveLabel.text = "달성 \(totalSuccessCount)"
-        failLabel.text = "실패 \(totalFailureCount)"
+        participateLabel.text = "\(totalParticipateCount)번"
+        countLabel.text = "\(filteredDataCount)번"
+        achieveLabel.text = "\(totalSuccessCount)번"
+        failLabel.text = "\(totalFailureCount)번"
+        countLabel.font = UIFont.heading3()
+        achieveLabel.font = UIFont.heading3()
+        failLabel.font = UIFont.heading3()
     }
 
     func getDateRange(for date: Date, dateType: DashboardDateType) -> (start: Date, end: Date) {
