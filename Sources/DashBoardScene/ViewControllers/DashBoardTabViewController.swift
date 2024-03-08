@@ -79,7 +79,7 @@ final class DashBoardTabViewController: UIViewController {
     private func setupContainerView() {
         view.addSubview(containerView)
         containerView.snp.makeConstraints { make in
-            make.top.equalTo(tabBarControl.snp.bottom).offset(20)
+            make.top.equalTo(tabBarControl.snp.bottom).offset(32)
             make.left.right.bottom.equalToSuperview()
         }
     }

@@ -31,13 +31,14 @@ final class DashboardStatusCell: UICollectionViewCell {
     }
 
     private func setupLabel(_ titleLabel: String, contentLabel: UILabel) -> UIView {
+        let circleSize = 120
         let circleView = UIView().then {
             contentView.addSubview($0)
             $0.backgroundColor = .white
             $0.snp.makeConstraints { make in
-                make.width.height.equalTo(120)
+                make.width.height.equalTo(circleSize)
             }
-            $0.layer.cornerRadius = 60
+            $0.layer.cornerRadius = CGFloat(circleSize / 2)
         }
         let titleLabel = UILabel().then {
             circleView.addSubview($0)
