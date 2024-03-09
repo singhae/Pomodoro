@@ -68,7 +68,6 @@ final class DashboardStatusCell: UICollectionViewCell {
     private func setupUI() {
         let circleStackView = UIStackView().then {
             contentView.addSubview($0)
-
             $0.addArrangedSubview(setupLabel("횟수", contentLabel: countLabel))
             $0.addArrangedSubview(setupLabel("실패", contentLabel: failLabel))
             $0.addArrangedSubview(setupLabel("달성", contentLabel: achieveLabel))
@@ -82,7 +81,7 @@ final class DashboardStatusCell: UICollectionViewCell {
         }
 
         layer.cornerRadius = 20
-        backgroundColor = .black
+        backgroundColor = .clear
     }
 
     private func getStartAndEndDate(

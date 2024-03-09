@@ -166,7 +166,6 @@ class DashboardBaseViewController: UIViewController {
                 item.contentInsets.leading = 15
                 item.contentInsets.trailing = 15
                 item.contentInsets.top = 15
-
                 return item
             }
 
@@ -180,7 +179,7 @@ class DashboardBaseViewController: UIViewController {
 
             switch section {
             case 0:
-                return NSCollectionLayoutSection(group: makeGroup(heightFraction: 1.0 / 3.0))
+                return NSCollectionLayoutSection(group: makeGroup(heightFraction: 1.0 / 4.0))
             default:
                 return NSCollectionLayoutSection(group: makeGroup(heightFraction: 1.0 / 2.0))
             }
