@@ -10,16 +10,7 @@ import SnapKit
 import UIKit
 
 final class DashBoardTabViewController: UIViewController {
-    // TODO: - mock data 생성을 위한 Test Code 입니다.
     private let database = DatabaseManager.shared
-    let pomodoro = Pomodoro(id: 1, phase: 1, currentTag: "Study", participateDate: Date.now)
-
-    func dataBaseCreate() {
-        database.write(pomodoro)
-        database.createPomodoro(tag: "Work")
-        database.getLocationOfDefaultRealm()
-    }
-
     private enum SegmentItem: Int {
         case day
         case week
@@ -39,7 +30,6 @@ final class DashBoardTabViewController: UIViewController {
         setupSegmentedControl()
         setupContainerView()
         segmentChanged()
-        dataBaseCreate()
     }
 
     private func caculateTotalParticipate() -> Int {

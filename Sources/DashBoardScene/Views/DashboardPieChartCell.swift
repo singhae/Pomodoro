@@ -18,7 +18,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
     let legendStackView = UIStackView()
     private let pieBackgroundView = UIView().then { view in
         view.layer.cornerRadius = 20
-        view.backgroundColor = .systemGray3
+        view.backgroundColor = .white
     }
 
     private let donutPieChartView = PieChartView().then { chart in
