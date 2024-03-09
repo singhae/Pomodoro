@@ -44,6 +44,7 @@ final class DashboardStatusCell: UICollectionViewCell {
             circleView.addSubview($0)
             $0.text = titleLabel
             $0.textColor = .darkGray
+//            $0.font = UIFont.pomodorofo
         }
 
         circleView.addSubview(titleLabel)

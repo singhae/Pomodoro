@@ -45,9 +45,23 @@ final class DashboardPieChartCell: UICollectionViewCell {
         pieBackgroundView.addSubview(donutPieChartView)
         backgroundColor = .clear
         layer.cornerRadius = 20
+        setTagLabel()
         setupPieChart()
         setLegendLabel()
         setPieChartData(for: Date(), dateType: .day)
+    }
+
+    private func setTagLabel() {
+        let tagLabel = UILabel().then {
+            contentView.addSubview($0)
+            $0.text = "태그 비율"
+            $0.textColor = .pomodoro.blackHigh
+            $0.font = .heading4()
+        }
+        tagLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.equalTo(10)
+        }
     }
 
     private func calculateFocusTimePerTag(for selectedDate: Date) -> [String: Int] {
@@ -66,6 +80,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         pieBackgroundView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.width.equalToSuperview()
+            make.top.equalTo(30)
             self.tagLabelHeightConstraint = make.height.equalTo(0).constraint
         }
         donutPieChartView.snp.makeConstraints { make in

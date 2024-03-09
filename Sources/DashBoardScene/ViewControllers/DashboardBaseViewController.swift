@@ -163,8 +163,8 @@ class DashboardBaseViewController: UIViewController {
                     bottom: itemInset,
                     trailing: itemInset
                 )
-                item.contentInsets.leading = 15
-                item.contentInsets.trailing = 15
+                item.contentInsets.leading = 26
+                item.contentInsets.trailing = 26
                 item.contentInsets.top = 15
                 return item
             }

@@ -21,7 +21,6 @@ final class MainViewController: UIViewController {
     var router: PomodoroRouter?
 
     private var currentPomodoro: Pomodoro?
-
     private let timeLabel = UILabel().then {
         $0.textAlignment = .center
         $0.font = UIFont.systemFont(ofSize: 60, weight: .heavy)
@@ -86,7 +85,6 @@ final class MainViewController: UIViewController {
         view.backgroundColor = .pomodoro.background
         addSubviews()
         setupConstraints()
-
         setupLongPress(isEnable: false)
     }
 

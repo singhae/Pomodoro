@@ -10,6 +10,16 @@ import SnapKit
 import UIKit
 
 final class DashBoardTabViewController: UIViewController {
+    // TODO: - mock data 생성을 위한 Test Code 입니다.
+    private let database = DatabaseManager.shared
+    let pomodoro = Pomodoro(id: 1, phase: 1, currentTag: "Study", participateDate: Date.now)
+
+    func dataBaseCreate() {
+        database.write(pomodoro)
+        database.createPomodoro(tag: "Work")
+        database.getLocationOfDefaultRealm()
+    }
+
     private enum SegmentItem: Int {
         case day
         case week
@@ -29,9 +39,18 @@ final class DashBoardTabViewController: UIViewController {
         setupSegmentedControl()
         setupContainerView()
         segmentChanged()
+        dataBaseCreate()
+    }
+
+    private func caculateTotalParticipate() -> Int {
+        let data = database.read(Pomodoro.self)
+        let filteredData = data.filter { $0.participateDate < Date() }
+        let participateDates = Set(filteredData.map { Calendar.current.startOfDay(for: $0.participateDate) })
+        return participateDates.count
     }
 
     private func setupTopView() {
+        let totalDate = caculateTotalParticipate()
         let logoIcon = UIImageView().then {
             $0.image = UIImage(named: "dashboardIcon")
         }
@@ -66,12 +85,12 @@ final class DashBoardTabViewController: UIViewController {
 
         totalParticipateDate.then {
             view.addSubview($0)
-            $0.text = "총 00일 뽀모도로 하셨어요!"
+            $0.text = "총 \(totalDate)일 뽀모도로 하셨어요!"
             $0.font = .heading3(size: 15.7)
             $0.textColor = .pomodoro.primary900
             $0.snp.makeConstraints { make in
                 make.top.equalTo(titleLabel.snp.bottom).offset(20)
-                make.leading.equalTo(40)
+                make.leading.equalTo(30)
             }
         }
     }
