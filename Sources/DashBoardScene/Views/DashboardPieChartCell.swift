@@ -16,6 +16,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
     private var priceData: [Double] = [10]
     var tagLabelHeightConstraint: Constraint?
     let legendStackView = UIStackView()
+    let chartCenterText = UILabel()
     private let pieBackgroundView = UIView().then { view in
         view.layer.cornerRadius = 20
         view.backgroundColor = .white
@@ -28,7 +29,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         chart.holeColor = .clear
         chart.backgroundColor = .clear
         chart.drawSlicesUnderHoleEnabled = false
-        chart.holeRadiusPercent = 0.55
+        chart.holeRadiusPercent = 0.7
         chart.drawEntryLabelsEnabled = false
         chart.highlightPerTapEnabled = false
         chart.legend.enabled = false
@@ -148,6 +149,11 @@ final class DashboardPieChartCell: UICollectionViewCell {
             make.leading.trailing.equalToSuperview().inset(20)
             make.top.equalTo(donutPieChartView.snp.bottom).offset(20)
         }
+        donutPieChartView.addSubview(chartCenterText)
+        chartCenterText.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview()
+        }
     }
 
     private func updateLegendLabel(with focusTimePerTag: [String: Int]) {
@@ -207,7 +213,16 @@ final class DashboardPieChartCell: UICollectionViewCell {
             totalTimeText += "\(hours)시간"
         }
         totalTimeText += "\(minutes)분"
-        donutPieChartView.centerText = totalTimeText
+
+        chartCenterText.text = totalTimeText
+        chartCenterText.textAlignment = .center
+        chartCenterText.numberOfLines = 0
+        chartCenterText.then {
+            $0.textColor = .pomodoro.blackHigh
+            $0.text = totalTimeText
+            $0.font = .pomodoroFont.heading3()
+            $0.setAttributedTextFontandColor(targetString: "합계", font: .pomodoroFont.heading4(), color: .pomodoro.blackMedium)
+        }
     }
 
     private func getDateRange(for date: Date, dateType: DashboardDateType) -> (start: Date, end: Date) {
