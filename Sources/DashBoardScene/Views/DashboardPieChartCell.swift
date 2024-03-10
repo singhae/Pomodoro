@@ -139,14 +139,14 @@ final class DashboardPieChartCell: UICollectionViewCell {
     private func setLegendLabel() {
         legendStackView.axis = .vertical
         legendStackView.distribution = .equalSpacing
-        legendStackView.alignment = .leading
+        legendStackView.alignment = .fill
         legendStackView.spacing = 8
         legendStackView.backgroundColor = .clear
 
         donutPieChartView.addSubview(legendStackView)
         legendStackView.snp.makeConstraints { make in
-            make.leading.equalToSuperview()
-            make.top.equalTo(donutPieChartView.snp.bottom)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.top.equalTo(donutPieChartView.snp.bottom).offset(20)
         }
     }
 
@@ -155,8 +155,16 @@ final class DashboardPieChartCell: UICollectionViewCell {
         let sortedFocusTime = focusTimePerTag.sorted { $0.value > $1.value }
         let totalFocusTime = sortedFocusTime.reduce(0) { $0 + $1.value }
         for (tagId, focusTime) in sortedFocusTime {
-            let label = UILabel()
-            label.font = UIFont.systemFont(ofSize: 20)
+            let tagLabel = UILabel()
+            let timeRatioTextLabel = UILabel()
+            let labelStackView = UIStackView()
+
+            tagLabel.font = .pomodoroFont.heading5()
+            tagLabel.textColor = .pomodoro.blackHigh
+            timeRatioTextLabel.font = .pomodoroFont.text4()
+            timeRatioTextLabel.textColor = .pomodoro.blackHigh
+            labelStackView.axis = .horizontal
+
             let days = focusTime / (24 * 60)
             let hours = (focusTime % (24 * 60)) / 60
             let minutes = focusTime % 60
@@ -169,9 +177,19 @@ final class DashboardPieChartCell: UICollectionViewCell {
             }
             timeText += "\(minutes)분"
             let percentage = (Double(focusTime) / Double(totalFocusTime)) * 100
-            label.text = "\(tagId): \(timeText) (\(String(format: "%.0f", percentage))%)"
 
-            legendStackView.addArrangedSubview(label)
+            tagLabel.text = tagId
+            timeRatioTextLabel.text = "\(timeText) (\(String(format: "%.0f", percentage))%)"
+            let fullText = timeRatioTextLabel.text ?? ""
+            let attribtuedString = NSMutableAttributedString(string: fullText)
+            let range = (fullText as NSString).range(of: "(\(String(format: "%.0f", percentage))%)")
+            attribtuedString.addAttribute(.foregroundColor, value: UIColor.pomodoro.blackMedium, range: range)
+            timeRatioTextLabel.attributedText = attribtuedString
+            timeRatioTextLabel.textAlignment = .right
+
+            labelStackView.addArrangedSubview(tagLabel)
+            labelStackView.addArrangedSubview(timeRatioTextLabel)
+            legendStackView.addArrangedSubview(labelStackView)
         }
 
         tagLabelHeightConstraint?.update(offset: 360 + 25 * sortedFocusTime.count)
