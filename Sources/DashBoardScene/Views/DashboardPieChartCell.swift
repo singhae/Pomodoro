@@ -180,18 +180,15 @@ final class DashboardPieChartCell: UICollectionViewCell {
 
             tagLabel.text = tagId
             timeRatioTextLabel.text = "\(timeText) (\(String(format: "%.0f", percentage))%)"
-            let fullText = timeRatioTextLabel.text ?? ""
-            let attribtuedString = NSMutableAttributedString(string: fullText)
-            let range = (fullText as NSString).range(of: "(\(String(format: "%.0f", percentage))%)")
-            attribtuedString.addAttribute(.foregroundColor, value: UIColor.pomodoro.blackMedium, range: range)
-            timeRatioTextLabel.attributedText = attribtuedString
+            timeRatioTextLabel.setAttributedTextColor(
+                targetString: "(\(String(format: "%.0f", percentage))%)", color: UIColor.pomodoro.blackMedium
+            )
             timeRatioTextLabel.textAlignment = .right
 
             labelStackView.addArrangedSubview(tagLabel)
             labelStackView.addArrangedSubview(timeRatioTextLabel)
             legendStackView.addArrangedSubview(labelStackView)
         }
-
         tagLabelHeightConstraint?.update(offset: 360 + 25 * sortedFocusTime.count)
         UIView.animate(withDuration: 0) {
             self.layoutIfNeeded()
