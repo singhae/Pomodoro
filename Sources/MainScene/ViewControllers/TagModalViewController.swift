@@ -84,7 +84,7 @@ final class TagModalViewController: UIViewController {
             make.centerX.equalToSuperview()
             make.width.equalToSuperview().multipliedBy(0.9)
         }
-  
+        
         tagsStackView.snp.makeConstraints { make in
             make.top.equalTo(horizontalStackView.snp.bottom).offset(view.bounds.height * 0.1)
             make.centerX.equalToSuperview()
@@ -96,11 +96,10 @@ final class TagModalViewController: UIViewController {
             make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
         }
     }
-
+    
     
     private func addTagsToStackView() {
-        let buttonTitlesAndColors = [("명상", UIColor.red), ("운동", UIColor.green), ("공부", UIColor.purple),
-                                     ("+", UIColor.gray), ("+", UIColor.gray), ("+", UIColor.gray), ("+", UIColor.gray)]
+        let buttonTitlesAndColors = [("명상", UIColor.red), ("운동", UIColor.green), ("공부", UIColor.purple), ("+", UIColor.pomodoro.background), ("+", UIColor.gray), ("+", UIColor.gray), ("+", UIColor.gray)]
         let tagsPerRow = [2, 3, 2]
         var currentIndex = 0
         
@@ -114,7 +113,7 @@ final class TagModalViewController: UIViewController {
             
             for _ in 0..<count {
                 let (title, color) = buttonTitlesAndColors[currentIndex % buttonTitlesAndColors.count]
-                let button = createRoundButton(title: title, color: color)
+                let button = createRoundButton(title: title, color: color, borderColor: color)
                 rowStackView.addArrangedSubview(button)
                 currentIndex += 1
             }
@@ -122,13 +121,16 @@ final class TagModalViewController: UIViewController {
             tagsStackView.addArrangedSubview(rowStackView)
         }
     }
-    
-    private func createRoundButton(title: String, color: UIColor) -> UIButton {
+    //MARK: 테두리 컬러 확인
+    private func createRoundButton(title: String, color: UIColor, borderColor: UIColor) -> UIButton {
         return UIButton().then {
             $0.setTitle(title, for: .normal)
             $0.backgroundColor = color
             $0.setTitleColor(.white, for: .normal)
             $0.layer.cornerRadius = 40
+            //TODO: 테두리 컬러 지정
+            $0.layer.borderColor = borderColor.cgColor
+            $0.layer.borderWidth = 2
             $0.snp.makeConstraints { make in
                 make.size.equalTo(CGSize(width: 80, height: 80))
             }
