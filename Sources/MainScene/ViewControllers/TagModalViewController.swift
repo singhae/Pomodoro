@@ -58,13 +58,7 @@ final class TagModalViewController: UIViewController {
         $0.distribution = .equalSpacing
     }
     
-    
     private lazy var tagSettingCompletedButton = PomodoroConfirmButton(title: "설정 완료", didTapHandler: didTapSettingCompleteButton)
-
-//    private lazy var tagSettingCompletedButton = PomodoroConfirmButton().then {
-//        $0.setTitle("설정 완료", for: .normal)
-//        $0.setTitleColor(.black, for: .normal)
-//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,7 +86,8 @@ final class TagModalViewController: UIViewController {
         }
   
         tagsStackView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+            make.top.equalTo(horizontalStackView.snp.bottom).offset(view.bounds.height * 0.1)
+            make.centerX.equalToSuperview()
             make.width.equalToSuperview().multipliedBy(0.8)
         }
         tagSettingCompletedButton.snp.makeConstraints { make in
