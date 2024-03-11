@@ -94,6 +94,12 @@ final class TagModalViewController: UIViewController {
 
         horizontalStackView.addArrangedSubview(label)
         horizontalStackView.addArrangedSubview(ellipseButton)
+        
+        horizontalStackView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.topMargin).offset(20)
+            make.centerX.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.9)
+        }
 
         tagsStackView.snp.makeConstraints { make in
             make.top.equalTo(horizontalStackView.snp.bottom).offset(20)
