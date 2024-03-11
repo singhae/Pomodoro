@@ -9,7 +9,7 @@ import SnapKit
 import Then
 import UIKit
 
-final class BreakTimerViewController: UIViewController {
+final class BreakTimerViewController: UIViewController, PomodoroStepRememberable {
     private var timer: Timer?
     private var notificationId: String?
     private var currentTime = 0
@@ -18,6 +18,8 @@ final class BreakTimerViewController: UIViewController {
     private var longPressTime: Float = 0.0
     private var timerHeightConstraint: Constraint?
     var router = PomodoroRouter()
+    var pomodoroStep: PomodoroStepStateManager?
+
     private let timeLabel = UILabel().then {
         $0.textAlignment = .center
         $0.font = UIFont.systemFont(ofSize: 60, weight: .heavy)
@@ -51,6 +53,8 @@ final class BreakTimerViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        router.delegate = self
         view.backgroundColor = .white
         addSubviews()
         setupConstraints()
@@ -72,6 +76,16 @@ final class BreakTimerViewController: UIViewController {
         if let id = notificationId {
             UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id])
         }
+    }
+
+    func remembercurrentStep(currentStep: PomodoroTimerStep) {
+        pomodoroStep = PomodoroStepStateManager(router: router)
+
+        guard let pomodoroStep else {
+            return
+        }
+
+        pomodoroStep.router?.currentStep = currentStep
     }
 }
 
@@ -125,7 +139,7 @@ extension BreakTimerViewController {
             longPressTimer?.invalidate()
 
             progressBar.isHidden = true
-            router.initPomodoroCount()
+            pomodoroStep?.initPomodoroStep()
             stopTimer()
         }
     }
@@ -135,7 +149,8 @@ extension BreakTimerViewController {
         currentTime = 0
         maxTime = 0
         updateTimeLabel()
-        router.moveToNextStep(navigationController: navigationController ?? UINavigationController())
+        movetoNextPage()
+        pomodoroStep?.initPomodoroStep()
         longPressGuideLabel.isHidden = true
     }
 
@@ -157,9 +172,7 @@ extension BreakTimerViewController {
             self.currentTime += 1
             if self.currentTime > self.maxTime {
                 timer.invalidate()
-                self.router.moveToNextStep(
-                    navigationController: self.navigationController ?? UINavigationController()
-                )
+                self.movetoNextPage()
                 self.longPressGuideLabel.isHidden = true
             } else {
                 let timerHeight = self.view.frame.height * CGFloat(self.currentTime) / CGFloat(self.maxTime)
@@ -178,6 +191,13 @@ extension BreakTimerViewController {
             }
         }
         timer?.fire()
+    }
+
+    private func movetoNextPage() {
+        pomodoroStep = PomodoroStepStateManager(router: router)
+        pomodoroStep?.applyStepChanges(
+            navigationController: navigationController ?? UINavigationController()
+        )
     }
 
     private func configureNotification() {

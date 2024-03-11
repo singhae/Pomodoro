@@ -5,7 +5,6 @@
 //  Created by 진세진 on 2023/11/06.
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
-
 import PomodoroDesignSystem
 import SnapKit
 import Then
@@ -14,16 +13,17 @@ import UIKit
 final class MainViewController: UIViewController {
     let pomodoroTimeManager = PomodoroTimeManager.shared
     let database = DatabaseManager.shared
-
     private var notificationId: String?
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
-    var router: PomodoroRouter?
-    private lazy var pomodoroStepManager = PomodoroStepTimerManager(router: self.router ?? PomodoroRouter())
+
+    var pomodoroStep: PomodoroStepStateManager?
+    var router = PomodoroRouter()
+
     private var currentPomodoro: Pomodoro?
 
     lazy var currentStepLabel = UILabel().then {
-        $0.text = pomodoroStepManager.setUpCurrentStepLabel()
+        $0.text = pomodoroStep?.setUpLabelInCurrentStep()
         $0.textAlignment = .center
     }
 
@@ -74,6 +74,9 @@ final class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        router.delegate = self
+
+        setUpPomodoroCurrentStepLabel()
 
         NotificationCenter.default.addObserver(
             self,
@@ -128,7 +131,11 @@ final class MainViewController: UIViewController {
 
 // MARK: - Action
 
-extension MainViewController {
+extension MainViewController: PomodoroStepRememberable {
+    func remembercurrentStep(currentStep: PomodoroTimerStep) {
+        router.currentStep = currentStep
+    }
+
     @objc func didEnterBackground() {
         print("max: \(pomodoroTimeManager.maxTime), curr: \(pomodoroTimeManager.currentTime)")
     }
@@ -208,8 +215,8 @@ extension MainViewController {
                 setupLongPress(isEnable: false)
             }
 
-            router?.initPomodoroCount()
-            currentStepLabel.text = nil
+            pomodoroStep?.initPomodoroStep()
+            currentStepLabel.text = ""
 
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
             updateTimeLabel()
@@ -218,12 +225,12 @@ extension MainViewController {
 
     @objc private func timeSetting() {
         let timeSettingviewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
+        setUpPomodoroCurrentStepLabel()
         navigationController?.pushViewController(timeSettingviewController, animated: true)
     }
 
     func setupNotification() {
         notificationId = UUID().uuidString
-
         let content = UNMutableNotificationContent()
         content.title = "시간 종료!"
         content.body = "시간이 종료되었습니다. 휴식을 취해주세요."
@@ -270,17 +277,17 @@ extension MainViewController {
             currentPomodoro = database.read(Pomodoro.self).last
         }
 
-        pomodoroTimeManager.startTimer(timerBlock: { timer, currentTime, maxTime in
-            self.setupUIWhenTimerStart(isStopped: false)
+        pomodoroTimeManager.startTimer(timerBlock: { [self] timer, currentTime, maxTime in
+            setupUIWhenTimerStart(isStopped: false)
 
             let minutes = (maxTime - currentTime) / 60
             let seconds = (maxTime - currentTime) % 60
 
             if minutes == 0, seconds == 0 {
                 timer.invalidate()
-                self.setupUIWhenTimerStart(isStopped: true)
+                setupUIWhenTimerStart(isStopped: true)
 
-                self.database.update(self.currentPomodoro!) { updatedPomodoro in
+                database.update(currentPomodoro!) { updatedPomodoro in
                     updatedPomodoro.phase += 1
                     if updatedPomodoro.phase == 5 {
                         print("pomodoro 완주!")
@@ -289,25 +296,38 @@ extension MainViewController {
                     }
                 }
 
-                self.setupLongPress(isEnable: false)
-                self.setUpPomodoroRouter()
+                setUpPomodoroCurrentStep()
+
+                setupLongPress(isEnable: false)
             }
 
-            self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
+            timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
         })
 
         setupNotification()
     }
 
-    private func setUpPomodoroRouter() {
-        router = PomodoroRouter()
-        guard let router else {
+    private func setUpPomodoroCurrentStep() {
+        guard let pomodoroStep else {
             return
         }
-        router.moveToNextStep(
+
+        pomodoroStep.applyStepChanges(
             navigationController:
             navigationController ?? UINavigationController()
         )
+
+        pomodoroStep.setUptimeInCurrentStep()
+        currentStepLabel.text = pomodoroStep.setUpLabelInCurrentStep()
+    }
+
+    private func setUpPomodoroCurrentStepLabel() {
+        pomodoroStep = PomodoroStepStateManager(router: router)
+
+        guard let pomodoroStep else {
+            return
+        }
+        currentStepLabel.text = pomodoroStep.setUpLabelInCurrentStep() ?? "eror"
     }
 }
 
