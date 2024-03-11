@@ -58,10 +58,13 @@ final class TagModalViewController: UIViewController {
         $0.distribution = .equalSpacing
     }
     
-    private lazy var tagSettingCompletedButton = UIButton().then {
-        $0.setTitle("설정 완료", for: .normal)
-        $0.setTitleColor(.black, for: .normal)
-    }
+    
+    private lazy var tagSettingCompletedButton = PomodoroConfirmButton(title: "설정 완료", didTapHandler: didTapSettingCompleteButton)
+
+//    private lazy var tagSettingCompletedButton = PomodoroConfirmButton().then {
+//        $0.setTitle("설정 완료", for: .normal)
+//        $0.setTitleColor(.black, for: .normal)
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,10 +95,9 @@ final class TagModalViewController: UIViewController {
             make.center.equalToSuperview()
             make.width.equalToSuperview().multipliedBy(0.8)
         }
-        tagSettingCompletedButton.addTarget(self, action: #selector(didTapSettingCompleteButton),
-                                            for: .touchUpInside)
         tagSettingCompletedButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
+            make.leading.equalToSuperview().offset(45)
+            make.trailing.equalToSuperview().offset(-45)
             make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
         }
     }
@@ -149,8 +151,7 @@ final class TagModalViewController: UIViewController {
     }
     
     @objc private func didTapSettingCompleteButton() {
-        let selectedTag = "선택된 태그"
-        selectionDelegate?.tagSelected(tag: selectedTag)
+        tagSettingCompletedButton.isEnabled.toggle()
         dismiss(animated: true)
     }
 }
