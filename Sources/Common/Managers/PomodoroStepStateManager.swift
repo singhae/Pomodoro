@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PomodoroStepStateManager {
+final class PomodoroStepStateManager {
     var router: PomodoroRouter?
     private let pomodoroTimeManager = PomodoroTimeManager.shared
     private var pomodoroCurrentCount = PomodoroRouter.pomodoroCount

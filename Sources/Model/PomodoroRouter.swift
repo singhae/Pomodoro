@@ -17,7 +17,7 @@ protocol PomodoroStepRememberable: AnyObject {
     func remembercurrentStep(currentStep: PomodoroTimerStep)
 }
 
-class PomodoroRouter {
+final class PomodoroRouter {
     let maxStep = 2
     static var pomodoroCount: Int = 0
     weak var delegate: PomodoroStepRememberable?
