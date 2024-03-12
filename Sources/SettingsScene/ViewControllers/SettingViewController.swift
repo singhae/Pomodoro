@@ -11,7 +11,11 @@ import SnapKit
 import Then
 import UIKit
 
-final class SettingViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+protocol BreakTimeDelegate: AnyObject {
+    func updateTableViewRows()
+}
+
+final class SettingViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, BreakTimeDelegate {
     let database = DatabaseManager.shared
 
     private enum SettingOption: CaseIterable {
@@ -39,8 +43,11 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
 
     private let titleLabel = UILabel().then {
         $0.text = "설정"
-        $0.font = UIFont.systemFont(ofSize: 30, weight: .bold)
+        $0.font = UIFont.pomodoroFont.heading3()
     }
+
+    private var shortBreakMinute: Int = -1
+    private let longBreakMinute: Int = -1
 
     private lazy var tableView = UITableView(frame: .zero, style: .plain).then {
         $0.dataSource = self
@@ -56,7 +63,6 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
 
-        print(database.getLocationOfDefaultRealm())
         let options = database.read(Option.self)
         if options.isEmpty {
             database.write(
@@ -70,7 +76,8 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
             print("Option Realm Initialized..")
         }
 
-        print("Realm Option: \(database.read(Option.self))")
+        print("Realm Option: \(options.first!)")
+        print(database.getLocationOfDefaultRealm())
 
         addSubViews()
         setupConstraints()
@@ -83,6 +90,8 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
     }
 
     func tableView(_: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let realmOption = database.read(Option.self).first
+
         let cell = UITableViewCell(
             style: .value1,
             reuseIdentifier: "OptionCell"
@@ -93,27 +102,38 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
 
         config.text = option.title
         cell.textLabel?.text = option.title
-//        cell.textLabel?.font =
+        cell.textLabel?.font = UIFont.pomodoroFont.heading5()
+        cell.detailTextLabel?.font = UIFont.pomodoroFont.heading5()
+        cell.detailTextLabel?.textColor = .black
 
         switch SettingOption.allCases[indexPath.row] {
         case .shortBreak:
             cell.accessoryType = .disclosureIndicator
-            config.secondaryText = "5min"
+            shortBreakMinute = realmOption?.shortBreakTime ?? -1
+            config.secondaryText = "\(shortBreakMinute)min"
             cell.detailTextLabel?.text = config.secondaryText
         case .longBreak:
             cell.accessoryType = .disclosureIndicator
-            config.secondaryText = "20min"
+            config.secondaryText = "\(realmOption?.longBreakTime ?? -1)min"
             cell.detailTextLabel?.text = config.secondaryText
         case .completionVibrate:
             _ = UISwitch(frame: .zero).then {
-                $0.setOn(false, animated: true) // switch 초기설정 지정
-                $0.tag = indexPath.row // tag 지정
+                $0.setOn(realmOption?.isVibrate ?? false, animated: true)
+                $0.addTarget(self, action: #selector(setupIsVibrate(toggle:)), for: .valueChanged)
+                $0.tag = indexPath.row
+                $0.onTintColor = .pomodoro.primary900
+                $0.backgroundColor = .pomodoro.blackMedium
+                $0.layer.cornerRadius = 16
                 cell.accessoryView = $0
             }
             cell.selectionStyle = .none
         case .timerEffect:
             _ = UISwitch(frame: .zero).then {
-                $0.setOn(false, animated: true) // switch 초기설정 지정
+                $0.setOn(realmOption?.isTimerEffect ?? false, animated: true)
+                $0.addTarget(self, action: #selector(setupIsTimerEffect(toggle:)), for: .valueChanged)
+                $0.onTintColor = .pomodoro.primary900
+                $0.backgroundColor = .pomodoro.blackMedium
+                $0.layer.cornerRadius = 16
                 cell.accessoryView = $0
             }
             cell.selectionStyle = .none
@@ -130,21 +150,71 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
 
         switch selectedOption {
         case .shortBreak:
-            presentModal(modalViewController: ShortBreakModalViewController())
+            let shortBreakModal = ShortBreakModalViewController()
+            shortBreakModal.delegate = self
+            presentModal(modalViewController: shortBreakModal)
             tableView.deselectRow(at: indexPath, animated: true)
         case .longBreak:
-            presentModal(modalViewController: LongBreakModalViewController())
-            tableView.deselectRow(at: indexPath, animated: true)
-        case .dataReset:
-            presentModal(modalViewController: DataResetModalViewController())
+            let longBreakModal = LongBreakModalViewController()
+            longBreakModal.delegate = self
+            presentModal(modalViewController: longBreakModal)
             tableView.deselectRow(at: indexPath, animated: true)
         case .completionVibrate:
             tableView.cellForRow(at: indexPath)?.selectionStyle = .none
+        case .dataReset:
+            PomodoroPopupBuilder()
+                .add(title: "데이터 초기화 하기")
+                .add(body: "데이터를 초기화 하시겠습니까?\n태그, 뽀모도로 기록 등\n모든 데이터와 설정이 초기화됩니다.")
+                .add(
+                    button: .cancellable(
+                        cancelButtonTitle: "예",
+                        confirmButtonTitle: "아니요",
+                        cancelButtonAction: {
+                            self.database.deleteAll()
+                            self.database.write(
+                                Option(
+                                    shortBreakTime: 5,
+                                    longBreakTime: 20,
+                                    isVibrate: false,
+                                    isTimerEffect: true
+                                )
+                            )
+                            self.updateTableViewRows()
+                        },
+                        confirmButtonAction: {}
+                    )
+                )
+                .show(on: self)
+            tableView.deselectRow(at: indexPath, animated: true)
         case .timerEffect:
             tableView.cellForRow(at: indexPath)?.selectionStyle = .none
-        default:
-            let detailViewController = DetailViewController(option: selectedOption.title)
-            navigationController?.pushViewController(detailViewController, animated: true)
+        case .serviceReview:
+            PomodoroPopupBuilder()
+                .add(title: "서비스 평가하기")
+                .add(body: "아직 여기 못함.. 앱스토어에 앱이 없자나..")
+                .add(
+                    button: .cancellable(
+                        cancelButtonTitle: "예",
+                        confirmButtonTitle: "아니요",
+                        cancelButtonAction: {},
+                        confirmButtonAction: {}
+                    )
+                )
+                .show(on: self)
+            tableView.deselectRow(at: indexPath, animated: true)
+        case .OSLicense:
+            PomodoroPopupBuilder()
+                .add(title: "오픈소스 라이센스")
+                .add(body: "여기도 아직 정리가 안되서 이렇게 놔둘게요")
+                .add(
+                    button: .cancellable(
+                        cancelButtonTitle: "예",
+                        confirmButtonTitle: "아니요",
+                        cancelButtonAction: {},
+                        confirmButtonAction: {}
+                    )
+                )
+                .show(on: self)
             tableView.deselectRow(at: indexPath, animated: true)
         }
     }
@@ -162,6 +232,43 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
 
         present(nav, animated: true, completion: nil)
     }
+
+    // MARK: Other Delegates
+
+    func updateTableViewRows() {
+        tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+        tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
+        tableView.reloadRows(at: [IndexPath(row: 2, section: 0)], with: .automatic)
+        tableView.reloadRows(at: [IndexPath(row: 4, section: 0)], with: .automatic)
+    }
+
+    // MARK: realm manage
+
+    @objc func setupIsVibrate(toggle: UISwitch) {
+        let options = database.read(Option.self).first ?? Option()
+        if toggle.isOn {
+            database.update(options) { option in
+                option.isVibrate = true
+            }
+        } else {
+            database.update(options) { option in
+                option.isVibrate = false
+            }
+        }
+    }
+
+    @objc func setupIsTimerEffect(toggle: UISwitch) {
+        let options = database.read(Option.self).first ?? Option()
+        if toggle.isOn {
+            database.update(options) { option in
+                option.isTimerEffect = true
+            }
+        } else {
+            database.update(options) { option in
+                option.isTimerEffect = false
+            }
+        }
+    }
 }
 
 // MARK: UI
@@ -175,41 +282,15 @@ extension SettingViewController {
 
     private func setupConstraints() {
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(50)
-            make.left.equalToSuperview().offset(20)
+            make.top.equalToSuperview().offset(126)
+            make.centerX.equalToSuperview()
         }
 
         tableView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(50)
             make.leading.equalToSuperview().offset(26)
-            make.trailing.equalToSuperview().inset(9)
+            make.trailing.equalToSuperview().inset(0)
             make.bottom.equalToSuperview()
-        }
-    }
-}
-
-final class DetailViewController: UIViewController {
-    private let optionLabel = UILabel().then {
-        $0.numberOfLines = 0
-    }
-
-    init(option: String) {
-        super.init(nibName: nil, bundle: nil)
-        optionLabel.text = option
-    }
-
-    @available(*, unavailable)
-    required init?(coder _: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .white
-        view.addSubview(optionLabel)
-
-        optionLabel.snp.makeConstraints { make in
-            make.center.equalToSuperview()
         }
     }
 }

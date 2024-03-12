@@ -6,31 +6,48 @@
 //  Copyright © 2024 io.hgu. All rights reserved.
 //
 
-import Foundation
+import PomodoroDesignSystem
 import UIKit
 
 final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+    weak var delegate: BreakTimeDelegate?
+
+    let database = DatabaseManager.shared
+
     private let label = UILabel().then {
         $0.text = "긴 휴식"
+        $0.font = .pomodoroFont.heading3()
     }
 
-    private var textField = UITextField().then {
-        $0.text = ""
-    }
+    private lazy var confirmButton = PomodoroConfirmButton(title: "확인", didTapHandler: confirmLongBreakInfo)
+
+    private var tempLongBreakInfo: Int = 0
 
     private var minutePicker: UIPickerView = .init()
 
+    func confirmLongBreakInfo() {
+        let options = database.read(Option.self).first ?? Option()
+        database.update(options) { option in
+            option.longBreakTime = self.tempLongBreakInfo + 1
+        }
+        delegate?.updateTableViewRows()
+        dismiss(animated: true)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .pomodoro.background
 
         view.addSubview(label)
         view.addSubview(minutePicker)
-        view.addSubview(textField)
+        view.addSubview(confirmButton)
 
         minutePicker.sizeToFit()
         minutePicker.delegate = self
         minutePicker.dataSource = self
+
+        let temp = database.read(Option.self).first?.longBreakTime ?? 0
+        minutePicker.selectRow(temp - 1, inComponent: 0, animated: true)
 
         setupConstraints()
     }
@@ -43,12 +60,15 @@ final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate
 
         minutePicker.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(label.snp.bottom).offset(10)
+            make.height.equalToSuperview().multipliedBy(0.6)
+            make.top.equalTo(label.snp.bottom).offset(5)
         }
 
-        textField.snp.makeConstraints { make in
+        confirmButton.snp.makeConstraints { make in
+            make.width.equalToSuperview().multipliedBy(0.5)
+            make.height.equalToSuperview().multipliedBy(0.12)
             make.centerX.equalToSuperview()
-            make.top.equalTo(minutePicker.snp.bottom).offset(10)
+            make.bottom.equalToSuperview().offset(-50)
         }
     }
 
@@ -60,15 +80,27 @@ final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate
         40
     }
 
+    func pickerView(_: UIPickerView, rowHeightForComponent _: Int) -> CGFloat {
+        80
+    }
+
     func pickerView(
         _: UIPickerView,
-        titleForRow row: Int,
-        forComponent _: Int
-    ) -> String? {
-        String(row + 20) + "분"
+        viewForRow row: Int,
+        forComponent _: Int,
+        reusing view: UIView?
+    ) -> UIView {
+        var label: UILabel
+        if let view = view as? UILabel { label = view } else { label = UILabel() }
+
+        label.text = "\(row + 1) m"
+        label.textAlignment = .center
+        label.font = .pomodoroFont.heading3()
+
+        return label
     }
 
     func pickerView(_: UIPickerView, didSelectRow row: Int, inComponent _: Int) {
-        textField.text = (String(row + 20) + "분")
+        tempLongBreakInfo = row
     }
 }

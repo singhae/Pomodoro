@@ -71,6 +71,7 @@ final class MainViewController: UIViewController {
 
     private lazy var timeButton = UIButton(type: .roundedRect).then {
         $0.setTitle("시간 설정", for: .normal)
+        $0.titleLabel?.font = UIFont.pomodoroFont.heading6(size: 12)
         $0.setTitleColor(.black, for: .normal)
         $0.addTarget(self, action: #selector(timeSetting), for: .touchUpInside)
     }
