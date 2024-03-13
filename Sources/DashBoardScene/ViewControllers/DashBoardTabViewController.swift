@@ -12,6 +12,7 @@ import UIKit
 
 final class DashBoardTabViewController: UIViewController {
     private let database = DatabaseManager.shared
+
     private enum SegmentItem: Int {
         case day
         case week
