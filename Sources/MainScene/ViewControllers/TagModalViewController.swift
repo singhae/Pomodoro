@@ -19,7 +19,6 @@ protocol TagModalViewControllerDelegate: AnyObject {
 }
 
 final class TagModalViewController: UIViewController {
-    
     private weak var selectionDelegate: TagModalViewControllerDelegate?
     
     private func configureNavigationBar() {
@@ -29,6 +28,7 @@ final class TagModalViewController: UIViewController {
         )
         navigationItem.leftBarButtonItem = dismissButtonItem
     }
+    
     private let horizontalStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 10
@@ -58,7 +58,8 @@ final class TagModalViewController: UIViewController {
         $0.distribution = .equalSpacing
     }
     
-    private lazy var tagSettingCompletedButton = PomodoroConfirmButton(title: "설정 완료", didTapHandler: didTapSettingCompleteButton)
+    private lazy var tagSettingCompletedButton = PomodoroConfirmButton(title: "설정 완료",
+                                                                       didTapHandler: didTapSettingCompleteButton)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -99,7 +100,8 @@ final class TagModalViewController: UIViewController {
     
     
     private func addTagsToStackView() {
-        let buttonTitlesAndColors = [("명상", UIColor.red), ("운동", UIColor.green), ("공부", UIColor.purple), ("+", UIColor.pomodoro.background), ("+", UIColor.gray), ("+", UIColor.gray), ("+", UIColor.gray)]
+        let buttonTitlesAndColors = [("명상", UIColor.red), ("운동", UIColor.green), 
+                                     ("공부", UIColor.purple), ("+", UIColor.pomodoro.background), ("+", UIColor.gray), ("+", UIColor.gray), ("+", UIColor.gray)]
         let tagsPerRow = [2, 3, 2]
         var currentIndex = 0
         
@@ -121,14 +123,14 @@ final class TagModalViewController: UIViewController {
             tagsStackView.addArrangedSubview(rowStackView)
         }
     }
-    //MARK: 테두리 컬러 확인
+    // TODO: 테두리 컬러 확인
     private func createRoundButton(title: String, color: UIColor, borderColor: UIColor) -> UIButton {
         return UIButton().then {
             $0.setTitle(title, for: .normal)
             $0.backgroundColor = color
             $0.setTitleColor(.white, for: .normal)
             $0.layer.cornerRadius = 40
-            //TODO: 테두리 컬러 지정
+            // TODO: 테두리 컬러 지정
             $0.layer.borderColor = borderColor.cgColor
             $0.layer.borderWidth = 2
             $0.snp.makeConstraints { make in
@@ -160,4 +162,3 @@ extension TagModalViewController: TagCreationDelegate {
         // TODO: 추가된 태그 정보값 전달
     }
 }
-
