@@ -20,7 +20,6 @@ protocol TagModalViewControllerDelegate: AnyObject {
 
 final class TagModalViewController: UIViewController {
     private weak var selectionDelegate: TagModalViewControllerDelegate?
-    
     private func configureNavigationBar() {
         navigationItem.title = "태그 설정"
         let dismissButtonItem = UIBarButtonItem(
@@ -28,20 +27,17 @@ final class TagModalViewController: UIViewController {
         )
         navigationItem.leftBarButtonItem = dismissButtonItem
     }
-    
     private let horizontalStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 10
         $0.alignment = .center
         $0.distribution = .equalSpacing
     }
-    
     private let label = UILabel().then {
         $0.text = "나의 태그"
         $0.textColor = .black
         $0.font = UIFont.boldSystemFont(ofSize: 15)
     }
-    
     private let ellipseButton = UIButton().then {
         $0.setImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
         $0.contentMode = .scaleAspectFit
@@ -50,17 +46,14 @@ final class TagModalViewController: UIViewController {
         $0.layer.cornerRadius = 15
         $0.clipsToBounds = true
     }
-    
     private let tagsStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 16
         $0.alignment = .center
         $0.distribution = .equalSpacing
     }
-    
     private lazy var tagSettingCompletedButton = PomodoroConfirmButton(title: "설정 완료",
                                                                        didTapHandler: didTapSettingCompleteButton)
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
@@ -70,7 +63,6 @@ final class TagModalViewController: UIViewController {
         setupViews()
         addTagsToStackView()
     }
-    
     private func setupViews() {
         view.backgroundColor = .pomodoro.background
         view.addSubview(horizontalStackView)
@@ -97,8 +89,6 @@ final class TagModalViewController: UIViewController {
             make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
         }
     }
-    
-    
     private func addTagsToStackView() {
         let buttonTitlesAndColors = [("명상", UIColor.red), ("운동", UIColor.green), 
                                      ("공부", UIColor.purple), ("+", UIColor.pomodoro.background), ("+", UIColor.gray), ("+", UIColor.gray), ("+", UIColor.gray)]
@@ -139,10 +129,10 @@ final class TagModalViewController: UIViewController {
             $0.addTarget(self, action: #selector(configureTag), for: .touchUpInside)
         }
     }
+    
     @objc private func dismissModal() {
         dismiss(animated: true, completion: nil)
     }
-    
     @objc func configureTag() {
         let configureTagViewController = TagConfigurationViewController()
         configureTagViewController.modalPresentationStyle = .overCurrentContext
