@@ -143,6 +143,32 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
         return cell
     }
 
+    func showDataResetPopup() {
+        PomodoroPopupBuilder()
+            .add(title: "데이터 초기화 하기")
+            .add(body: "데이터를 초기화 하시겠습니까?\n태그, 뽀모도로 기록 등\n모든 데이터와 설정이 초기화됩니다.")
+            .add(
+                button: .cancellable(
+                    cancelButtonTitle: "예",
+                    confirmButtonTitle: "아니요",
+                    cancelButtonAction: {
+                        self.database.deleteAll()
+                        self.database.write(
+                            Option(
+                                shortBreakTime: 5,
+                                longBreakTime: 20,
+                                isVibrate: false,
+                                isTimerEffect: true
+                            )
+                        )
+                        self.updateTableViewRows()
+                    },
+                    confirmButtonAction: {}
+                )
+            )
+            .show(on: self)
+    }
+
     // MARK: - UITableViewDelegate
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -162,29 +188,7 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
         case .completionVibrate:
             tableView.cellForRow(at: indexPath)?.selectionStyle = .none
         case .dataReset:
-            PomodoroPopupBuilder()
-                .add(title: "데이터 초기화 하기")
-                .add(body: "데이터를 초기화 하시겠습니까?\n태그, 뽀모도로 기록 등\n모든 데이터와 설정이 초기화됩니다.")
-                .add(
-                    button: .cancellable(
-                        cancelButtonTitle: "예",
-                        confirmButtonTitle: "아니요",
-                        cancelButtonAction: {
-                            self.database.deleteAll()
-                            self.database.write(
-                                Option(
-                                    shortBreakTime: 5,
-                                    longBreakTime: 20,
-                                    isVibrate: false,
-                                    isTimerEffect: true
-                                )
-                            )
-                            self.updateTableViewRows()
-                        },
-                        confirmButtonAction: {}
-                    )
-                )
-                .show(on: self)
+            showDataResetPopup()
             tableView.deselectRow(at: indexPath, animated: true)
         case .timerEffect:
             tableView.cellForRow(at: indexPath)?.selectionStyle = .none
