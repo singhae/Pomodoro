@@ -13,7 +13,7 @@ final class BreakTimerViewController: UIViewController {
     private var timer: Timer?
     private var notificationId: String?
     private var currentTime = 0
-    private var maxTime = 25 * 60
+    private var maxTime = 1 * 60
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
     private var timerHeightConstraint: Constraint?
@@ -46,7 +46,7 @@ final class BreakTimerViewController: UIViewController {
     }
 
     private lazy var timerBackground = UIView().then {
-        $0.backgroundColor = .red
+        $0.backgroundColor = .pomodoro.primary900
     }
 
     override func viewDidLoad() {
@@ -55,6 +55,7 @@ final class BreakTimerViewController: UIViewController {
         addSubviews()
         setupConstraints()
         startTimer()
+        startAnimationTimer()
         longPressSetting(isEnable: false)
     }
 
@@ -144,39 +145,44 @@ extension BreakTimerViewController {
     }
 
     @objc private func startTimer() {
-        let timeLabelMinY = timeLabel.frame.minY + breakLabel.frame.maxY
         longPressTime = 0.0
         progressBar.progress = 0.0
         longPressSetting(isEnable: true)
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-            self.longPressGuideLabel.isHidden = false
-            let minutes = (self.maxTime - self.currentTime) / 60
-            let seconds = (self.maxTime - self.currentTime) % 60
-            self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
-            self.currentTime += 1
-            if self.currentTime > self.maxTime {
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
+            guard let self else {
+                return
+            }
+
+            longPressGuideLabel.isHidden = false
+            let minutes = (maxTime - currentTime) / 60
+            let seconds = (maxTime - currentTime) % 60
+            timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
+            currentTime += 1
+
+            if currentTime > maxTime {
                 timer.invalidate()
-                self.router.moveToNextStep(
+                router.moveToNextStep(
                     navigationController: self.navigationController ?? UINavigationController()
                 )
-                self.longPressGuideLabel.isHidden = true
-            } else {
-                let timerHeight = self.view.frame.height * CGFloat(self.currentTime) / CGFloat(self.maxTime)
-
-                DispatchQueue.main.async {
-                    self.timerHeightConstraint?.update(offset: timerHeight)
-                    UIView.animate(withDuration: 1.0) {
-                        self.view.layoutIfNeeded()
-                    }
-                }
-                if timeLabelMinY >= timerHeight {
-                    self.timeLabel.textColor = .black
-                } else {
-                    self.timeLabel.textColor = .white
-                }
+                longPressGuideLabel.isHidden = true
+                return
             }
+
+            let timerBackgroundMinY = self.timerBackground.layer.presentation()?.frame.minY
+            self.timeLabel.textColor = self.breakLabel.frame.minY < timerBackgroundMinY ?? .infinity
+                ? .black
+                : .white
         }
         timer?.fire()
+    }
+
+    private func startAnimationTimer() {
+        DispatchQueue.main.async {
+            self.timerHeightConstraint?.update(offset: self.view.frame.height)
+            UIView.animate(withDuration: TimeInterval(self.maxTime)) {
+                self.view.layoutIfNeeded()
+            }
+        }
     }
 
     private func configureNotification() {
