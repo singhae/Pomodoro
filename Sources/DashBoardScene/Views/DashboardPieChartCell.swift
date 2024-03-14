@@ -150,6 +150,10 @@ final class DashboardPieChartCell: UICollectionViewCell {
             make.top.equalTo(donutPieChartView.snp.bottom).offset(20)
         }
         donutPieChartView.addSubview(chartCenterText)
+        chartCenterText.then {
+            $0.textAlignment = .center
+            $0.numberOfLines = 0
+        }
         chartCenterText.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview()
@@ -215,8 +219,6 @@ final class DashboardPieChartCell: UICollectionViewCell {
         totalTimeText += "\(minutes)분"
 
         chartCenterText.text = totalTimeText
-        chartCenterText.textAlignment = .center
-        chartCenterText.numberOfLines = 0
         chartCenterText.then {
             $0.textColor = .pomodoro.blackHigh
             $0.text = totalTimeText
