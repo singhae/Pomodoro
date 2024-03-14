@@ -15,7 +15,7 @@ protocol BreakTimeDelegate: AnyObject {
     func updateTableViewRows()
 }
 
-final class SettingViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, BreakTimeDelegate {
+final class SettingViewController: UIViewController, BreakTimeDelegate {
     let database = DatabaseManager.shared
 
     private enum SettingOption: CaseIterable {
@@ -78,9 +78,11 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
         addSubViews()
         setupConstraints()
     }
+}
 
-    // MARK: - UITableViewDataSource
+// MARK: - UITableViewDataSource
 
+extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
         SettingOption.allCases.count
     }
@@ -113,25 +115,17 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
             config.secondaryText = "\(realmOption?.longBreakTime ?? -1)min"
             cell.detailTextLabel?.text = config.secondaryText
         case .completionVibrate:
-            _ = UISwitch(frame: .zero).then {
-                $0.setOn(realmOption?.isVibrate ?? false, animated: true)
-                $0.addTarget(self, action: #selector(setupIsVibrate(toggle:)), for: .valueChanged)
-                $0.tag = indexPath.row
-                $0.onTintColor = .pomodoro.primary900
-                $0.backgroundColor = .pomodoro.blackMedium
-                $0.layer.cornerRadius = 16
-                cell.accessoryView = $0
-            }
+            let switchView = makeSwitch()
+            switchView.setOn(realmOption?.isVibrate ?? false, animated: true)
+            switchView.addTarget(self, action: #selector(setupIsVibrate(toggle:)), for: .valueChanged)
+            switchView.tag = indexPath.row
+            cell.accessoryView = switchView
             cell.selectionStyle = .none
         case .timerEffect:
-            _ = UISwitch(frame: .zero).then {
-                $0.setOn(realmOption?.isTimerEffect ?? false, animated: true)
-                $0.addTarget(self, action: #selector(setupIsTimerEffect(toggle:)), for: .valueChanged)
-                $0.onTintColor = .pomodoro.primary900
-                $0.backgroundColor = .pomodoro.blackMedium
-                $0.layer.cornerRadius = 16
-                cell.accessoryView = $0
-            }
+            let switchView = makeSwitch()
+            switchView.setOn(realmOption?.isTimerEffect ?? false, animated: true)
+            switchView.addTarget(self, action: #selector(setupIsTimerEffect(toggle:)), for: .valueChanged)
+            cell.accessoryView = switchView
             cell.selectionStyle = .none
         default:
             return cell
@@ -139,30 +133,13 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
         return cell
     }
 
-    func showDataResetPopup() {
-        PomodoroPopupBuilder()
-            .add(title: "데이터 초기화 하기")
-            .add(body: "데이터를 초기화 하시겠습니까?\n태그, 뽀모도로 기록 등\n모든 데이터와 설정이 초기화됩니다.")
-            .add(
-                button: .cancellable(
-                    cancelButtonTitle: "예",
-                    confirmButtonTitle: "아니요",
-                    cancelButtonAction: {
-                        self.database.deleteAll()
-                        self.database.write(
-                            Option(
-                                shortBreakTime: 5,
-                                longBreakTime: 20,
-                                isVibrate: false,
-                                isTimerEffect: true
-                            )
-                        )
-                        self.updateTableViewRows()
-                    },
-                    confirmButtonAction: {}
-                )
-            )
-            .show(on: self)
+    private func makeSwitch() -> UISwitch {
+        let switchView = UISwitch()
+        switchView.onTintColor = .pomodoro.primary900
+        switchView.backgroundColor = .pomodoro.blackMedium
+        switchView.layer.cornerRadius = 16
+
+        return switchView
     }
 
     // MARK: - UITableViewDelegate
@@ -175,48 +152,56 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
             let shortBreakModal = ShortBreakModalViewController()
             shortBreakModal.delegate = self
             presentModal(modalViewController: shortBreakModal)
-            tableView.deselectRow(at: indexPath, animated: true)
         case .longBreak:
             let longBreakModal = LongBreakModalViewController()
             longBreakModal.delegate = self
             presentModal(modalViewController: longBreakModal)
-            tableView.deselectRow(at: indexPath, animated: true)
         case .completionVibrate:
             tableView.cellForRow(at: indexPath)?.selectionStyle = .none
         case .dataReset:
-            showDataResetPopup()
-            tableView.deselectRow(at: indexPath, animated: true)
+            showCancellablePopup(
+                title: "데이터 초기화 하기",
+                body: "데이터를 초기화 하시겠습니까?\n태그, 뽀모도로 기록 등\n모든 데이터와 설정이 초기화됩니다."
+            ) { [weak self] in
+                guard let self else { return }
+
+                database.deleteAll()
+                database.write(
+                    Option(
+                        shortBreakTime: 5,
+                        longBreakTime: 20,
+                        isVibrate: false,
+                        isTimerEffect: true
+                    )
+                )
+                updateTableViewRows()
+            }
         case .timerEffect:
             tableView.cellForRow(at: indexPath)?.selectionStyle = .none
         case .serviceReview:
-            PomodoroPopupBuilder()
-                .add(title: "서비스 평가하기")
-                .add(body: "아직 여기 못함.. 앱스토어에 앱이 없자나..")
-                .add(
-                    button: .cancellable(
-                        cancelButtonTitle: "예",
-                        confirmButtonTitle: "아니요",
-                        cancelButtonAction: {},
-                        confirmButtonAction: {}
-                    )
-                )
-                .show(on: self)
-            tableView.deselectRow(at: indexPath, animated: true)
+            // TODO: body에 넣을 값이 아직 정의가 안되어 있음
+            showCancellablePopup(title: "서비스 평가하기", body: "")
         case .OSLicense:
-            PomodoroPopupBuilder()
-                .add(title: "오픈소스 라이센스")
-                .add(body: "여기도 아직 정리가 안되서 이렇게 놔둘게요")
-                .add(
-                    button: .cancellable(
-                        cancelButtonTitle: "예",
-                        confirmButtonTitle: "아니요",
-                        cancelButtonAction: {},
-                        confirmButtonAction: {}
-                    )
-                )
-                .show(on: self)
-            tableView.deselectRow(at: indexPath, animated: true)
+            // TODO: body에 넣을 값이 아직 정의가 안되어 있음
+            showCancellablePopup(title: "오픈소스 라이센스", body: "")
         }
+
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+
+    private func showCancellablePopup(title: String, body: String, cancelHandler: (() -> Void)? = nil) {
+        PomodoroPopupBuilder()
+            .add(title: title)
+            .add(body: body)
+            .add(
+                button: .cancellable(
+                    cancelButtonTitle: "예",
+                    confirmButtonTitle: "아니요",
+                    cancelButtonAction: cancelHandler,
+                    confirmButtonAction: nil
+                )
+            )
+            .show(on: self)
     }
 
     private func presentModal(modalViewController: UIViewController) {

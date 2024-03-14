@@ -45,7 +45,11 @@ final class ShortBreakModalViewController: UIViewController, UIPickerViewDelegat
         minutePicker.sizeToFit()
         minutePicker.delegate = self
         minutePicker.dataSource = self
-        minutePicker.selectRow(database.read(Option.self).first?.shortBreakTime ?? 0 - 1, inComponent: 0, animated: true)
+        minutePicker.selectRow(
+            (database.read(Option.self).first?.shortBreakTime ?? 0) - 1,
+            inComponent: 0,
+            animated: true
+        )
 
         setupConstraints()
     }
@@ -91,8 +95,7 @@ final class ShortBreakModalViewController: UIViewController, UIPickerViewDelegat
         var label: UILabel
         if let view = view as? UILabel {
             label = view
-        }
-        else {
+        } else {
             label = UILabel()
         }
 
