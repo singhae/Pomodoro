@@ -141,13 +141,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		2176515F2B94B94B00121AB2 /* Font */ = {
+
+		2128D78D2B974182000F573C /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
 				217651622B94CB5900121AB2 /* BMHANNA_11yrs_otf.otf */,
 				217651682B94D9EE00121AB2 /* Pretendard-Regular.otf */,
 			);
-			path = Font;
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		21D85CCE2B83258300E2FAA8 /* BreakScene */ = {
@@ -210,7 +211,7 @@
 		CEDCA0D82B67D015005C18EA /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				2176515F2B94B94B00121AB2 /* Font */,
+				2128D78D2B974182000F573C /* Fonts */,
 				21D85CCE2B83258300E2FAA8 /* BreakScene */,
 				CEDCA0D92B67D015005C18EA /* SettingsScene */,
 				CEDCA0DF2B67D015005C18EA /* App */,
@@ -439,7 +440,9 @@
 				217651692B94D9EE00121AB2 /* Pretendard-Regular.otf in Resources */,
 				CE4F2B032B6DE0D7000E5420 /* .swiftlint.yml in Resources */,
 				CEDCA1002B67D015005C18EA /* README.md in Resources */,
+				2128D7902B9741A6000F573C /* Pretendard-Regular.otf in Resources */,
 				CEDCA0FE2B67D015005C18EA /* Assets.xcassets in Resources */,
+				2128D7912B9741A6000F573C /* BMHANNA_11yrs_otf.otf in Resources */,
 				CEDCA0FD2B67D015005C18EA /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
