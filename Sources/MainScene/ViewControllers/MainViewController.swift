@@ -54,7 +54,7 @@ final class MainViewController: UIViewController {
     private lazy var tagButton = UIButton().then {
         $0.setTitle("Tag", for: .normal)
         $0.setTitleColor(.black, for: .normal)
-        $0.titleLabel?.font = UIFont.pomodoroFont.heading1(size: 30)
+        $0.titleLabel?.font = .pomodoroFont.heading6()
         $0.addTarget(
             self,
             action: #selector(openTagModal),
@@ -64,7 +64,7 @@ final class MainViewController: UIViewController {
 
     private lazy var countButton = UIButton(type: .roundedRect).then {
         $0.setTitle("카운트 시작", for: .normal)
-        $0.titleLabel?.font = UIFont.pomodoroFont.heading2(size: 20)
+        $0.titleLabel?.font = .pomodoroFont.text1()
         $0.setTitleColor(.black, for: .normal)
         $0.addTarget(self, action: #selector(startTimer), for: .touchUpInside)
     }
