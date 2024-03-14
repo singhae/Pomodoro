@@ -821,8 +821,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/HGU-iOS-Study-Group/PomodoroDesignSystem.git";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.1;
 			};
 		};
 		CEDCA11A2B67D0AB005C18EA /* XCRemoteSwiftPackageReference "realm-swift" */ = {
