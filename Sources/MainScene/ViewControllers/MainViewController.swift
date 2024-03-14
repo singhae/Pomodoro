@@ -72,7 +72,7 @@ final class MainViewController: UIViewController {
     private lazy var timeButton = UIButton(type: .roundedRect).then {
         $0.setTitle("시간 설정", for: .normal)
         $0.titleLabel?.font = UIFont.pomodoroFont.heading6(size: 12)
-        $0.setTitleColor(.black, for: .normal)
+        $0.setTitleColor(.pomodoro.blackHigh, for: .normal)
         $0.addTarget(self, action: #selector(timeSetting), for: .touchUpInside)
     }
 
@@ -108,7 +108,6 @@ final class MainViewController: UIViewController {
         updateTimeLabel()
 
         if pomodoroTimeManager.isRestored == true {
-            print("ISRESTORED")
             pomodoroTimeManager.setupIsRestored(bool: false)
             // 다시 정보 불러왔을 때 타이머가 진행 중이라면 가장 마지막 뽀모도로 불러오기
             currentPomodoro = database.read(Pomodoro.self).last
@@ -132,13 +131,9 @@ final class MainViewController: UIViewController {
 // MARK: - Action
 
 extension MainViewController {
-    @objc func didEnterBackground() {
-        print("max: \(pomodoroTimeManager.maxTime), curr: \(pomodoroTimeManager.currentTime)")
-    }
+    @objc func didEnterBackground() {}
 
     @objc func didEnterForeground() {
-        print("ENTER FOREGROUND")
-        print("max: \(pomodoroTimeManager.maxTime), curr: \(pomodoroTimeManager.currentTime)")
         timeLabel.text = String(
             format: "%02d:%02d",
             (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60,
@@ -185,14 +180,12 @@ extension MainViewController {
         progressBar.setProgress(longPressTime, animated: true)
 
         if longPressTime >= 1 {
-            print("LONGPRESS STOP")
             longPressTime = 0.0
             progressBar.progress = 0.0
 
             longPressTimer?.invalidate()
 
             database.update(currentPomodoro!) { pomodoro in
-                print("[Realm] 뽀모도로 취소")
                 pomodoro.phase = 0
                 pomodoro.isSuccess = false
             }
@@ -276,7 +269,6 @@ extension MainViewController {
                 self.database.update(self.currentPomodoro!) { updatedPomodoro in
                     updatedPomodoro.phase += 1
                     if updatedPomodoro.phase == 5 {
-                        print("pomodoro 완주!")
                         updatedPomodoro.isSuccess = true
                         updatedPomodoro.phase = 0
                     }

@@ -21,14 +21,14 @@ final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate
 
     private lazy var confirmButton = PomodoroConfirmButton(title: "확인", didTapHandler: confirmLongBreakInfo)
 
-    private var tempLongBreakInfo: Int = 0
+    private var tempLongBreakTime: Int = 0
 
     private var minutePicker: UIPickerView = .init()
 
     func confirmLongBreakInfo() {
         let options = database.read(Option.self).first ?? Option()
         database.update(options) { option in
-            option.longBreakTime = self.tempLongBreakInfo + 1
+            option.longBreakTime = self.tempLongBreakTime + 1
         }
         delegate?.updateTableViewRows()
         dismiss(animated: true)
@@ -46,8 +46,7 @@ final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate
         minutePicker.delegate = self
         minutePicker.dataSource = self
 
-        let temp = database.read(Option.self).first?.longBreakTime ?? 0
-        minutePicker.selectRow(temp - 1, inComponent: 0, animated: true)
+        minutePicker.selectRow(database.read(Option.self).first?.longBreakTime ?? 0 - 1, inComponent: 0, animated: true)
 
         setupConstraints()
     }
@@ -91,7 +90,12 @@ final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate
         reusing view: UIView?
     ) -> UIView {
         var label: UILabel
-        if let view = view as? UILabel { label = view } else { label = UILabel() }
+        if let view = view as? UILabel {
+            label = view
+        }
+        else {
+            label = UILabel()
+        }
 
         label.text = "\(row + 1) m"
         label.textAlignment = .center
@@ -101,6 +105,6 @@ final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate
     }
 
     func pickerView(_: UIPickerView, didSelectRow row: Int, inComponent _: Int) {
-        tempLongBreakInfo = row
+        tempLongBreakTime = row
     }
 }

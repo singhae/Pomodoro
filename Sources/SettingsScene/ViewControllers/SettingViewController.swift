@@ -46,8 +46,8 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
         $0.font = UIFont.pomodoroFont.heading3()
     }
 
-    private var shortBreakMinute: Int = -1
-    private let longBreakMinute: Int = -1
+    private var shortBreakMinute: Int = 0
+    private let longBreakMinute: Int = 0
 
     private lazy var tableView = UITableView(frame: .zero, style: .plain).then {
         $0.dataSource = self
@@ -73,11 +73,7 @@ final class SettingViewController: UIViewController, UITableViewDataSource, UITa
                     isTimerEffect: true
                 )
             )
-            print("Option Realm Initialized..")
         }
-
-        print("Realm Option: \(options.first!)")
-        print(database.getLocationOfDefaultRealm())
 
         addSubViews()
         setupConstraints()
