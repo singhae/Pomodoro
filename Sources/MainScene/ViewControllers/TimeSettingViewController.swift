@@ -105,9 +105,7 @@ final class TimeSettingViewController: UIViewController {
 
     @objc private func onClickTimerSetting() {
         delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
-        // let tagViewController = TagModalViewController()
-        let tagViewController = MainViewController()
-        navigationController?.pushViewController(tagViewController, animated: true)
+        navigationController?.popViewController(animated: true)
     }
 }
 
