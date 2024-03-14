@@ -95,7 +95,6 @@ final class MainViewController: UIViewController {
         view.backgroundColor = .pomodoro.background
         addSubviews()
         setupConstraints()
-
         setupLongPress(isEnable: false)
     }
 
