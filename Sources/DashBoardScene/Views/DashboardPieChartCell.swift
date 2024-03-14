@@ -223,6 +223,8 @@ final class DashboardPieChartCell: UICollectionViewCell {
             $0.textColor = .pomodoro.blackHigh
             $0.text = totalTimeText
             $0.font = .pomodoroFont.heading3()
+            $0.textAlignment = .center
+            $0.numberOfLines = 0
             $0.setAttributedTextFontandColor(
                 targetString: "합계",
                 font: .pomodoroFont.heading4(),
