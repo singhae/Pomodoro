@@ -34,7 +34,7 @@ class DashboardBaseViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .pomodoro.background
         setupDateLabel()
         setupArrowButtons()
         setupCollectionView()
@@ -61,13 +61,14 @@ class DashboardBaseViewController: UIViewController {
     lazy var dateLabel = UILabel().then {
         $0.text = dateFormatter.string(from: selectedDate)
         $0.textAlignment = .center
-        $0.textColor = .black
+        $0.textColor = .pomodoro.blackHigh
+        $0.font = .pomodoroFont.heading4()
     }
 
     private lazy var previousButton = UIButton().then {
         $0.setImage(
             UIImage(
-                systemName: "arrowtriangle.backward"
+                systemName: "arrowtriangle.left.fill"
             )?.withTintColor(.black, renderingMode: .alwaysOriginal),
             for: .normal
         )
@@ -77,7 +78,7 @@ class DashboardBaseViewController: UIViewController {
     private lazy var nextButton = UIButton().then {
         $0.setImage(
             UIImage(
-                systemName: "arrowtriangle.right"
+                systemName: "arrowtriangle.right.fill"
             )?.withTintColor(.black, renderingMode: .alwaysOriginal),
             for: .normal
         )
@@ -162,10 +163,9 @@ class DashboardBaseViewController: UIViewController {
                     bottom: itemInset,
                     trailing: itemInset
                 )
-                item.contentInsets.leading = 15
-                item.contentInsets.trailing = 15
+                item.contentInsets.leading = 26
+                item.contentInsets.trailing = 26
                 item.contentInsets.top = 15
-
                 return item
             }
 
@@ -179,7 +179,7 @@ class DashboardBaseViewController: UIViewController {
 
             switch section {
             case 0:
-                return NSCollectionLayoutSection(group: makeGroup(heightFraction: 1.0 / 3.0))
+                return NSCollectionLayoutSection(group: makeGroup(heightFraction: 1.0 / 4.0))
             default:
                 return NSCollectionLayoutSection(group: makeGroup(heightFraction: 1.0 / 2.0))
             }
@@ -188,7 +188,7 @@ class DashboardBaseViewController: UIViewController {
 
     private func setupCollectionView() {
         view.addSubview(collectionView)
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .pomodoro.background
         collectionView.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
             make.top.equalTo(dateLabel.snp.bottom)
