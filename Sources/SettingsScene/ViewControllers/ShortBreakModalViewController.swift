@@ -91,8 +91,7 @@ final class ShortBreakModalViewController: UIViewController, UIPickerViewDelegat
         var label: UILabel
         if let view = view as? UILabel {
             label = view
-        }
-        else {
+        } else {
             label = UILabel()
         }
 

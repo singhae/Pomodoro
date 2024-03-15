@@ -92,8 +92,7 @@ final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate
         var label: UILabel
         if let view = view as? UILabel {
             label = view
-        }
-        else {
+        } else {
             label = UILabel()
         }
 
