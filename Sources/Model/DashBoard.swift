@@ -7,25 +7,21 @@
 //
 
 import Foundation
+import RealmSwift
 
-// import RealmSwift
-import UIKit
+class DashBoard: Object {
+    @Persisted var participateDateCount: Int
+    @Persisted var totalCount: Int
+    @Persisted var success: Int
+    @Persisted var failure: Int
 
-class DashBoard {
-    var pomodoroList: [Pomodoro]
-    var participateDateCount: Int
-    var totalCount: Int
-    var success: Int
-    var failure: Int
-
-    init(
-        pomodoroList: [Pomodoro],
+    convenience init(
         participateDateCount: Int = 0,
         totalCount: Int = 0,
         success: Int = 0,
         failure: Int = 0
     ) {
-        self.pomodoroList = pomodoroList
+        self.init()
         self.participateDateCount = participateDateCount
         self.totalCount = totalCount
         self.success = success

@@ -12,11 +12,15 @@ import Then
 import UIKit
 
 final class DashboardStatusCell: UICollectionViewCell {
+    private let database = DatabaseManager.shared
+
     private let participateLabel = UILabel()
-    private let countLabel = UILabel()
     private let achieveLabel = UILabel()
     private let failLabel = UILabel()
-    private var selectedDate: Date = .init()
+    private var selectedDate = Date()
+    private let totalStatusCircleView = StatusCircleView(type: .total)
+    private let failStatusCircleView = StatusCircleView(type: .failure)
+    private let successStatusCircleView = StatusCircleView(type: .success)
 
     @available(*, unavailable)
     required init?(coder _: NSCoder) {
@@ -28,45 +32,29 @@ final class DashboardStatusCell: UICollectionViewCell {
         setupUI()
     }
 
-    private func setupLabel(_ label: UILabel, topOffset: CGFloat, centerXOffset: CGFloat) {
-        label.textColor = .white
-        contentView.addSubview(label)
-        label.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(topOffset)
-            make.centerX.equalToSuperview().offset(centerXOffset)
-        }
-    }
-
-    private func setupDivider(isHorizontal: Bool, length: CGFloat, offset: CGFloat) {
-        let divider = UIView()
-        divider.backgroundColor = .white
-        contentView.addSubview(divider)
-        divider.snp.makeConstraints { make in
-            if isHorizontal {
-                make.width.equalTo(length)
-                make.height.equalTo(1)
-            } else {
-                make.width.equalTo(1)
-                make.height.equalTo(length)
-            }
-            make.top.equalToSuperview().offset(offset)
-            make.centerX.equalToSuperview()
-        }
-    }
-
     private func setupUI() {
-        setupLabel(participateLabel, topOffset: 70, centerXOffset: -100)
-        setupLabel(countLabel, topOffset: 70, centerXOffset: 50)
-        setupLabel(achieveLabel, topOffset: 160, centerXOffset: -100)
-        setupLabel(failLabel, topOffset: 160, centerXOffset: 50)
-        setupDivider(isHorizontal: true, length: 325, offset: 130)
-        setupDivider(isHorizontal: false, length: 155, offset: 50)
+        let circleStackView = UIStackView().then {
+            $0.addArrangedSubview(totalStatusCircleView)
+            $0.addArrangedSubview(failStatusCircleView)
+            $0.addArrangedSubview(successStatusCircleView)
+            $0.axis = .horizontal
+            $0.distribution = .fillEqually
+            $0.spacing = 10
+        }
+        contentView.addSubview(circleStackView)
+
+        circleStackView.snp.makeConstraints { make in
+            make.centerX.centerY.edges.equalToSuperview()
+        }
+
         layer.cornerRadius = 20
-        backgroundColor = .black
+        backgroundColor = .clear
     }
 
-    private func getStartAndEndDate(for date: Date, of component: Calendar.Component)
-        -> (start: Date, end: Date) {
+    private func getStartAndEndDate(
+        for date: Date,
+        of component: Calendar.Component
+    ) -> (start: Date, end: Date) {
         let calendar = Calendar.current
         guard let dateInterval = calendar.dateInterval(of: component, for: date) else {
             return (date, date)
@@ -91,38 +79,46 @@ final class DashboardStatusCell: UICollectionViewCell {
         }()
 
         let (startDate, endDate) = getStartAndEndDate(for: date, of: component)
-        let filteredData = PomodoroData.dummyData.filter { $0.participateDate >= startDate &&
+
+        let data = database.read(Pomodoro.self)
+        print(data)
+
+        let filteredData = data.filter { $0.participateDate >= startDate &&
             $0.participateDate < endDate
         }
         let participateDates = Set(filteredData.map { Calendar.current.startOfDay(for: $0.participateDate) })
         let totalParticipateCount = participateDates.count
         let filteredDataCount = filteredData.count
-        let totalSuccessCount = filteredData.filter(\.success).count
-        let totalFailureCount = filteredData.filter { !$0.success }.count
+        let totalSuccessCount = filteredData.filter(\.isSuccess).count
+        let totalFailureCount = filteredData.filter { !$0.isSuccess }.count
 
-        participateLabel.text = "참여일 \(totalParticipateCount)"
-        countLabel.text = "횟수 \(filteredDataCount)"
-        achieveLabel.text = "달성 \(totalSuccessCount)"
-        failLabel.text = "실패 \(totalFailureCount)"
+        participateLabel.text = "\(totalParticipateCount)번"
+        totalStatusCircleView.updateStatus(count: filteredDataCount)
+        failStatusCircleView.updateStatus(count: totalFailureCount)
+        successStatusCircleView.updateStatus(count: totalSuccessCount)
+        achieveLabel.font = UIFont.pomodoroFont.heading3()
+        failLabel.font = UIFont.pomodoroFont.heading3()
     }
 
     func getDateRange(for date: Date, dateType: DashboardDateType) -> (start: Date, end: Date) {
         let calendar = Calendar.current
         switch dateType {
         case .day:
-            return (date, calendar.date(byAdding: .day, value: 1, to: date)!)
+            return (date, calendar.date(byAdding: .day, value: 1, to: date) ?? .now)
         case .week:
             let startOfWeek = calendar.date(
-                from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date))!
-            let endOfWeek = calendar.date(byAdding: .weekOfYear, value: 1, to: startOfWeek)!
+                from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)) ?? .now
+            let endOfWeek = calendar.date(byAdding: .weekOfYear, value: 1, to: startOfWeek) ?? .now
             return (startOfWeek, endOfWeek)
         case .month:
-            let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: date))!
-            let endOfMonth = calendar.date(byAdding: .month, value: 1, to: startOfMonth)!
+            let startOfMonth = calendar.date(
+                from: calendar.dateComponents([.year, .month], from: date)
+            ) ?? .now
+            let endOfMonth = calendar.date(byAdding: .month, value: 1, to: startOfMonth) ?? .now
             return (startOfMonth, endOfMonth)
         case .year:
-            let startOfYear = calendar.date(from: calendar.dateComponents([.year], from: date))!
-            let endOfYear = calendar.date(byAdding: .year, value: 1, to: startOfYear)!
+            let startOfYear = calendar.date(from: calendar.dateComponents([.year], from: date)) ?? .now
+            let endOfYear = calendar.date(byAdding: .year, value: 1, to: startOfYear) ?? .now
             return (startOfYear, endOfYear)
         }
     }
@@ -133,5 +129,84 @@ final class DashboardStatusCell: UICollectionViewCell {
 extension DashboardStatusCell: DashboardTabDelegate {
     func dateArrowButtonDidTap(data date: Date) {
         selectedDate = date
+    }
+}
+
+final class StatusCircleView: UIView {
+    enum StatusType {
+        case total
+        case failure
+        case success
+
+        var title: String {
+            switch self {
+            case .total:
+                return "횟수"
+            case .failure:
+                return "실패"
+            case .success:
+                return "성공"
+            }
+        }
+    }
+
+    private let titleLabel = UILabel().then {
+        $0.textColor = .darkGray
+        $0.font = .pomodoroFont.heading6()
+    }
+
+    private let countLabel = UILabel().then {
+        $0.textColor = .black
+        $0.font = UIFont.pomodoroFont.heading3()
+    }
+
+    private let circleView = UIView().then {
+        $0.backgroundColor = .white
+        $0.backgroundColor = .pomodoro.surface
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupViews()
+    }
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
+    }
+
+    convenience init(type: StatusType) {
+        self.init(frame: .zero)
+        titleLabel.text = type.title
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        circleView.layer.cornerRadius = frame.width / 2
+    }
+
+    func updateStatus(count: Int) {
+        countLabel.text = "\(count)번"
+    }
+
+    private func setupViews() {
+        addSubview(circleView)
+        circleView.addSubview(titleLabel)
+        circleView.addSubview(countLabel)
+
+        circleView.snp.makeConstraints { make in
+            make.width.equalTo(circleView.snp.height)
+            make.width.equalToSuperview()
+        }
+
+        titleLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(30)
+        }
+
+        countLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(titleLabel.snp.bottom).offset(10)
+        }
     }
 }

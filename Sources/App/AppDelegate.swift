@@ -25,21 +25,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             completionHandler: { _, _ in }
         )
 
-        // 앱 재시작될 때
-        print("APP INITIALIZE..")
         pomodoroTimeManager.restoreTimerInfo()
-//        pomodoroTimeManager.startTimer()
-
         return true
     }
 
     func applicationWillTerminate(_: UIApplication) {
-        print("TERMINATE")
-        pomodoroTimeManager.saveTimerInfo()
-    }
-
-    func applicationDidEnterBackground(_: UIApplication) {
-        print("ENTER BACKGROUND")
         pomodoroTimeManager.saveTimerInfo()
     }
 

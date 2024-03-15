@@ -7,17 +7,16 @@
 //
 
 import Foundation
+import RealmSwift
 
-// import RealmSwift
-import UIKit
+class Option: Object {
+    @Persisted var shortBreakTime: Int
+    @Persisted var longBreakTime: Int
+    @Persisted var focusTime: Int
+    @Persisted var isVibrate: Bool
 
-class Option {
-    var shortBreakTime: Int
-    var longBreakTime: Int
-    var focusTime: Int
-    var isVibrate: Bool
-
-    init(shortBreakTime: Int, longBreakTime: Int, focusTime: Int = 20, isVibrate: Bool = true) {
+    convenience init(shortBreakTime: Int, longBreakTime: Int, focusTime: Int = 25, isVibrate: Bool = true) {
+        self.init()
         self.shortBreakTime = shortBreakTime
         self.longBreakTime = longBreakTime
         self.focusTime = focusTime

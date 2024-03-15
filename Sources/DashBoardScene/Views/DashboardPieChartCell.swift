@@ -7,32 +7,32 @@
 //
 
 import DGCharts
+import SnapKit
 import UIKit
 
 final class DashboardPieChartCell: UICollectionViewCell {
     private var selectedDate: Date = .init()
     private var dayData: [String] = []
     private var priceData: [Double] = [10]
+    var tagLabelHeightConstraint: Constraint?
+    let legendStackView = UIStackView()
+    let chartCenterText = UILabel()
     private let pieBackgroundView = UIView().then { view in
         view.layer.cornerRadius = 20
-        view.backgroundColor = .systemGray3
+        view.backgroundColor = .white
     }
 
     private let donutPieChartView = PieChartView().then { chart in
         chart.noDataText = "출력 데이터가 없습니다."
         chart.noDataFont = .systemFont(ofSize: 20)
         chart.noDataTextColor = .black
-        chart.holeColor = .systemGray3
-        chart.backgroundColor = .systemGray3
-        chart.legend.font = .systemFont(ofSize: 15)
-        chart.legend.verticalAlignment = .bottom
-        chart.legend.neededHeight = 10
-        chart.legend.neededWidth = 100
+        chart.holeColor = .clear
+        chart.backgroundColor = .clear
         chart.drawSlicesUnderHoleEnabled = false
-        chart.holeRadiusPercent = 0.55
+        chart.holeRadiusPercent = 0.7
         chart.drawEntryLabelsEnabled = false
         chart.highlightPerTapEnabled = false
-        chart.chartDescription.textColor = .red
+        chart.legend.enabled = false
     }
 
     @available(*, unavailable)
@@ -44,10 +44,25 @@ final class DashboardPieChartCell: UICollectionViewCell {
         super.init(frame: frame)
         contentView.addSubview(pieBackgroundView)
         pieBackgroundView.addSubview(donutPieChartView)
-        backgroundColor = .systemGray3
+        backgroundColor = .clear
         layer.cornerRadius = 20
+        setTagLabel()
         setupPieChart()
+        setLegendLabel()
         setPieChartData(for: Date(), dateType: .day)
+    }
+
+    private func setTagLabel() {
+        let tagLabel = UILabel().then {
+            contentView.addSubview($0)
+            $0.text = "태그 비율"
+            $0.textColor = .pomodoro.blackHigh
+            $0.font = .pomodoroFont.heading4()
+        }
+        tagLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.equalTo(10)
+        }
     }
 
     private func calculateFocusTimePerTag(for selectedDate: Date) -> [String: Int] {
@@ -64,12 +79,15 @@ final class DashboardPieChartCell: UICollectionViewCell {
 
     private func setupPieChart() {
         pieBackgroundView.snp.makeConstraints { make in
-            make.centerX.centerY.equalToSuperview()
-            make.width.height.equalToSuperview().multipliedBy(0.8)
+            make.centerX.equalToSuperview()
+            make.width.equalToSuperview()
+            make.top.equalTo(30)
+            self.tagLabelHeightConstraint = make.height.equalTo(0).constraint
         }
         donutPieChartView.snp.makeConstraints { make in
-            make.centerX.centerY.equalToSuperview()
-            make.width.height.equalToSuperview().multipliedBy(1.1)
+            make.centerX.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.8)
+            make.height.equalTo(donutPieChartView.snp.width)
         }
     }
 
@@ -96,17 +114,95 @@ final class DashboardPieChartCell: UICollectionViewCell {
     func setPieChartData(for date: Date, dateType: DashboardDateType) {
         let (startDate, endDate) = getDateRange(for: date, dateType: dateType)
         let focusTimePerTag = calculateFocusTimePerTag(from: startDate, to: endDate)
-        let pieChartDataEntries = focusTimePerTag.map {
-            PieChartDataEntry(value: Double($0.value), label: $0.key)
+        let sortedFocusTimePerTag = focusTimePerTag.sorted { $0.value > $1.value }
+        let pieChartDataEntries = sortedFocusTimePerTag.map {
+            PieChartDataEntry(value: Double($1), label: $0)
         }
+
         let pieChartDataSet = PieChartDataSet(entries: pieChartDataEntries, label: "").then {
-            $0.colors = [.systemTeal, .systemPink, .systemIndigo]
+            let colors: [UIColor] = [.systemTeal, .systemPink, .systemIndigo]
+            var dataSetColors: [UIColor] = []
+            for index in 0 ..< pieChartDataEntries.count {
+                let color = colors[index % colors.count]
+                dataSetColors.append(color)
+            }
+            $0.colors = dataSetColors
             $0.drawValuesEnabled = false
         }
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
         donutPieChartView.data = pieChartData
+
         let totalFocusTime = focusTimePerTag.reduce(0) { $0 + $1.value }
         updatePieChartText(totalFocusTime: totalFocusTime)
+        updateLegendLabel(with: focusTimePerTag)
+    }
+
+    private func setLegendLabel() {
+        legendStackView.axis = .vertical
+        legendStackView.distribution = .equalSpacing
+        legendStackView.alignment = .fill
+        legendStackView.spacing = 8
+        legendStackView.backgroundColor = .clear
+
+        donutPieChartView.addSubview(legendStackView)
+        legendStackView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.top.equalTo(donutPieChartView.snp.bottom).offset(20)
+        }
+        donutPieChartView.addSubview(chartCenterText)
+        chartCenterText.then {
+            $0.textAlignment = .center
+            $0.numberOfLines = 0
+        }
+        chartCenterText.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview()
+        }
+    }
+
+    private func updateLegendLabel(with focusTimePerTag: [String: Int]) {
+        legendStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        let sortedFocusTime = focusTimePerTag.sorted { $0.value > $1.value }
+        let totalFocusTime = sortedFocusTime.reduce(0) { $0 + $1.value }
+        for (tagId, focusTime) in sortedFocusTime {
+            let tagLabel = UILabel()
+            let timeRatioTextLabel = UILabel()
+            let labelStackView = UIStackView()
+
+            tagLabel.font = .pomodoroFont.heading5()
+            tagLabel.textColor = .pomodoro.blackHigh
+            timeRatioTextLabel.font = .pomodoroFont.text4()
+            timeRatioTextLabel.textColor = .pomodoro.blackHigh
+            labelStackView.axis = .horizontal
+
+            let days = focusTime / (24 * 60)
+            let hours = (focusTime % (24 * 60)) / 60
+            let minutes = focusTime % 60
+            var timeText = ""
+            if days > 0 {
+                timeText += "\(days)일 "
+            }
+            if hours > 0 || days > 0 {
+                timeText += "\(hours)시간 "
+            }
+            timeText += "\(minutes)분"
+            let percentage = (Double(focusTime) / Double(totalFocusTime)) * 100
+
+            tagLabel.text = tagId
+            timeRatioTextLabel.text = "\(timeText) (\(String(format: "%.0f", percentage))%)"
+            timeRatioTextLabel.setAttributedTextColor(
+                targetString: "(\(String(format: "%.0f", percentage))%)", color: UIColor.pomodoro.blackMedium
+            )
+            timeRatioTextLabel.textAlignment = .right
+
+            labelStackView.addArrangedSubview(tagLabel)
+            labelStackView.addArrangedSubview(timeRatioTextLabel)
+            legendStackView.addArrangedSubview(labelStackView)
+        }
+        tagLabelHeightConstraint?.update(offset: 360 + 25 * sortedFocusTime.count)
+        UIView.animate(withDuration: 0) {
+            self.layoutIfNeeded()
+        }
     }
 
     private func updatePieChartText(totalFocusTime: Int) {
@@ -115,13 +211,26 @@ final class DashboardPieChartCell: UICollectionViewCell {
         let minutes = totalFocusTime % 60
         var totalTimeText = "합계\n"
         if days > 0 {
-            totalTimeText += "\(days)일 "
+            totalTimeText += "\(days)일"
         }
         if hours > 0 || days > 0 {
-            totalTimeText += "\(hours)시간 "
+            totalTimeText += "\(hours)시간"
         }
         totalTimeText += "\(minutes)분"
-        donutPieChartView.centerText = totalTimeText
+
+        chartCenterText.text = totalTimeText
+        chartCenterText.then {
+            $0.textColor = .pomodoro.blackHigh
+            $0.text = totalTimeText
+            $0.font = .pomodoroFont.heading3()
+            $0.textAlignment = .center
+            $0.numberOfLines = 0
+            $0.setAttributedTextFontandColor(
+                targetString: "합계",
+                font: .pomodoroFont.heading4(),
+                color: .pomodoro.blackMedium
+            )
+        }
     }
 
     private func getDateRange(for date: Date, dateType: DashboardDateType) -> (start: Date, end: Date) {
