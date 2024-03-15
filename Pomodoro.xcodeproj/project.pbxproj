@@ -527,7 +527,6 @@
 				CEDCA1062B67D015005C18EA /* SceneDelegate.swift in Sources */,
 				21DA857A2B9DA43300495408 /* UILabelExtension.swift in Sources */,
 				CEDCA10E2B67D015005C18EA /* UIColor+HexCode.swift in Sources */,
-				21D85CD62B84BA9700E2FAA8 /* PomodoroTimeManagers.swift in Sources */,
 				213F30532B6BE72300FAF5F2 /* DashboardPieChartCell.swift in Sources */,
 				CEDCA1012B67D015005C18EA /* SettingViewController.swift in Sources */,
 				CEDCA1032B67D015005C18EA /* LongBreakModalViewController.swift in Sources */,
