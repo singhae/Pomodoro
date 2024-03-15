@@ -46,7 +46,11 @@ final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate
         minutePicker.delegate = self
         minutePicker.dataSource = self
 
-        minutePicker.selectRow(database.read(Option.self).first?.longBreakTime ?? 0 - 1, inComponent: 0, animated: true)
+        minutePicker.selectRow(
+            (database.read(Option.self).first?.longBreakTime ?? 0) - 1,
+            inComponent: 0,
+            animated: true
+        )
 
         setupConstraints()
     }
