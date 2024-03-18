@@ -26,9 +26,7 @@ final class MainPageViewController: UIViewController {
     }
 
     private lazy var dataViewControllers: [UIViewController] = [
-        // FIXME: - 하람 test _ breaktimer 개발 후 삭제할 예정입니다.
-        BreakViewController(),
-//        SettingViewController(),
+        SettingViewController(),
         MainViewController(),
         DashBoardTabViewController()
     ]
