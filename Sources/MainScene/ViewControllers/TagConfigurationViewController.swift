@@ -53,8 +53,6 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
                         )
                     )
                     .show(on: self)
-
-            
             return
         }
         delegate?.createTag(tag: tagText)

@@ -158,7 +158,6 @@ extension MainViewController: PomodoroStepRememberable {
     @objc private func openTagModal() {
         let modalViewController = TagModalViewController()
         let navigationController = UINavigationController(rootViewController: modalViewController)
-        //navigationController.modalPresentationStyle = .automatic
         modalViewController.modalTransitionStyle = .coverVertical
         modalViewController.view.alpha = 1
         if let sheet = modalViewController.sheetPresentationController {
