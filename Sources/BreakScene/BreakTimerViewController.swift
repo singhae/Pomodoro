@@ -157,6 +157,7 @@ extension BreakTimerViewController {
             let minutes = (maxTime - currentTime) / 60
             let seconds = (maxTime - currentTime) % 60
             timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
+            timeLabel.font = .pomodoroFont.heading1()
             currentTime += 1
 
             if currentTime > maxTime {
@@ -220,7 +221,7 @@ extension BreakTimerViewController {
     private func setupConstraints() {
         breakLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().multipliedBy(0.67)
+            make.centerY.equalToSuperview().multipliedBy(0.9)
         }
         longPressGuideLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
