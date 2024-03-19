@@ -177,10 +177,7 @@ final class TagModalViewController: UIViewController {
                     )
                 )
                 .show(on: self)
-
     }
-    
-    
 }
 
 // MARK: - TagCreationDelegate
