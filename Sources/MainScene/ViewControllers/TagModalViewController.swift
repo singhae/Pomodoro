@@ -18,14 +18,8 @@ protocol TagModalViewControllerDelegate: AnyObject {
     func tagSelected(tag: String)
 }
 
-// TODO: - 뒤 화면 축소되는 효과 제거
-// FIXME: 여기 주석 처리 한거 다 고쳐야 함 - 현기
-final class TagModalViewController: UIViewController, UICollectionViewDelegate {
-    private var tagCollectionView: TagCollectionView?
-    private let dataSource = TagCollectionViewData.data
-
-    private weak var selectionDelegate:
-        TagModalViewControllerDelegate?
+final class TagModalViewController: UIViewController {
+    private weak var selectionDelegate: TagModalViewControllerDelegate?
 
     private func configureNavigationBar() {
         navigationItem.title = "태그 설정"
@@ -45,7 +39,7 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
     private let label = UILabel().then {
         $0.text = "나의 태그"
         $0.textColor = .black
-        $0.font = UIFont.boldSystemFont(ofSize: 10)
+        $0.font = UIFont.boldSystemFont(ofSize: 15)
     }
 
     private let ellipseButton = UIButton().then {
@@ -53,151 +47,125 @@ final class TagModalViewController: UIViewController, UICollectionViewDelegate {
         $0.contentMode = .scaleAspectFit
         $0.tintColor = .black
         $0.backgroundColor = .pomodoro.background
-        $0.layer.cornerRadius = 10
+        $0.layer.cornerRadius = 15
         $0.clipsToBounds = true
     }
 
-    private let mainStackView = UIStackView().then {
+    private let tagsStackView = UIStackView().then {
         $0.axis = .vertical
-        $0.spacing = 20
-        $0.alignment = .fill
+        $0.spacing = 16
+        $0.alignment = .center
+        $0.distribution = .equalSpacing
     }
 
-    private lazy var tagSettingCompletedButton = UIButton().then {
-        $0.setTitle("설정 완료", for: .normal)
-        $0.setTitleColor(.black, for: .normal)
-    }
-
-    // MARK: - 삭제 기능(+ 버튼)
-
-    @objc private func dismissModal() {
-        dismiss(animated: true, completion: nil)
-    }
-
-    @objc private func didTapEllipsisButton() {}
-
-    @objc private func didTapSettingCompleteButton() {
-        // TODO: selectedTag -> 태그 선택 값으로 변경
-        let selectedTag = "선택된 태그"
-        selectionDelegate?.tagSelected(tag: selectedTag)
-        dismiss(animated: true)
-    }
+    private lazy var tagSettingCompletedButton = PomodoroConfirmButton(
+        title: "설정 완료",
+        didTapHandler: didTapSettingCompleteButton
+    )
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
         navigationController?.isNavigationBarHidden = false
+
         configureNavigationBar()
-        configureCollectionView()
-        registerCollectionView()
-        configureLayout()
-
-        tagCollectionView?.dataSource = self
-        tagCollectionView?.delegate = self
-
-        tagSettingCompletedButton.addTarget(self,
-                                            action: #selector(didTapSettingCompleteButton),
-                                            for: .touchUpInside)
+        setupViews()
+        addTagsToStackView()
     }
 
-    private func configureLayout() {
-        horizontalStackView.addArrangedSubview(label)
-        horizontalStackView.addArrangedSubview(ellipseButton)
-        mainStackView.addArrangedSubview(horizontalStackView)
-
-        if let tagCollectionView {
-            mainStackView.addArrangedSubview(tagCollectionView)
-        }
-        view.addSubview(mainStackView)
-
+    private func setupViews() {
+        view.backgroundColor = .pomodoro.background
+        view.addSubview(horizontalStackView)
+        view.addSubview(tagSettingCompletedButton)
+        view.addSubview(tagsStackView)
         view.addSubview(tagSettingCompletedButton)
 
-        mainStackView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide).inset(20)
+        horizontalStackView.addArrangedSubview(label)
+        horizontalStackView.addArrangedSubview(ellipseButton)
+        horizontalStackView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.topMargin).offset(20)
+            make.centerX.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.9)
         }
 
-        tagSettingCompletedButton.snp.makeConstraints { make in
+        tagsStackView.snp.makeConstraints { make in
+            make.top.equalTo(horizontalStackView.snp.bottom).offset(view.bounds.height * 0.1)
             make.centerX.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.8)
+        }
+        tagSettingCompletedButton.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(45)
+            make.trailing.equalToSuperview().offset(-45)
             make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
         }
     }
 
-    private func configureCollectionView() {
-        let collectionViewLayer = UICollectionViewFlowLayout()
-        collectionViewLayer.sectionInset = UIEdgeInsets(top: 5.0, left: 7.0, bottom: 5.0, right: 7.0)
-        collectionViewLayer.minimumLineSpacing = 5
-        collectionViewLayer.minimumInteritemSpacing = 1
+    private func addTagsToStackView() {
+        let buttonTitlesAndColors = [
+            ("명상", UIColor.red),
+            ("운동", UIColor.green),
+            ("공부", UIColor.purple),
+            ("+", UIColor.pomodoro.background),
+            ("+", UIColor.gray),
+            ("+", UIColor.gray),
+            ("+", UIColor.gray)
+        ]
+        let tagsPerRow = [2, 3, 2]
+        var currentIndex = 0
 
-        let tagCollectionView = TagCollectionView(frame: .zero, collectionViewLayout: collectionViewLayer)
-        tagCollectionView.backgroundColor = .pomodoro.background
+        for count in tagsPerRow {
+            let rowStackView = UIStackView().then {
+                $0.axis = .horizontal
+                $0.spacing = 10
+                $0.alignment = .fill
+                $0.distribution = .fillEqually
+            }
 
-        view.addSubview(tagCollectionView)
+            for _ in 0 ..< count {
+                let (title, color) = buttonTitlesAndColors[currentIndex % buttonTitlesAndColors.count]
+                let button = createRoundButton(title: title, color: color, borderColor: color)
+                rowStackView.addArrangedSubview(button)
+                currentIndex += 1
+            }
 
-        tagCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(120)
-            make.left.right.bottom.equalToSuperview().inset(40)
+            tagsStackView.addArrangedSubview(rowStackView)
         }
-        self.tagCollectionView = tagCollectionView
     }
 
-    private func registerCollectionView() {
-        tagCollectionView?.register(
-            TagCollectionViewCell.self,
-            forCellWithReuseIdentifier: TagCollectionViewCell.id
-        )
+    // TODO: 테두리 컬러 확인
+    private func createRoundButton(title: String, color: UIColor, borderColor: UIColor) -> UIButton {
+        UIButton().then {
+            $0.setTitle(title, for: .normal)
+            $0.backgroundColor = color
+            $0.setTitleColor(.white, for: .normal)
+            $0.layer.cornerRadius = 40
+            // TODO: 테두리 컬러 지정
+            $0.layer.borderColor = borderColor.cgColor
+            $0.layer.borderWidth = 2
+            $0.snp.makeConstraints { make in
+                make.size.equalTo(CGSize(width: 80, height: 80))
+            }
+            $0.addTarget(self, action: #selector(configureTag), for: .touchUpInside)
+        }
+    }
+
+    @objc private func dismissModal() {
+        dismiss(animated: true, completion: nil)
+    }
+
+    @objc func configureTag() {
+        let configureTagViewController = TagConfigurationViewController()
+        configureTagViewController.modalPresentationStyle = .overCurrentContext
+        present(configureTagViewController, animated: true, completion: nil)
+    }
+
+    @objc private func didTapSettingCompleteButton() {
+        tagSettingCompletedButton.isEnabled.toggle()
+        dismiss(animated: true)
     }
 }
 
-extension TagModalViewController: UICollectionViewDelegate,
-    UICollectionViewDataSource,
-    UICollectionViewDelegateFlowLayout {
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout _: UICollectionViewLayout,
-        sizeForItemAt _: IndexPath
-    ) -> CGSize {
-        let padding: CGFloat = 10
-        let totalPadding = padding * (2 - 1)
-        let individualPadding = totalPadding / 2
-        let width = (collectionView.bounds.width - totalPadding) / 2
-        let height: CGFloat = 70
-        return CGSize(width: width - individualPadding, height: height)
-    }
-
-    func collectionView(
-        _: UICollectionView,
-        numberOfItemsInSection _: Int
-    ) -> Int {
-        0
-//        tagList.tagList.count
-    }
-
-    func collectionView(
-        _ collectionView: UICollectionView,
-        cellForItemAt indexPath: IndexPath
-    ) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: TagCollectionViewCell.id,
-            for: indexPath
-        ) as? TagCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-
-        let tag = Tag(tagName: "집중", tagColor: "one", position: 0)
-        cell.configureWithTag(tag)
-
-        return cell
-    }
-
-    func collectionView(
-        _: UICollectionView,
-        didSelectItemAt _: IndexPath
-    ) {
-        let tagConfigView = TagConfigurationViewController()
-        tagConfigView.delegate = self
-        present(tagConfigView, animated: true, completion: nil)
-    }
-}
+// MARK: - TagCreationDelegate
 
 extension TagModalViewController: TagCreationDelegate {
     func createTag(tag: String) {
