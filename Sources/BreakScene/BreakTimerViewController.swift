@@ -51,7 +51,7 @@ final class BreakTimerViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .pomodoro.background
         addSubviews()
         setupConstraints()
         startTimer()
