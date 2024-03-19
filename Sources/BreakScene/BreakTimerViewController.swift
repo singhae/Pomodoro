@@ -26,8 +26,8 @@ final class BreakTimerViewController: UIViewController {
     private let longPressGuideLabel = UILabel().then {
         $0.text = "길게 클릭해서 타이머를 정지할 수 있어요"
         $0.textAlignment = .center
-        $0.textColor = .lightGray
-        $0.font = UIFont.systemFont(ofSize: 16)
+        $0.textColor = .pomodoro.blackMedium
+        $0.font = .pomodoroFont.heading6()
         $0.isHidden = true
     }
 

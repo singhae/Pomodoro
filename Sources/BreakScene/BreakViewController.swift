@@ -9,6 +9,7 @@ import UIKit
 
 final class BreakViewController: UIViewController {
     private let appIconStackView = UIStackView()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.primary900
