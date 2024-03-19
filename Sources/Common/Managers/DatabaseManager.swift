@@ -52,7 +52,6 @@ final class DatabaseManager: DataBase {
         do {
             try database!.write {
                 database!.add(object, update: .modified)
-                print("New Item")
             }
 
         } catch {
@@ -76,6 +75,17 @@ final class DatabaseManager: DataBase {
             try database!.write {
                 database!.delete(object)
                 print("Delete Success")
+            }
+
+        } catch {
+            print(error)
+        }
+    }
+
+    func deleteAll() {
+        do {
+            try database!.write {
+                database?.deleteAll()
             }
 
         } catch {

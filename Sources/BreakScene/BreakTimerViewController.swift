@@ -42,7 +42,7 @@ final class BreakTimerViewController: UIViewController {
     private lazy var breakLabel = UILabel().then {
         $0.text = "휴식시간"
         $0.textColor = .black
-        $0.font = UIFont.systemFont(ofSize: 60, weight: .heavy)
+        $0.font = .pomodoroFont.heading1()
     }
 
     private lazy var timerBackground = UIView().then {
