@@ -161,8 +161,10 @@ final class TagModalViewController: UIViewController {
 
     @objc private func didTapSettingCompleteButton() {
         tagSettingCompletedButton.isEnabled.toggle()
+        PomodoroPopupBuilder()
         dismiss(animated: true)
     }
+    
 }
 
 // MARK: - TagCreationDelegate

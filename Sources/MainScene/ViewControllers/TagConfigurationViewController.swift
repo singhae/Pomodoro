@@ -41,9 +41,19 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     @objc func saveTagButtonTapped() {
         guard let tagText = textField.text, !tagText.isEmpty else {
             print("태그를 입력하세요.")
-            let alert = UIAlertController(title: "경고", message: "태그를 입력하세요.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "확인", style: .default))
-            present(alert, animated: true)
+//            let alert = UIAlertController(title: "경고", message: "태그를 입력하세요.", preferredStyle: .alert)
+//            alert.addAction(UIAlertAction(title: "확인", style: .default))
+//            present(alert, animated: true)
+            PomodoroPopupBuilder()
+                .add(title: "제목")
+                .add(
+                    button: .confirm(
+                        title: "확인",
+                        action: { /* 확인 동작 */ }
+                    )
+                )
+                .show(on: self)
+            
             return
         }
         delegate?.createTag(tag: tagText)
