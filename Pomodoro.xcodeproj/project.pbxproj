@@ -33,7 +33,6 @@
 		CEDCA1012B67D015005C18EA /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0DB2B67D015005C18EA /* SettingViewController.swift */; };
 		CEDCA1022B67D015005C18EA /* ShortBreakModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0DC2B67D015005C18EA /* ShortBreakModalViewController.swift */; };
 		CEDCA1032B67D015005C18EA /* LongBreakModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0DD2B67D015005C18EA /* LongBreakModalViewController.swift */; };
-		CEDCA1042B67D015005C18EA /* DataResetModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0DE2B67D015005C18EA /* DataResetModalViewController.swift */; };
 		CEDCA1052B67D015005C18EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0E02B67D015005C18EA /* AppDelegate.swift */; };
 		CEDCA1062B67D015005C18EA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0E12B67D015005C18EA /* SceneDelegate.swift */; };
 		CEDCA1072B67D015005C18EA /* TimeSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0E42B67D015005C18EA /* TimeSettingViewController.swift */; };
@@ -93,7 +92,6 @@
 		CEDCA0DB2B67D015005C18EA /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		CEDCA0DC2B67D015005C18EA /* ShortBreakModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortBreakModalViewController.swift; sourceTree = "<group>"; };
 		CEDCA0DD2B67D015005C18EA /* LongBreakModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LongBreakModalViewController.swift; sourceTree = "<group>"; };
-		CEDCA0DE2B67D015005C18EA /* DataResetModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataResetModalViewController.swift; sourceTree = "<group>"; };
 		CEDCA0E02B67D015005C18EA /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CEDCA0E12B67D015005C18EA /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		CEDCA0E42B67D015005C18EA /* TimeSettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeSettingViewController.swift; sourceTree = "<group>"; };
@@ -253,7 +251,6 @@
 				CEDCA0DB2B67D015005C18EA /* SettingViewController.swift */,
 				CEDCA0DC2B67D015005C18EA /* ShortBreakModalViewController.swift */,
 				CEDCA0DD2B67D015005C18EA /* LongBreakModalViewController.swift */,
-				CEDCA0DE2B67D015005C18EA /* DataResetModalViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -546,7 +543,6 @@
 				CEDCA1072B67D015005C18EA /* TimeSettingViewController.swift in Sources */,
 				213F30552B6BE73900FAF5F2 /* DashboardStatusCell.swift in Sources */,
 				4DC2298A2B7E2C0900D06ABB /* TagConfigurationViewController.swift in Sources */,
-				CEDCA1042B67D015005C18EA /* DataResetModalViewController.swift in Sources */,
 				CEDCA1142B67D015005C18EA /* MockData.swift in Sources */,
 				CEDCA1102B67D015005C18EA /* DashBoardTabViewController.swift in Sources */,
 			);
@@ -833,8 +829,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/HGU-iOS-Study-Group/PomodoroDesignSystem.git";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.1;
 			};
 		};
 		CEDCA11A2B67D0AB005C18EA /* XCRemoteSwiftPackageReference "realm-swift" */ = {
