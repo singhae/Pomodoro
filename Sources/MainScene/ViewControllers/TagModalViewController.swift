@@ -165,6 +165,22 @@ final class TagModalViewController: UIViewController {
         dismiss(animated: true)
     }
     
+    //TODO: Tag 삭제 버튼 연결
+    @objc private func deletTag(){
+        PomodoroPopupBuilder()
+            .add(title: "태그 삭제")
+                .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
+                .add(
+                    button: .confirm(
+                        title: "확인",
+                        action: { /* 태그 삭제 로직 */ }
+                    )
+                )
+                .show(on: self)
+
+    }
+    
+    
 }
 
 // MARK: - TagCreationDelegate
