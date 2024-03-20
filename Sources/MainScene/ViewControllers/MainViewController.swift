@@ -306,16 +306,24 @@ extension MainViewController {
     }
 
     private func setUpPomodoroCurrentStep() {
-        stepManager.router.moveToNextStep(navigationController: navigationController ?? UINavigationController())
+        stepManager.router.moveToNextStep(
+            navigationController:
+            navigationController ?? UINavigationController()
+        )
     }
 
     private func setUpPomodoroCurrentStepLabel() {
-        stepManager.timeSetting.setUptimeInCurrentStep(currentStep: stepManager.router.currentStep)
-        currentStepLabel.text = stepManager.label.setUpLabelInCurrentStep(currentStep: stepManager.router.currentStep)
+        stepManager.timeSetting.setUptimeInCurrentStep(
+            currentStep: stepManager.router.currentStep
+        )
+        currentStepLabel.text = stepManager.label.setUpLabelInCurrentStep(
+            currentStep: stepManager.router.currentStep
+        )
     }
 }
 
 // MARK: - UI
+
 extension MainViewController {
     private func addSubviews() {
         view.addSubview(countButton)
