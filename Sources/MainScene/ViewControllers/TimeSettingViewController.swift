@@ -21,7 +21,7 @@ final class TimeSettingViewController: UIViewController {
     var selectedTime: Int = 0
     private var endTime: String?
     private var isSelectedCellBiggerfive: Bool = true
-
+    private let stepManager = PomodoroStepManger()
     private var isHiddenTimeButton = true {
         didSet {
             timeSettingbutton.isHidden = isHiddenTimeButton
@@ -183,6 +183,7 @@ final class TimeSettingViewController: UIViewController {
 
     @objc private func onClickTimerSetting() {
         delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
+        // router 시작..입니다..?
         dismiss(animated: true)
     }
 
@@ -360,7 +361,11 @@ extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDeleg
         }
     }
 
-    func collectionView(_: UICollectionView, layout _: UICollectionViewLayout, minimumLineSpacingForSectionAt _: Int) -> CGFloat {
+    func collectionView(
+        _: UICollectionView,
+        layout _: UICollectionViewLayout,
+        minimumLineSpacingForSectionAt _: Int
+    ) -> CGFloat {
         0
     }
 }
