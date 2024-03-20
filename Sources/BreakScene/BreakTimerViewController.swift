@@ -135,7 +135,9 @@ extension BreakTimerViewController {
         currentTime = 0
         maxTime = 0
         updateTimeLabel()
-        stepManager.router.moveToNextStep(navigationController: navigationController ?? UINavigationController())
+        stepManager.router.moveToNextStep(
+            navigationController: navigationController ?? UINavigationController()
+        )
         // - TODO: do pomodoroStep initialize
         stepManager.timeSetting.initPomodoroStep()
         stepManager.router.currentStep = .start

@@ -316,7 +316,6 @@ extension MainViewController {
 }
 
 // MARK: - UI
-
 extension MainViewController {
     private func addSubviews() {
         view.addSubview(countButton)
