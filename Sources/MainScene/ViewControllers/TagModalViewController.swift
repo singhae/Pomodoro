@@ -42,14 +42,14 @@ final class TagModalViewController: UIViewController {
         $0.font = UIFont.boldSystemFont(ofSize: 15)
     }
 
-    private var ellipseButton = UIButton().then {
+    private let ellipseButton = UIButton().then {
         $0.setImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
         $0.contentMode = .scaleAspectFit
         $0.tintColor = .black
         $0.backgroundColor = .pomodoro.background
         $0.layer.cornerRadius = 15
         $0.clipsToBounds = true
-        $0.addTarget(self, action: #selector(createMinusButton), for: .touchUpInside) // 마이너스버튼 생성되는 액션 추가
+        $0.addTarget(TagModalViewController.self, action: #selector(createMinusButton), for: .touchUpInside) // 마이너스버튼 생성되는 액션 추가
     }
 
     private let tagsStackView = UIStackView().then {
