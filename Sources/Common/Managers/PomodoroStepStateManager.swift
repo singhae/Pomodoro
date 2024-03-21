@@ -7,52 +7,14 @@
 
 import UIKit
 
-final class PomodoroStepStateManager {
-    var router: PomodoroRouter?
-    private let pomodoroTimeManager = PomodoroTimeManager.shared
-    private var pomodoroCurrentCount = PomodoroRouter.pomodoroCount
+class PomodoroStepManger {
+    var router = PomodoroRouter.shared
+    var label = PomodoroStepLabel()
+    var timeSetting = PomodoroStepTimeChage()
 
-    init(router: PomodoroRouter) {
-        self.router = router
-    }
-
-    func applyStepChanges(navigationController: UINavigationController) {
-        router?.moveToNextStep(navigationController: navigationController)
-        setUptimeInCurrentStep()
-        setUpLabelInCurrentStep()
-    }
-
-    func setUptimeInCurrentStep() {
-        switch router?.currentStep {
-        case .start:
-            pomodoroTimeManager.setupCurrentTime(curr: 0)
-            pomodoroTimeManager.setupMaxTime(time: 0)
-        case .focus, .rest:
-            pomodoroTimeManager.setupCurrentTime(curr: 0)
-        case .none:
-            return
-        }
-    }
-
-    func setUpLabelInCurrentStep() -> String {
-        switch router?.currentStep {
-        case .start:
-            return ""
-        case var .rest(count), var .focus(count):
-            count = pomodoroCurrentCount
-            if count == .zero {
-                return ""
-            }
-            return "\(count) 회차"
-        case .none:
-            return ""
-        }
-    }
-
-    func initPomodoroStep() {
-        router?.currentStep = .start
-        PomodoroRouter.pomodoroCount = 0
-        pomodoroTimeManager.setupMaxTime(time: 0)
-        pomodoroTimeManager.setupCurrentTime(curr: 0)
+    func setRouterObservers() {
+        router.addObservers(observer: label)
+        router.addObservers(observer: timeSetting)
+        router.notifyObservers()
     }
 }

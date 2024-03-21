@@ -14,27 +14,30 @@ final class BreakTimerViewController: UIViewController {
     private var notificationId: String?
     private var currentTime = 0
     private var maxTime = 1 * 60
-    private var longPressTimer: Timer?
-    private var longPressTime: Float = 0.0
     private var timerHeightConstraint: Constraint?
-    var router = PomodoroRouter()
+    var stepManager = PomodoroStepManger()
     private let timeLabel = UILabel().then {
         $0.textAlignment = .center
         $0.font = UIFont.systemFont(ofSize: 60, weight: .heavy)
     }
+
+    private var longPressTimer: Timer?
+    private var longPressTime: Float = 0.0
+
+    private let longPressGestureRecognizer = UILongPressGestureRecognizer()
 
     private let longPressGuideLabel = UILabel().then {
         $0.text = "길게 클릭해서 타이머를 정지할 수 있어요"
         $0.textAlignment = .center
         $0.textColor = .pomodoro.blackMedium
         $0.font = .pomodoroFont.heading6()
-        $0.isHidden = true
+        $0.isHidden = false
     }
 
     private let progressBar = UIProgressView().then {
         $0.progressViewStyle = .default
-        $0.trackTintColor = .lightGray
-        $0.progressTintColor = .systemBlue
+        $0.trackTintColor = UIColor.pomodoro.disabled
+        $0.progressTintColor = UIColor.pomodoro.primary900
         $0.progress = 0.0
         $0.isHidden = true
     }
@@ -49,14 +52,24 @@ final class BreakTimerViewController: UIViewController {
         $0.backgroundColor = .pomodoro.primary900
     }
 
+    private func setupLongPressGestureRecognizer() {
+        view.addGestureRecognizer(longPressGestureRecognizer)
+        longPressGestureRecognizer.addTarget(self, action: #selector(handleLongPress))
+        longPressGestureRecognizer.isEnabled = true
+        longPressGestureRecognizer.allowableMovement = .infinity
+        longPressGestureRecognizer.minimumPressDuration = 0.2
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
+
         addSubviews()
         setupConstraints()
         startTimer()
         startAnimationTimer()
-        longPressSetting(isEnable: false)
+
+        setupLongPressGestureRecognizer()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -85,30 +98,24 @@ extension BreakTimerViewController {
         present(modalViewController, animated: true, completion: nil)
     }
 
-    private func longPressSetting(isEnable: Bool) {
-        let longPressGestureRecognizer = UILongPressGestureRecognizer(
-            target: self,
-            action: #selector(handleLongPress)
-        )
-        longPressGestureRecognizer.isEnabled = isEnable
-        longPressGestureRecognizer.allowableMovement = .infinity
-        longPressGestureRecognizer.minimumPressDuration = 0.2
-        view.addGestureRecognizer(longPressGestureRecognizer)
-    }
-
     @objc private func handleLongPress(gestureRecognizer: UILongPressGestureRecognizer) {
         progressBar.isHidden = false
+        longPressGuideLabel.isHidden = true
 
         longPressTimer?.invalidate()
-        longPressTimer = Timer.scheduledTimer(timeInterval: 0.02,
-                                              target: self,
-                                              selector: #selector(setProgress),
-                                              userInfo: nil,
-                                              repeats: true)
+        longPressTimer = Timer.scheduledTimer(
+            timeInterval: 0.02,
+            target: self,
+            selector: #selector(setProgress),
+            userInfo: nil,
+            repeats: true
+        )
         longPressTimer?.fire()
 
         if gestureRecognizer.state == .cancelled || gestureRecognizer.state == .ended {
             progressBar.isHidden = true
+            longPressGuideLabel.isHidden = false
+
             longPressTime = 0.0
             progressBar.progress = 0.0
 
@@ -117,16 +124,19 @@ extension BreakTimerViewController {
     }
 
     @objc private func setProgress() {
-        longPressTime += 0.02
+        longPressTime += 0.01
         progressBar.setProgress(longPressTime, animated: true)
 
         if longPressTime >= 1 {
             longPressTime = 0.0
             progressBar.progress = 0.0
+
             longPressTimer?.invalidate()
 
-            progressBar.isHidden = true
             stopTimer()
+
+            progressBar.isHidden = true
+            longPressGuideLabel.isHidden = true
         }
     }
 
@@ -135,7 +145,12 @@ extension BreakTimerViewController {
         currentTime = 0
         maxTime = 0
         updateTimeLabel()
-        router.moveToNextStep(navigationController: navigationController ?? UINavigationController())
+        stepManager.router.moveToNextStep(
+            navigationController: navigationController ?? UINavigationController()
+        )
+        // - TODO: do pomodoroStep initialize
+        stepManager.timeSetting.initPomodoroStep()
+        stepManager.router.currentStep = .start
         longPressGuideLabel.isHidden = true
     }
 
@@ -147,13 +162,12 @@ extension BreakTimerViewController {
     @objc private func startTimer() {
         longPressTime = 0.0
         progressBar.progress = 0.0
-        longPressSetting(isEnable: true)
+
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
             guard let self else {
                 return
             }
 
-            longPressGuideLabel.isHidden = false
             let minutes = (maxTime - currentTime) / 60
             let seconds = (maxTime - currentTime) % 60
             timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
@@ -162,7 +176,7 @@ extension BreakTimerViewController {
 
             if currentTime > maxTime {
                 timer.invalidate()
-                router.moveToNextStep(
+                stepManager.router.moveToNextStep(
                     navigationController: self.navigationController ?? UINavigationController()
                 )
                 longPressGuideLabel.isHidden = true
@@ -223,18 +237,18 @@ extension BreakTimerViewController {
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().multipliedBy(0.9)
         }
-        longPressGuideLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalTo(view.snp.bottom).offset(-30)
-        }
         timeLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(breakLabel.snp.bottom).offset(20)
             make.width.equalTo(240)
         }
+        longPressGuideLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(view.snp.bottom).offset(-50)
+        }
         progressBar.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(longPressGuideLabel).offset(-50)
+            make.centerY.equalTo(longPressGuideLabel)
             make.width.equalToSuperview().multipliedBy(0.8)
         }
         timerBackground.snp.makeConstraints { make in
