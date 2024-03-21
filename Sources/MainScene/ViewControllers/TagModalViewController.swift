@@ -161,9 +161,8 @@ final class TagModalViewController: UIViewController {
                 make.right.equalTo(button.snp.right).offset(-5)
                 make.width.height.equalTo(20) // 작은 버튼 크기
             }
-
-            // MARK: minusButton에 액션 추가
-            minusButton.addTarget(self, action: #selector(clickMinusButtonTap(_:)), for: .touchUpInside)
+        // MARK: minusButton에 삭제 액션 추가
+            minusButton.addTarget(self, action: #selector(deletTag(_:)), for: .touchUpInside)
 
             return button
     }
@@ -184,14 +183,18 @@ final class TagModalViewController: UIViewController {
         dismiss(animated: true)
     }
     // TODO: Tag 삭제 버튼 연결
-    @objc private func deletTag() {
+    @objc private func deletTag(_ sender: UIButton) {
         PomodoroPopupBuilder()
             .add(title: "태그 삭제")
                 .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
                 .add(
                     button: .confirm(
                         title: "확인",
-                        action: { /* 태그 삭제 로직 */ }
+                        action: { [weak self] in
+                                            guard let button = sender.superview as? UIButton else { return }
+                                            button.setTitle("+", for: .normal)
+                                            // 여기에 추가적으로 태그 삭제 처리 로직을 포함할 수 있습니다.
+                                        }
                     )
                 )
                 .show(on: self)
@@ -204,12 +207,6 @@ final class TagModalViewController: UIViewController {
                 button.bringSubviewToFront(minusButton)
             }
         }
-    }
-
-    @objc private func clickMinusButtonTap(_ sender: UIButton) {
-        guard let tagButton = sender.superview as? UIButton else { return }
-        // MARK: 여기에서 tagButton을 삭제하는 로직을 구현
-        // tagButton.removeFromSuperview()
     }
 }
 // MARK: - TagCreationDelegate
