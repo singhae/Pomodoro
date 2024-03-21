@@ -193,7 +193,6 @@ final class TagModalViewController: UIViewController {
                         action: { [weak self] in
                                             guard let button = sender.superview as? UIButton else { return }
                                             button.setTitle("+", for: .normal)
-                                            // 여기에 추가적으로 태그 삭제 처리 로직을 포함할 수 있습니다.
                                         }
                     )
                 )
