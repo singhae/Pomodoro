@@ -99,17 +99,18 @@ final class TagModalViewController: UIViewController {
             make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
         }
     }
+    
+    var buttonTitlesAndColors = [
+        ("명상", UIColor.red),
+        ("운동", UIColor.green),
+        ("공부", UIColor.purple),
+        ("+", UIColor.pomodoro.background),
+        //("+", UIColor.gray),
+        //("+", UIColor.gray),
+        //("+", UIColor.gray)
+    ]
 
     private func addTagsToStackView() {
-        let buttonTitlesAndColors = [
-            ("명상", UIColor.red),
-            ("운동", UIColor.green),
-            ("공부", UIColor.purple),
-            ("+", UIColor.pomodoro.background),
-            ("+", UIColor.gray),
-            ("+", UIColor.gray),
-            ("+", UIColor.gray)
-        ]
         let tagsPerRow = [2, 3, 2]
         var currentIndex = 0
 
@@ -127,7 +128,6 @@ final class TagModalViewController: UIViewController {
                 rowStackView.addArrangedSubview(button)
                 currentIndex += 1
             }
-
             tagsStackView.addArrangedSubview(rowStackView)
         }
     }
@@ -166,10 +166,14 @@ final class TagModalViewController: UIViewController {
 }
 
 // MARK: - TagCreationDelegate
-
 extension TagModalViewController: TagCreationDelegate {
     func createTag(tag: String) {
-        TagCollectionViewData.data.append(tag)
-        // TODO: 추가된 태그 정보값 전달
-    }
+        let plusButton = buttonTitlesAndColors.removeLast()
+            let newColor = UIColor.pomodoro.background
+            buttonTitlesAndColors.append((tag, UIColor.pomodoro.background))
+            DispatchQueue.main.async {
+                self.tagsStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+                self.addTagsToStackView()
+            }
+        }
 }
