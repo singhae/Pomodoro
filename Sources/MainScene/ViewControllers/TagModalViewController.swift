@@ -140,8 +140,8 @@ final class TagModalViewController: UIViewController {
             $0.backgroundColor = color
             $0.setTitleColor(.white, for: .normal)
             $0.layer.cornerRadius = 40
-            $0.layer.borderColor = borderColor.cgColor
-            $0.layer.borderWidth = 2
+            //$0.layer.borderColor = borderColor.cgColor
+            //$0.layer.borderWidth = 2
             $0.snp.makeConstraints { make in
                 make.size.equalTo(CGSize(width: 80, height: 80))
             }
@@ -150,8 +150,8 @@ final class TagModalViewController: UIViewController {
         // `-` 버튼 추가
            let minusButton = UIButton().then {
                $0.setTitle("-", for: .normal)
-               $0.setTitleColor(.white, for: .normal)
-               $0.backgroundColor = .systemGray
+               $0.setTitleColor(.black, for: .normal)
+               $0.backgroundColor = .white
                $0.layer.cornerRadius = 10
                $0.isHidden = true // 기본적으로 숨김
                $0.tag = 101 // 태그 설정
