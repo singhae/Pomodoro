@@ -42,7 +42,7 @@ final class TagModalViewController: UIViewController {
         $0.font = UIFont.boldSystemFont(ofSize: 15)
     }
 
-    private let ellipseButton = UIButton().then {
+    private var ellipseButton = UIButton().then {
         $0.setImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
         $0.contentMode = .scaleAspectFit
         $0.tintColor = .black
@@ -140,14 +140,12 @@ final class TagModalViewController: UIViewController {
             $0.backgroundColor = color
             $0.setTitleColor(.white, for: .normal)
             $0.layer.cornerRadius = 40
-            //$0.layer.borderColor = borderColor.cgColor
-            //$0.layer.borderWidth = 2
             $0.snp.makeConstraints { make in
                 make.size.equalTo(CGSize(width: 80, height: 80))
             }
             $0.addTarget(self, action: #selector(configureTag), for: .touchUpInside)
         }
-        // `-` 버튼 추가
+        // MARK: `-` 버튼 추가
            let minusButton = UIButton().then {
                $0.setTitle("-", for: .normal)
                $0.setTitleColor(.black, for: .normal)
@@ -158,14 +156,14 @@ final class TagModalViewController: UIViewController {
            }
            button.addSubview(minusButton)
         
-        // minusButton 위치 설정
+        // MARK: minusButton 위치 설정
             minusButton.snp.makeConstraints { make in
                 make.top.equalTo(button.snp.top).offset(5)
                 make.right.equalTo(button.snp.right).offset(-5)
                 make.width.height.equalTo(20) // 작은 버튼 크기
             }
 
-            // minusButton에 액션 추가
+            // MARK: minusButton에 액션 추가
             minusButton.addTarget(self, action: #selector(clickMinusButtonTap(_:)), for: .touchUpInside)
 
             return button
@@ -212,12 +210,13 @@ final class TagModalViewController: UIViewController {
 
     @objc private func clickMinusButtonTap(_ sender: UIButton) {
         guard let tagButton = sender.superview as? UIButton else { return }
-        // 여기에서 tagButton을 삭제하는 로직을 구현
+        // MARK: 여기에서 tagButton을 삭제하는 로직을 구현
         // tagButton.removeFromSuperview()
     }
 
 
 }
+
 // MARK: - TagCreationDelegate
 extension TagModalViewController: TagCreationDelegate {
     func createTag(tag: String) {
