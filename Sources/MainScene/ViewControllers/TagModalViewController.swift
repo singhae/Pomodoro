@@ -211,8 +211,6 @@ final class TagModalViewController: UIViewController {
         // MARK: 여기에서 tagButton을 삭제하는 로직을 구현
         // tagButton.removeFromSuperview()
     }
-
-
 }
 // MARK: - TagCreationDelegate
 extension TagModalViewController: TagCreationDelegate {
