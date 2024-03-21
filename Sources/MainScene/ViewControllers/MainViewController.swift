@@ -16,10 +16,7 @@ final class MainViewController: UIViewController {
     private var notificationId: String?
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
-
-    var pomodoroStep: PomodoroStepStateManager?
-    var router = PomodoroRouter()
-
+    var stepManager = PomodoroStepManger()
     private var currentPomodoro: Pomodoro?
 
     private lazy var longPressGestureRecognizer = UILongPressGestureRecognizer(
@@ -31,7 +28,7 @@ final class MainViewController: UIViewController {
     }
 
     lazy var currentStepLabel = UILabel().then {
-        $0.text = pomodoroStep?.setUpLabelInCurrentStep()
+        $0.text = stepManager.label.setUpLabelInCurrentStep(currentStep: stepManager.router.currentStep)
         $0.textAlignment = .center
     }
 
@@ -83,8 +80,7 @@ final class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        router.delegate = self
-
+        stepManager.setRouterObservers()
         setUpPomodoroCurrentStepLabel()
 
         NotificationCenter.default.addObserver(
@@ -138,11 +134,7 @@ final class MainViewController: UIViewController {
 
 // MARK: - Action
 
-extension MainViewController: PomodoroStepRememberable {
-    func remembercurrentStep(currentStep: PomodoroTimerStep) {
-        router.currentStep = currentStep
-    }
-
+extension MainViewController {
     @objc func didEnterBackground() {
         print("max: \(pomodoroTimeManager.maxTime), curr: \(pomodoroTimeManager.currentTime)")
     }
@@ -211,7 +203,7 @@ extension MainViewController: PomodoroStepRememberable {
                 setupLongPress(isEnable: false)
             }
 
-            pomodoroStep?.initPomodoroStep()
+            stepManager.timeSetting.initPomodoroStep()
             currentStepLabel.text = ""
 
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
@@ -220,9 +212,20 @@ extension MainViewController: PomodoroStepRememberable {
     }
 
     @objc private func timeSetting() {
-        let timeSettingviewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
+        stepManager.router.currentStep = .start
+        stepManager.timeSetting.initPomodoroStep()
         setUpPomodoroCurrentStepLabel()
-        navigationController?.pushViewController(timeSettingviewController, animated: true)
+        let timeSettingViewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
+        if let sheet = timeSettingViewController.sheetPresentationController {
+            sheet.detents = [
+                .custom { context in
+                    context.maximumDetentValue * 0.95
+                }
+            ]
+            sheet.preferredCornerRadius = 40
+            sheet.prefersScrollingExpandsWhenScrolledToEdge = true
+        }
+        present(timeSettingViewController, animated: true)
     }
 
     func setupNotification() {
@@ -303,26 +306,19 @@ extension MainViewController: PomodoroStepRememberable {
     }
 
     private func setUpPomodoroCurrentStep() {
-        guard let pomodoroStep else {
-            return
-        }
-
-        pomodoroStep.applyStepChanges(
+        stepManager.router.moveToNextStep(
             navigationController:
             navigationController ?? UINavigationController()
         )
-
-        pomodoroStep.setUptimeInCurrentStep()
-        currentStepLabel.text = pomodoroStep.setUpLabelInCurrentStep()
     }
 
     private func setUpPomodoroCurrentStepLabel() {
-        pomodoroStep = PomodoroStepStateManager(router: router)
-
-        guard let pomodoroStep else {
-            return
-        }
-        currentStepLabel.text = pomodoroStep.setUpLabelInCurrentStep() ?? "eror"
+        stepManager.timeSetting.setUptimeInCurrentStep(
+            currentStep: stepManager.router.currentStep
+        )
+        currentStepLabel.text = stepManager.label.setUpLabelInCurrentStep(
+            currentStep: stepManager.router.currentStep
+        )
     }
 }
 
@@ -378,6 +374,7 @@ extension MainViewController {
 extension MainViewController: TimeSettingViewControllerDelegate {
     func didSelectTime(time: Int) {
         pomodoroTimeManager.setupMaxTime(time: time)
+        updateTimeLabel()
     }
 }
 

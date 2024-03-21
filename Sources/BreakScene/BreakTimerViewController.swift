@@ -17,7 +17,7 @@ final class BreakTimerViewController: UIViewController {
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
     private var timerHeightConstraint: Constraint?
-    var router = PomodoroRouter()
+    var stepManager = PomodoroStepManger()
     private let timeLabel = UILabel().then {
         $0.textAlignment = .center
         $0.font = UIFont.systemFont(ofSize: 60, weight: .heavy)
@@ -135,7 +135,12 @@ extension BreakTimerViewController {
         currentTime = 0
         maxTime = 0
         updateTimeLabel()
-        router.moveToNextStep(navigationController: navigationController ?? UINavigationController())
+        stepManager.router.moveToNextStep(
+            navigationController: navigationController ?? UINavigationController()
+        )
+        // - TODO: do pomodoroStep initialize
+        stepManager.timeSetting.initPomodoroStep()
+        stepManager.router.currentStep = .start
         longPressGuideLabel.isHidden = true
     }
 
@@ -162,7 +167,7 @@ extension BreakTimerViewController {
 
             if currentTime > maxTime {
                 timer.invalidate()
-                router.moveToNextStep(
+                stepManager.router.moveToNextStep(
                     navigationController: self.navigationController ?? UINavigationController()
                 )
                 longPressGuideLabel.isHidden = true
