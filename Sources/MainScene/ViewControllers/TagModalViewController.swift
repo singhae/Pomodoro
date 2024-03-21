@@ -42,7 +42,7 @@ final class TagModalViewController: UIViewController {
         $0.font = UIFont.boldSystemFont(ofSize: 15)
     }
 
-    private let ellipseButton = UIButton().then {
+    private lazy var ellipseButton = UIButton().then {
         $0.setImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
         $0.contentMode = .scaleAspectFit
         $0.tintColor = .black
