@@ -26,8 +26,8 @@ final class BreakTimerViewController: UIViewController {
     private let longPressGuideLabel = UILabel().then {
         $0.text = "길게 클릭해서 타이머를 정지할 수 있어요"
         $0.textAlignment = .center
-        $0.textColor = .lightGray
-        $0.font = UIFont.systemFont(ofSize: 16)
+        $0.textColor = .pomodoro.blackMedium
+        $0.font = .pomodoroFont.heading6()
         $0.isHidden = true
     }
 
@@ -51,7 +51,7 @@ final class BreakTimerViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .pomodoro.background
         addSubviews()
         setupConstraints()
         startTimer()
@@ -157,6 +157,7 @@ extension BreakTimerViewController {
             let minutes = (maxTime - currentTime) / 60
             let seconds = (maxTime - currentTime) % 60
             timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
+            timeLabel.font = .pomodoroFont.heading1()
             currentTime += 1
 
             if currentTime > maxTime {
@@ -220,7 +221,7 @@ extension BreakTimerViewController {
     private func setupConstraints() {
         breakLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().multipliedBy(0.67)
+            make.centerY.equalToSuperview().multipliedBy(0.9)
         }
         longPressGuideLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
