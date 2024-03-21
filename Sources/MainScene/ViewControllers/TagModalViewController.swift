@@ -155,7 +155,6 @@ final class TagModalViewController: UIViewController {
                $0.tag = 101 // 태그 설정
            }
            button.addSubview(minusButton)
-        
         // MARK: minusButton 위치 설정
             minusButton.snp.makeConstraints { make in
                 make.top.equalTo(button.snp.top).offset(5)
@@ -197,7 +196,6 @@ final class TagModalViewController: UIViewController {
                 )
                 .show(on: self)
     }
-    
     // TODO: ellipsisbutton 클릭시 - 버튼 활성화 함수
     @objc private func createMinusButton() {
         for case let button as UIButton in tagsStackView.arrangedSubviews.flatMap({ $0.subviews }) {
@@ -216,7 +214,6 @@ final class TagModalViewController: UIViewController {
 
 
 }
-
 // MARK: - TagCreationDelegate
 extension TagModalViewController: TagCreationDelegate {
     func createTag(tag: String) {
