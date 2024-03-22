@@ -242,6 +242,7 @@ extension MainViewController {
 
             progressBar.isHidden = true
             longPressGuideLabel.isHidden = true
+            timeLabelTapGestureRecognizer.isEnabled = true
         }
     }
 
