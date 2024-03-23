@@ -187,7 +187,11 @@ extension MainViewController {
     @objc private func openTagModal() {
         let modalViewController = TagModalViewController()
         let navigationController = UINavigationController(rootViewController: modalViewController)
-        navigationController.modalPresentationStyle = .automatic
+        modalViewController.modalTransitionStyle = .coverVertical
+        modalViewController.view.alpha = 1
+        if let sheet = modalViewController.sheetPresentationController {
+                sheet.detents = [.medium()]
+            }
         present(navigationController, animated: true, completion: nil)
     }
 

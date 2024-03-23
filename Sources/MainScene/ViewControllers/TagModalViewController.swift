@@ -42,13 +42,14 @@ final class TagModalViewController: UIViewController {
         $0.font = UIFont.boldSystemFont(ofSize: 15)
     }
 
-    private let ellipseButton = UIButton().then {
+    private lazy var ellipseButton = UIButton().then {
         $0.setImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
         $0.contentMode = .scaleAspectFit
         $0.tintColor = .black
         $0.backgroundColor = .pomodoro.background
         $0.layer.cornerRadius = 15
         $0.clipsToBounds = true
+        $0.addTarget(self, action: #selector(createMinusButton), for: .touchUpInside) // 마이너스버튼 생성되는 액션 추가
     }
 
     private let tagsStackView = UIStackView().then {
@@ -134,19 +135,36 @@ final class TagModalViewController: UIViewController {
 
     // TODO: 테두리 컬러 확인
     private func createRoundButton(title: String, color: UIColor, borderColor: UIColor) -> UIButton {
-        UIButton().then {
+        let button = UIButton().then {
             $0.setTitle(title, for: .normal)
             $0.backgroundColor = color
             $0.setTitleColor(.white, for: .normal)
             $0.layer.cornerRadius = 40
-            // TODO: 테두리 컬러 지정
-            $0.layer.borderColor = borderColor.cgColor
-            $0.layer.borderWidth = 2
             $0.snp.makeConstraints { make in
                 make.size.equalTo(CGSize(width: 80, height: 80))
             }
             $0.addTarget(self, action: #selector(configureTag), for: .touchUpInside)
         }
+        // MARK: `-` 버튼 추가
+           let minusButton = UIButton().then {
+               $0.setTitle("-", for: .normal)
+               $0.setTitleColor(.black, for: .normal)
+               $0.backgroundColor = .white
+               $0.layer.cornerRadius = 10
+               $0.isHidden = true // 기본적으로 숨김
+               $0.tag = 101 // 태그 설정
+           }
+           button.addSubview(minusButton)
+        // MARK: minusButton 위치 설정
+            minusButton.snp.makeConstraints { make in
+                make.top.equalTo(button.snp.top).offset(5)
+                make.right.equalTo(button.snp.right).offset(-5)
+                make.width.height.equalTo(20) // 작은 버튼 크기
+            }
+        // MARK: minusButton에 삭제 액션 추가
+            minusButton.addTarget(self, action: #selector(deletTag(_:)), for: .touchUpInside)
+
+            return button
     }
 
     @objc private func dismissModal() {
@@ -161,12 +179,36 @@ final class TagModalViewController: UIViewController {
 
     @objc private func didTapSettingCompleteButton() {
         tagSettingCompletedButton.isEnabled.toggle()
+        PomodoroPopupBuilder()
         dismiss(animated: true)
     }
+    // TODO: Tag 삭제 버튼 연결
+    @objc private func deletTag(_ sender: UIButton) {
+        PomodoroPopupBuilder()
+            .add(title: "태그 삭제")
+                .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
+                .add(
+                    button: .confirm(
+                        title: "확인",
+                        action: { [weak self] in
+                                            guard let button = sender.superview as? UIButton else { return }
+                                            button.setTitle("+", for: .normal)
+                                        }
+                    )
+                )
+                .show(on: self)
+    }
+    // TODO: ellipsisbutton 클릭시 - 버튼 활성화 함수
+    @objc private func createMinusButton() {
+        for case let button as UIButton in tagsStackView.arrangedSubviews.flatMap({ $0.subviews }) {
+            if let minusButton = button.viewWithTag(101) as? UIButton {
+                minusButton.isHidden.toggle()
+                button.bringSubviewToFront(minusButton)
+            }
+        }
+    }
 }
-
 // MARK: - TagCreationDelegate
-
 extension TagModalViewController: TagCreationDelegate {
     func createTag(tag: String) {
         TagCollectionViewData.data.append(tag)

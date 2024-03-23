@@ -18,6 +18,8 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         $0.spellCheckingType = .no
         // FIXME: 배경색 기본 배경 색이랑 동일하게
         // FIXME: 텍스트 글자 색 : 흰색
+        $0.backgroundColor = .clear
+        $0.textColor = .white
     }
 
     private let saveTagButton = UIButton().then {
@@ -27,6 +29,11 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
 
     weak var delegate: TagCreationDelegate?
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        textField.becomeFirstResponder()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,9 +48,18 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     @objc func saveTagButtonTapped() {
         guard let tagText = textField.text, !tagText.isEmpty else {
             print("태그를 입력하세요.")
-            let alert = UIAlertController(title: "경고", message: "태그를 입력하세요.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "확인", style: .default))
-            present(alert, animated: true)
+//            let alert = UIAlertController(title: "경고", message: "태그를 입력하세요.", preferredStyle: .alert)
+//            alert.addAction(UIAlertAction(title: "확인", style: .default))
+//            present(alert, animated: true)
+            PomodoroPopupBuilder()
+                    .add(body: "태그를 입력해주십시오.")
+                    .add(
+                        button: .confirm(
+                            title: "확인",
+                            action: { /* 확인 동작 */ }
+                        )
+                    )
+                    .show(on: self)
             return
         }
         delegate?.createTag(tag: tagText)
