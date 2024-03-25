@@ -18,6 +18,8 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         $0.spellCheckingType = .no
         // FIXME: 배경색 기본 배경 색이랑 동일하게
         // FIXME: 텍스트 글자 색 : 흰색
+        $0.backgroundColor = .clear
+        $0.textColor = .white
     }
 
     private let saveTagButton = UIButton().then {

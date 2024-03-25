@@ -59,6 +59,28 @@ final class SettingViewController: UIViewController, BreakTimeDelegate {
         $0.isScrollEnabled = false
     }
 
+    private let appIconStackView = UIStackView()
+
+    func setupPomodoroIcon() {
+        let logoIcon = UIImageView().then {
+            $0.image = UIImage(named: "dashboardIcon")
+        }
+        let appName = UILabel().then {
+            $0.text = "뽀모도로"
+            $0.textColor = .pomodoro.primary900
+            $0.font = .pomodoroFont.text1(size: 15.27)
+        }
+
+        appIconStackView.addArrangedSubview(logoIcon)
+        appIconStackView.addArrangedSubview(appName)
+        appIconStackView.spacing = 5
+        appIconStackView.axis = .horizontal
+        appIconStackView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.leading.equalTo(30)
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
@@ -76,6 +98,7 @@ final class SettingViewController: UIViewController, BreakTimeDelegate {
         }
 
         addSubViews()
+        setupPomodoroIcon()
         setupConstraints()
     }
 }
@@ -260,6 +283,7 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
 
 extension SettingViewController {
     private func addSubViews() {
+        view.addSubview(appIconStackView)
         view.addSubview(titleLabel)
         navigationItem.title = "Options"
         view.addSubview(tableView)
@@ -267,7 +291,7 @@ extension SettingViewController {
 
     private func setupConstraints() {
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(126)
+            make.top.equalToSuperview().offset(136)
             make.centerX.equalToSuperview()
         }
 

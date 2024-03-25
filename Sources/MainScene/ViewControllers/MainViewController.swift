@@ -19,13 +19,10 @@ final class MainViewController: UIViewController {
     var stepManager = PomodoroStepManger()
     private var currentPomodoro: Pomodoro?
 
-    private lazy var longPressGestureRecognizer = UILongPressGestureRecognizer(
-        target: self,
-        action: #selector(handleLongPress)
-    ).then {
-        view.addGestureRecognizer($0)
-        $0.isEnabled = false
-    }
+    private let longPressGestureRecognizer = UILongPressGestureRecognizer()
+
+    // 시간라벨 누르게 하는 GestureRecognizer
+    private let timeLabelTapGestureRecognizer = UITapGestureRecognizer()
 
     lazy var currentStepLabel = UILabel().then {
         $0.text = stepManager.label.setUpLabelInCurrentStep(currentStep: stepManager.router.currentStep)
@@ -42,14 +39,14 @@ final class MainViewController: UIViewController {
         $0.text = "길게 클릭해서 타이머를 정지할 수 있어요"
         $0.textAlignment = .center
         $0.textColor = .lightGray
-        $0.font = UIFont.systemFont(ofSize: 16)
+        $0.font = UIFont.pomodoroFont.heading6()
         $0.isHidden = true
     }
 
     private let progressBar = UIProgressView().then {
         $0.progressViewStyle = .default
-        $0.trackTintColor = .lightGray
-        $0.progressTintColor = .systemBlue
+        $0.trackTintColor = UIColor.pomodoro.disabled
+        $0.progressTintColor = UIColor.pomodoro.primary900
         $0.progress = 0.0
         $0.isHidden = true
     }
@@ -69,7 +66,7 @@ final class MainViewController: UIViewController {
         $0.text = "집중 시작하기"
         $0.font = UIFont.pomodoroFont.text1()
     }
-    
+
     private lazy var startTimerButton = UIButton().then {
         $0.setImage(UIImage(named: "startTimerBtn"), for: .normal)
         $0.titleLabel?.font = .pomodoroFont.text1()
@@ -134,7 +131,9 @@ final class MainViewController: UIViewController {
         )
 
         view.backgroundColor = .pomodoro.background
+
         addSubviews()
+        setupPomodoroIcon()
         setupConstraints()
 
         setupLongPressGestureRecognizer()
@@ -197,12 +196,6 @@ extension MainViewController {
         present(navigationController, animated: true, completion: nil)
     }
 
-    private func setupLongPress(isEnable: Bool) {
-        longPressGestureRecognizer.isEnabled = isEnable
-        longPressGestureRecognizer.allowableMovement = .infinity
-        longPressGestureRecognizer.minimumPressDuration = 0.2
-    }
-
     @objc private func handleLongPress(gestureRecognizer: UILongPressGestureRecognizer) {
         progressBar.isHidden = false
         longPressGuideLabel.isHidden = true
@@ -243,7 +236,7 @@ extension MainViewController {
 
             pomodoroTimeManager.stopTimer {
                 setupUIWhenTimerStart(isStopped: true)
-                setupLongPress(isEnable: false)
+                self.longPressGestureRecognizer.isEnabled = false
             }
 
             stepManager.timeSetting.initPomodoroStep()
@@ -400,7 +393,7 @@ extension MainViewController {
         }
         timeLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().multipliedBy(0.67)
+            make.bottom.equalTo(startTimerButton).offset(-80)
         }
         startTimerLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()

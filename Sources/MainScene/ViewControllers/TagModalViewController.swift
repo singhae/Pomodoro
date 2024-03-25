@@ -42,13 +42,14 @@ final class TagModalViewController: UIViewController {
         $0.font = UIFont.boldSystemFont(ofSize: 15)
     }
 
-    private let ellipseButton = UIButton().then {
+    private lazy var ellipseButton = UIButton().then {
         $0.setImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
         $0.contentMode = .scaleAspectFit
         $0.tintColor = .black
         $0.backgroundColor = .pomodoro.background
         $0.layer.cornerRadius = 15
         $0.clipsToBounds = true
+        $0.addTarget(self, action: #selector(createMinusButton), for: .touchUpInside) // 마이너스버튼 생성되는 액션 추가
     }
 
     private let tagsStackView = UIStackView().then {
@@ -139,15 +140,11 @@ final class TagModalViewController: UIViewController {
             $0.backgroundColor = color
             $0.setTitleColor(.white, for: .normal)
             $0.layer.cornerRadius = 40
-            // TODO: 테두리 컬러 지정
-            $0.layer.borderColor = borderColor.cgColor
-            $0.layer.borderWidth = 2
             $0.snp.makeConstraints { make in
                 make.size.equalTo(CGSize(width: 80, height: 80))
             }
             $0.addTarget(self, action: #selector(configureTag), for: .touchUpInside)
         }
-
         // MARK: `-` 버튼 추가
 
         let minusButton = UIButton().then {
@@ -217,9 +214,7 @@ final class TagModalViewController: UIViewController {
         }
     }
 }
-
 // MARK: - TagCreationDelegate
-
 extension TagModalViewController: TagCreationDelegate {
     func createTag(tag: String) {
         TagCollectionViewData.data.append(tag)
