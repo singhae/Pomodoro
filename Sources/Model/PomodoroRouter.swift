@@ -55,6 +55,8 @@ final class PomodoroRouter {
     ) {
         let pomodoroTimerViewController = MainViewController()
         let breakTimerViewController = BreakTimerViewController()
+        pomodoroTimerViewController.navigationController?.isNavigationBarHidden = true
+        breakTimerViewController.navigationController?.isNavigationBarHidden = true
 
         switch currentStep {
         case .start:
