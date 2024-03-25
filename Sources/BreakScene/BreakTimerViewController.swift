@@ -62,6 +62,7 @@ final class BreakTimerViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateTimeLabel()
+        navigationController?.isNavigationBarHidden = true
         // FIXME: Remove startTimer() after implementing time setup
     }
 

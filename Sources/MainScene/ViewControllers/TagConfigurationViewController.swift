@@ -27,6 +27,10 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
 
     weak var delegate: TagCreationDelegate?
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        textField.becomeFirstResponder()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,16 +49,14 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
 //            alert.addAction(UIAlertAction(title: "확인", style: .default))
 //            present(alert, animated: true)
             PomodoroPopupBuilder()
-                    .add(body: "태그를 입력해주십시오.")
-                    .add(
-                        button: .confirm(
-                            title: "확인",
-                            action: { /* 확인 동작 */ }
-                        )
+                .add(body: "태그를 입력해주십시오.")
+                .add(
+                    button: .confirm(
+                        title: "확인",
+                        action: { /* 확인 동작 */ }
                     )
-                    .show(on: self)
-
-            
+                )
+                .show(on: self)
             return
         }
         delegate?.createTag(tag: tagText)
