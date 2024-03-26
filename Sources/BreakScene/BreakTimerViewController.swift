@@ -63,7 +63,7 @@ final class BreakTimerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
-
+        navigationController?.isNavigationBarHidden = true
         addSubviews()
         setupConstraints()
         startTimer()

@@ -145,6 +145,7 @@ final class TagModalViewController: UIViewController {
             }
             $0.addTarget(self, action: #selector(configureTag), for: .touchUpInside)
         }
+
         // MARK: `-` 버튼 추가
 
         let minusButton = UIButton().then {
@@ -167,7 +168,7 @@ final class TagModalViewController: UIViewController {
 
         // MARK: minusButton에 삭제 액션 추가
 
-        minusButton.addTarget(self, action: #selector(deletTag(_:)), for: .touchUpInside)
+        // minusButton.addTarget(self, action: #selector(deletTag(_:)), for: .touchUpInside)
 
         return button
     }
@@ -187,6 +188,7 @@ final class TagModalViewController: UIViewController {
         PomodoroPopupBuilder()
         dismiss(animated: true)
     }
+
     // TODO: Tag 삭제 버튼 연결
     @objc private func deletTag() {
         PomodoroPopupBuilder()
@@ -196,8 +198,8 @@ final class TagModalViewController: UIViewController {
                 button: .confirm(
                     title: "확인",
                     action: { [weak self] in
-                        guard let button = sender.superview as? UIButton else { return }
-                        button.setTitle("+", for: .normal)
+//                        guard let button = sender.superview as? UIButton else { return }
+//                        button.setTitle("+", for: .normal)
                     }
                 )
             )
@@ -214,7 +216,9 @@ final class TagModalViewController: UIViewController {
         }
     }
 }
+
 // MARK: - TagCreationDelegate
+
 extension TagModalViewController: TagCreationDelegate {
     func createTag(tag: String) {
         TagCollectionViewData.data.append(tag)
