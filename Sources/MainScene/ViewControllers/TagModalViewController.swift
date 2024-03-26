@@ -134,7 +134,7 @@ final class TagModalViewController: UIViewController {
     }
 
     // TODO: 테두리 컬러 확인
-    private func createRoundButton(title: String, color: UIColor, borderColor: UIColor) -> UIButton {
+    private func createRoundButton(title: String, color: UIColor, borderColor _: UIColor) -> UIButton {
         let button = UIButton().then {
             $0.setTitle(title, for: .normal)
             $0.backgroundColor = color
@@ -145,26 +145,32 @@ final class TagModalViewController: UIViewController {
             }
             $0.addTarget(self, action: #selector(configureTag), for: .touchUpInside)
         }
-        // MARK: `-` 버튼 추가
-           let minusButton = UIButton().then {
-               $0.setTitle("-", for: .normal)
-               $0.setTitleColor(.black, for: .normal)
-               $0.backgroundColor = .white
-               $0.layer.cornerRadius = 10
-               $0.isHidden = true // 기본적으로 숨김
-               $0.tag = 101 // 태그 설정
-           }
-           button.addSubview(minusButton)
-        // MARK: minusButton 위치 설정
-            minusButton.snp.makeConstraints { make in
-                make.top.equalTo(button.snp.top).offset(5)
-                make.right.equalTo(button.snp.right).offset(-5)
-                make.width.height.equalTo(20) // 작은 버튼 크기
-            }
-        // MARK: minusButton에 삭제 액션 추가
-            minusButton.addTarget(self, action: #selector(deletTag(_:)), for: .touchUpInside)
 
-            return button
+        // MARK: `-` 버튼 추가
+
+        let minusButton = UIButton().then {
+            $0.setTitle("-", for: .normal)
+            $0.setTitleColor(.black, for: .normal)
+            $0.backgroundColor = .white
+            $0.layer.cornerRadius = 10
+            $0.isHidden = true // 기본적으로 숨김
+            $0.tag = 101 // 태그 설정
+        }
+        button.addSubview(minusButton)
+
+        // MARK: minusButton 위치 설정
+
+        minusButton.snp.makeConstraints { make in
+            make.top.equalTo(button.snp.top).offset(5)
+            make.right.equalTo(button.snp.right).offset(-5)
+            make.width.height.equalTo(20) // 작은 버튼 크기
+        }
+
+        // MARK: minusButton에 삭제 액션 추가
+
+        minusButton.addTarget(self, action: #selector(deletTag(_:)), for: .touchUpInside)
+
+        return button
     }
 
     @objc private func dismissModal() {
@@ -182,25 +188,27 @@ final class TagModalViewController: UIViewController {
         PomodoroPopupBuilder()
         dismiss(animated: true)
     }
+
     // TODO: Tag 삭제 버튼 연결
     @objc private func deletTag(_ sender: UIButton) {
         PomodoroPopupBuilder()
             .add(title: "태그 삭제")
-                .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
-                .add(
-                    button: .confirm(
-                        title: "확인",
-                        action: { [weak self] in
-                                            guard let button = sender.superview as? UIButton else { return }
-                                            button.setTitle("+", for: .normal)
-                                        }
-                    )
+            .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
+            .add(
+                button: .confirm(
+                    title: "확인",
+                    action: { [weak self] in
+                        guard let button = sender.superview as? UIButton else { return }
+                        button.setTitle("+", for: .normal)
+                    }
                 )
-                .show(on: self)
+            )
+            .show(on: self)
     }
+
     // TODO: ellipsisbutton 클릭시 - 버튼 활성화 함수
     @objc private func createMinusButton() {
-        for case let button as UIButton in tagsStackView.arrangedSubviews.flatMap({ $0.subviews }) {
+        for case let button as UIButton in tagsStackView.arrangedSubviews.flatMap(\.subviews) {
             if let minusButton = button.viewWithTag(101) as? UIButton {
                 minusButton.isHidden.toggle()
                 button.bringSubviewToFront(minusButton)
@@ -208,7 +216,9 @@ final class TagModalViewController: UIViewController {
         }
     }
 }
+
 // MARK: - TagCreationDelegate
+
 extension TagModalViewController: TagCreationDelegate {
     func createTag(tag: String) {
         TagCollectionViewData.data.append(tag)
