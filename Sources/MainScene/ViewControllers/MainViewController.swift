@@ -187,7 +187,6 @@ extension MainViewController {
     @objc private func openTagModal() {
         let modalViewController = TagModalViewController()
         let navigationController = UINavigationController(rootViewController: modalViewController)
-        //navigationController.modalPresentationStyle = .automatic
         modalViewController.modalTransitionStyle = .coverVertical
         modalViewController.view.alpha = 1
         if let sheet = modalViewController.sheetPresentationController {
@@ -306,6 +305,7 @@ extension MainViewController {
 
         longPressTime = 0.0
         progressBar.progress = 0.0
+
         longPressGuideLabel.isHidden = false
         longPressGestureRecognizer.isEnabled = true
 
@@ -339,6 +339,7 @@ extension MainViewController {
                 }
 
                 setUpPomodoroCurrentStep()
+
                 longPressGestureRecognizer.isEnabled = false
             }
 
@@ -393,7 +394,7 @@ extension MainViewController {
         }
         timeLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(startTimerButton).offset(-80)
+            make.centerY.equalToSuperview().offset(-30)
         }
         startTimerLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -419,7 +420,6 @@ extension MainViewController: TimeSettingViewControllerDelegate {
     func didSelectTime(time: Int) {
         pomodoroTimeManager.setupMaxTime(time: time)
         updateTimeLabel()
-        setupUIWhenTimerStart(isStopped: true)
     }
 }
 
