@@ -29,6 +29,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
 
     weak var delegate: TagCreationDelegate?
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         textField.becomeFirstResponder()
