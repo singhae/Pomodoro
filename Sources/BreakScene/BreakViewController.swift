@@ -37,6 +37,7 @@ final class BreakViewController: UIViewController {
                 make.leading.equalTo(30)
             }
         }
+
         let breakButton = UIButton().then {
             view.addSubview($0)
             $0.setTitle("휴식시간\n시작하기", for: .normal)
