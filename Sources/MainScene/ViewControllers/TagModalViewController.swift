@@ -168,7 +168,7 @@ final class TagModalViewController: UIViewController {
 
         // MARK: minusButton에 삭제 액션 추가
 
-        minusButton.addTarget(self, action: #selector(deletTag(_:)), for: .touchUpInside)
+//        minusButton.addTarget(self, action: #selector(deletTag(_:)), for: .touchUpInside)
 
         return button
     }
@@ -190,7 +190,7 @@ final class TagModalViewController: UIViewController {
     }
 
     // TODO: Tag 삭제 버튼 연결
-    @objc private func deletTag(_ sender: UIButton) {
+    @objc private func deletTag() {
         PomodoroPopupBuilder()
             .add(title: "태그 삭제")
             .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
@@ -198,8 +198,8 @@ final class TagModalViewController: UIViewController {
                 button: .confirm(
                     title: "확인",
                     action: { [weak self] in
-                        guard let button = sender.superview as? UIButton else { return }
-                        button.setTitle("+", for: .normal)
+//                        guard let button = sender.superview as? UIButton else { return }
+//                        button.setTitle("+", for: .normal)
                     }
                 )
             )
