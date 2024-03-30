@@ -70,14 +70,14 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         textField.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
             make.left.equalToSuperview().inset(20)
-            make.right.equalToSuperview().inset(70)
+            make.right.equalToSuperview().inset(20)
             make.height.equalTo(44)
         }
 
         colorPaletteStackView.snp.makeConstraints { make in
             make.top.equalTo(textField.snp.bottom).offset(20)
             make.left.right.equalToSuperview().inset(20)
-            make.height.equalTo(44)
+            make.height.equalTo(120)
         }
         
         saveTagButton.snp.makeConstraints { make in
@@ -117,9 +117,10 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         for (index, color) in colors.enumerated() {
             let colorButton = UIButton()
             colorButton.backgroundColor = color
-            colorButton.layer.cornerRadius = 22 // 가정: 버튼 크기를 44x44로 설정
+            colorButton.layer.cornerRadius = 25 // 가정: 버튼 크기를 44x44로 설정
             colorButton.snp.makeConstraints { make in
-                make.width.height.equalTo(44)
+                make.width.height.equalTo(50)
+                
             }
             colorButton.addTarget(self, action: #selector(colorButtonTapped(_:)), for: .touchUpInside)
             
