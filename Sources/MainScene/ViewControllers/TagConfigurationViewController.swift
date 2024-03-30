@@ -16,24 +16,19 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         $0.placeholder = "태그를 입력하세요"
         $0.autocorrectionType = .no
         $0.spellCheckingType = .no
-        // FIXME: 배경색 기본 배경 색이랑 동일하게
-        // FIXME: 텍스트 글자 색 : 흰색
         $0.backgroundColor = .clear
         $0.textColor = .white
     }
+    
+    private lazy var saveTagButton = PomodoroConfirmButton(title: "test", didTapHandler: saveTagButtonTapped)
 
-    private let saveTagButton = UIButton().then {
-        $0.backgroundColor = .pomodoro.background
-        $0.setTitleColor(.white, for: .normal)
-        $0.layer.cornerRadius = 10
+    private let colorPaletteStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.distribution = .fillEqually
+        $0.spacing = 8
     }
 
     weak var delegate: TagCreationDelegate?
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        textField.becomeFirstResponder()
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,10 +36,9 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         textField.delegate = self
         setupViews()
         setupConstraints()
-        saveTagButton.addTarget(self, action: #selector(saveTagButtonTapped), for: .touchUpInside)
-        configureColorPickerTextField()
+        setupColorPalette()
     }
-
+    
     @objc func saveTagButtonTapped() {
         guard let tagText = textField.text, !tagText.isEmpty else {
             print("태그를 입력하세요.")
@@ -66,36 +60,10 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         dismiss(animated: true, completion: nil)
     }
 
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        // FIXME: 디버깅
-        print("textField의 현재 값: \(textField.text ?? "nil")")
-        self.textField.resignFirstResponder()
-        dismiss(animated: true, completion: nil)
-        print("text 필드 비활성화")
-        return true
-    }
-
     private func setupViews() {
         view.addSubview(textField)
         view.addSubview(saveTagButton)
-    }
-
-    private func configureColorPickerTextField() {
-        let colorPaletteButton = UIButton(type: .custom)
-        colorPaletteButton.backgroundColor = .systemGray
-        colorPaletteButton.frame = CGRect(x: 0, y: 0, width: 15, height: 15)
-        colorPaletteButton.layer.cornerRadius = 7.5
-        colorPaletteButton.layer.masksToBounds = true
-        colorPaletteButton.addTarget(self, action: #selector(colorPaletteButtonTapped), for: .touchUpInside)
-
-        textField.rightView = colorPaletteButton
-        textField.rightViewMode = .always
-    }
-
-    @objc private func colorPaletteButtonTapped() {
-        let colorPaletteVC = ColorPaletteViewController()
-        colorPaletteVC.modalPresentationStyle = .popover // FIXME: 하프 모달로 구현
-        present(colorPaletteVC, animated: true, completion: nil)
+        view.addSubview(colorPaletteStackView)
     }
 
     private func setupConstraints() {
@@ -106,11 +74,66 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
             make.height.equalTo(44)
         }
 
-        saveTagButton.snp.makeConstraints { make in
-            make.centerY.equalTo(textField.snp.centerY)
-            make.left.equalTo(textField.snp.right).offset(10)
-            make.right.equalToSuperview().inset(20)
+        colorPaletteStackView.snp.makeConstraints { make in
+            make.top.equalTo(textField.snp.bottom).offset(20)
+            make.left.right.equalToSuperview().inset(20)
             make.height.equalTo(44)
         }
+        
+        saveTagButton.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(45)
+            make.trailing.equalToSuperview().offset(-45)
+            make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
+        }
     }
+
+    private func setupColorPalette() {
+        let colors: [UIColor] = [
+            .red,
+            .orange,
+            .yellow,
+            .green,
+            .blue,
+            .purple,
+            .brown,
+            .magenta
+        ]
+
+        // colorPaletteStackView 설정
+        colorPaletteStackView.axis = .vertical
+        colorPaletteStackView.distribution = .fillEqually
+        colorPaletteStackView.spacing = 10
+
+        // 2행 4열
+        let rows = [UIStackView(), UIStackView()]
+        rows.forEach { row in
+            row.axis = .horizontal
+            row.distribution = .fillEqually
+            row.spacing = 10
+            colorPaletteStackView.addArrangedSubview(row)
+        }
+        
+        // 각 행에 색상 버튼 추가
+        for (index, color) in colors.enumerated() {
+            let colorButton = UIButton()
+            colorButton.backgroundColor = color
+            colorButton.layer.cornerRadius = 22 // 가정: 버튼 크기를 44x44로 설정
+            colorButton.snp.makeConstraints { make in
+                make.width.height.equalTo(44)
+            }
+            colorButton.addTarget(self, action: #selector(colorButtonTapped(_:)), for: .touchUpInside)
+            
+            // 적절한 행에 버튼 추가
+            if index < 4 {
+                rows[0].addArrangedSubview(colorButton)
+            } else {
+                rows[1].addArrangedSubview(colorButton)
+            }
+        }
+    }
+
+    @objc private func colorButtonTapped(_ sender: UIButton) {
+        guard let selectedColor = sender.backgroundColor else { return }
+    }
+
 }
