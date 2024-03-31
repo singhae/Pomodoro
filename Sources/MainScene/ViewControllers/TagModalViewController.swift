@@ -93,7 +93,7 @@ final class TagModalViewController: UIViewController {
         database.write(
                 Tag(tagName: "health", tagColor: "two", position: 8))
     }
-    
+
     /// <#Description#>
     private func setupViews() {
         view.backgroundColor = .pomodoro.background
