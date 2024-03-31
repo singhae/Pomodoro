@@ -19,6 +19,9 @@ protocol TagModalViewControllerDelegate: AnyObject {
 }
 
 final class TagModalViewController: UIViewController {
+    // realm database
+    let database = DatabaseManager.shared
+    
     private weak var selectionDelegate: TagModalViewControllerDelegate?
 
     private func configureNavigationBar() {
@@ -59,10 +62,10 @@ final class TagModalViewController: UIViewController {
         $0.alignment = .center
         $0.distribution = .equalSpacing
     }
-
+    
     private lazy var tagSettingCompletedButton = PomodoroConfirmButton(
         title: "설정 완료",
-//        font: .pomodoroFont.heading2(),
+//        font: .pomodoroFont.heading2(), // TODO: font 변경
         didTapHandler: didTapSettingCompleteButton
         
     )
@@ -74,6 +77,22 @@ final class TagModalViewController: UIViewController {
         configureNavigationBar()
         setupViews()
         addTagsToStackView()
+        
+        let tags = database.read(Tag.self)
+//        if tags.isEmpty {
+//            database.write(
+//                Option(
+//                    shortBreakTime: 5,
+//                    longBreakTime: 20,
+//                    isVibrate: false,
+//                    isTimerEffect: true
+//                )
+//            )
+//        }
+        // database  에 태그 값 저장.
+        database.write(
+                Tag(tagName: "health", tagColor: "two", position: 8))
+        
     }
 
     private func setupViews() {
@@ -88,7 +107,7 @@ final class TagModalViewController: UIViewController {
         horizontalStackView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.topMargin).offset(20)
             make.centerX.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(0.9)
+            make.width.equalToSuperview().multipliedBy(0.78)
         }
 
         tagsStackView.snp.makeConstraints { make in
