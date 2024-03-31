@@ -24,6 +24,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             options: [.alert, .sound, .badge],
             completionHandler: { _, _ in }
         )
+        
+        if let defaultFont = UIFont(name: "BMHANNA11yrsoldOTF", size: 17) {
+            let attributes = [NSAttributedString.Key.font: defaultFont]
+            UINavigationBar.appearance().titleTextAttributes = attributes
+        }
 
         pomodoroTimeManager.restoreTimerInfo()
         return true
