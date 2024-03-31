@@ -19,23 +19,26 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         navigationItem.leftBarButtonItem = dismissButtonItem
     }
     
-    private let titleLabel = UILabel().then {
-        $0.text = "태그명"
-        $0.font = .systemFont(ofSize: 16)
-        //$0.font = .pomodoroFont
-        $0.textColor = .pomodoro.blackHigh
-    }
+
+    private lazy var textField: UITextField = {
+            let textField = UITextField()
+            textField.borderStyle = .none
+            textField.placeholder = "ex. 공부"
+        textField.font = .pomodoroFont.heading6()
+            textField.textAlignment = .left
+            let bottomLine = UIView()
+            bottomLine.backgroundColor = .black
+            textField.addSubview(bottomLine)
+            bottomLine.snp.makeConstraints { make in
+                make.bottom.equalTo(textField.snp.bottom).offset(10)
+                make.left.right.equalTo(textField)
+                make.height.equalTo(2)
+            }
+            return textField
+        }()
+    // TODO: 태그 생성 폰트 적용
+    private lazy var saveTagButton = PomodoroConfirmButton(title: "태그 생성", didTapHandler: saveTagButtonTapped)
     
-    private let textField = UITextField().then {
-        $0.borderStyle = .none
-        $0.placeholder = "ex.공부"
-        $0.autocorrectionType = .no
-        $0.spellCheckingType = .no
-        $0.backgroundColor = .clear
-        $0.textColor = .white
-    }
-    
-    private lazy var saveTagButton = PomodoroConfirmButton(title: "test", didTapHandler: saveTagButtonTapped)
     private let colorPaletteStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.distribution = .equalSpacing
@@ -48,6 +51,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
         configureNavigationBar()
+        navigationController?.isNavigationBarHidden = false
         textField.delegate = self
         setupViews()
         setupConstraints()
@@ -80,30 +84,23 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
     
     private func setupViews() {
-        view.addSubview(titleLabel)
         view.addSubview(textField)
         view.addSubview(saveTagButton)
         view.addSubview(colorPaletteStackView)
     }
     
     private func setupConstraints() {
-        titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
-            make.left.right.equalToSuperview().inset(20)
-        }
-
         textField.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(8)
-            make.left.right.equalToSuperview().inset(20)
-            make.height.equalTo(44)
+            //make.top.equalTo(view.snp.bottom).offset(20)
+           // make.top.equalToSuperview().inset(20)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.topMargin).offset(20)
+            make.left.right.equalToSuperview().inset(40)
+            //make.height.equalTo(44)
         }
         colorPaletteStackView.snp.makeConstraints { make in
-            //            make.top.equalTo(textField.snp.bottom).offset(20)
-            //            make.left.right.equalToSuperview().inset(20)
-            //            make.height.equalTo(120)
-            make.centerY.equalToSuperview().offset(-20) // 필요한 경우 여기서 offset 조정
+            make.centerY.equalToSuperview().offset(-20)
             make.left.right.equalToSuperview().inset(20)
-            make.height.equalTo(120) // 스택 뷰의 높이, 필요에 따라 조정
+            make.height.equalTo(120)
         }
         
         saveTagButton.snp.makeConstraints { make in
@@ -158,6 +155,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
             }
         }
         
+    // TODO: color 버튼 클릭시 정보 전달 로직, 화면상 나타나는 표시(컬러 변경이 더 쉬울 것 같음)
         @objc private func colorButtonTapped(_ sender: UIButton) {
             guard let selectedColor = sender.backgroundColor else { return }
         }

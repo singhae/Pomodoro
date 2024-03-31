@@ -37,7 +37,7 @@ final class TagModalViewController: UIViewController {
     }
 
     private let label = UILabel().then {
-        $0.text = "나의 태그"
+        $0.text = ""
         $0.textColor = .black
         $0.font = UIFont.boldSystemFont(ofSize: 15)
     }
@@ -68,7 +68,6 @@ final class TagModalViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
         navigationController?.isNavigationBarHidden = false
-
         configureNavigationBar()
         setupViews()
         addTagsToStackView()
