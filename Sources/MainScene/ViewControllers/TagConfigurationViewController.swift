@@ -11,6 +11,7 @@ import Then
 import UIKit
 
 final class TagConfigurationViewController: UIViewController, UITextFieldDelegate {
+    // TODO: navigationbar 타이틀 왜 적용안되는지 확인
     private func configureNavigationBar() {
         navigationItem.title = "태그 설정"
         let dismissButtonItem = UIBarButtonItem(
@@ -18,7 +19,22 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         )
         navigationItem.leftBarButtonItem = dismissButtonItem
     }
+    // TODO: navigationbar 닫기 버튼
+    private lazy var closeButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("X", for: .normal)
+        //button.addTarget(self, action: #selector(didTapCloseButton), for: .touchUpInside)
+        return button
+    }()
     
+    // MARK: 태그명 레이블
+    private lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "태그명"
+        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        label.textAlignment = .center
+        return label
+    }()
 
     private lazy var textField: UITextField = {
             let textField = UITextField()
@@ -36,6 +52,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
             }
             return textField
         }()
+    
     // TODO: 태그 생성 폰트 적용
     private lazy var saveTagButton = PomodoroConfirmButton(title: "태그 생성", didTapHandler: saveTagButtonTapped)
     
@@ -84,19 +101,29 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
     
     private func setupViews() {
+        view.addSubview(closeButton)
+        view.addSubview(titleLabel)
         view.addSubview(textField)
         view.addSubview(saveTagButton)
         view.addSubview(colorPaletteStackView)
     }
     
     private func setupConstraints() {
+        closeButton.snp.makeConstraints { make in
+            make.size.equalTo(CGSize(width: 44, height: 44))
+        }
+        
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(50)
+            make.centerX.equalToSuperview()
+        }
+        
         textField.snp.makeConstraints { make in
-            //make.top.equalTo(view.snp.bottom).offset(20)
-           // make.top.equalToSuperview().inset(20)
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.topMargin).offset(20)
-            make.left.right.equalToSuperview().inset(40)
+            make.top.equalTo(titleLabel.snp.bottom).offset(20)
+            make.left.right.equalTo(view.safeAreaLayoutGuide).inset(40)
             //make.height.equalTo(44)
         }
+        
         colorPaletteStackView.snp.makeConstraints { make in
             make.centerY.equalToSuperview().offset(-20)
             make.left.right.equalToSuperview().inset(20)
