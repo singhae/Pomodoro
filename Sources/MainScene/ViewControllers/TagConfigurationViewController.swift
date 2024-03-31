@@ -47,7 +47,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         }()
     
     // TODO: 태그 생성 폰트 적용
-    private lazy var saveTagButton = PomodoroConfirmButton(title: "태그 생성", didTapHandler: saveTagButtonTapped)
+    private lazy var createTagConfirmButton = PomodoroConfirmButton(title: "태그 생성", didTapHandler: saveTagButtonTapped)
     
     private let colorPaletteStackView = UIStackView().then {
         $0.axis = .horizontal
@@ -97,7 +97,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         //view.addSubview(closeButton)
         view.addSubview(titleLabel)
         view.addSubview(textField)
-        view.addSubview(saveTagButton)
+        view.addSubview(createTagConfirmButton)
         view.addSubview(colorPaletteStackView)
     }
     
@@ -119,7 +119,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
             make.height.equalTo(150)
         }
         
-        saveTagButton.snp.makeConstraints { make in
+        createTagConfirmButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(45)
             make.trailing.equalToSuperview().offset(-45)
             make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
