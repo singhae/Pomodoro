@@ -53,7 +53,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         $0.distribution = .equalSpacing
         $0.spacing = 8
     }
-    
+
     weak var delegate: TagCreationDelegate?
 
     override func viewDidLoad() {
@@ -66,7 +66,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         setupConstraints()
         setupColorPalette()
     }
-    
+
     @objc private func dismissModal() {
         dismiss(animated: true, completion: nil)
     }
@@ -101,26 +101,26 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(50)
             make.left.equalTo(view.safeAreaLayoutGuide).inset(40)
         }
-        
+
         textField.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(20)
             make.left.right.equalTo(view.safeAreaLayoutGuide).inset(40)
 //            make.height.equalTo(44)
         }
-        
+
         colorPaletteStackView.snp.makeConstraints { make in
             make.centerY.equalToSuperview().offset(-20)
             make.left.right.equalToSuperview().inset(40)
             make.height.equalTo(150)
         }
-        
+
         createTagConfirmButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(45)
             make.trailing.equalToSuperview().offset(-45)
             make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
         }
     }
-    
+
     private func setupColorPalette() {
         let colors: [UIColor] = [
             .red,
@@ -132,7 +132,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
             .brown,
             .magenta
         ]
-        
+
         // colorPaletteStackView 설정
         colorPaletteStackView.axis = .vertical
         colorPaletteStackView.distribution = .fillEqually
@@ -145,7 +145,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
             row.spacing = 15
             colorPaletteStackView.addArrangedSubview(row)
         }
-        
+
         // 각 행에 색상 버튼 추가
         for (index, color) in colors.enumerated() {
             let colorButton = UIButton().then {
@@ -164,10 +164,10 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
                 }
             }
         }
-        
+
     // TODO: color 버튼 클릭시 정보 전달 로직, 화면상 나타나는 표시(컬러 변경이 더 쉬울 것 같음)
         @objc private func colorButtonTapped(_ sender: UIButton) {
             guard let selectedColor = sender.backgroundColor else { return }
         }
-        
+
     }
