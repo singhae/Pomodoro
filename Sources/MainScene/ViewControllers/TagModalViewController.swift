@@ -19,6 +19,9 @@ protocol TagModalViewControllerDelegate: AnyObject {
 }
 
 final class TagModalViewController: UIViewController {
+    // realm database
+    let database = DatabaseManager.shared
+
     private weak var selectionDelegate: TagModalViewControllerDelegate?
 
     private func configureNavigationBar() {
@@ -26,7 +29,7 @@ final class TagModalViewController: UIViewController {
         let dismissButtonItem = UIBarButtonItem(
             barButtonSystemItem: .close, target: self, action: #selector(dismissModal)
         )
-        navigationItem.leftBarButtonItem = dismissButtonItem
+        navigationItem.rightBarButtonItem = dismissButtonItem
     }
 
     private let horizontalStackView = UIStackView().then {
@@ -37,15 +40,16 @@ final class TagModalViewController: UIViewController {
     }
 
     private let label = UILabel().then {
-        $0.text = "나의 태그"
+        $0.text = ""
         $0.textColor = .black
         $0.font = UIFont.boldSystemFont(ofSize: 15)
     }
-
-    private lazy var ellipseButton = UIButton().then {
-        $0.setImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
+    private lazy var editTagButton = UIButton().then {
+        $0.setTitle("Edit", for: .normal)
+        $0.titleLabel?.font = .pomodoroFont.heading5()
+        $0.setTitleColor(.pomodoro.blackHigh, for: .normal)
         $0.contentMode = .scaleAspectFit
-        $0.tintColor = .black
+//        $0.tintColor = .black
         $0.backgroundColor = .pomodoro.background
         $0.layer.cornerRadius = 15
         $0.clipsToBounds = true
@@ -61,19 +65,36 @@ final class TagModalViewController: UIViewController {
 
     private lazy var tagSettingCompletedButton = PomodoroConfirmButton(
         title: "설정 완료",
+//        font: .pomodoroFont.heading2(), // TODO: font 변경
         didTapHandler: didTapSettingCompleteButton
+
     )
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
         navigationController?.isNavigationBarHidden = false
-
         configureNavigationBar()
         setupViews()
         addTagsToStackView()
+
+        let tags = database.read(Tag.self)
+//        if tags.isEmpty {
+//            database.write(
+//                Option(
+//                    shortBreakTime: 5,
+//                    longBreakTime: 20,
+//                    isVibrate: false,
+//                    isTimerEffect: true
+//                )
+//            )
+//        }
+        // database  에 태그 값 저장.
+        database.write(
+                Tag(tagName: "health", tagColor: "two", position: 8))
     }
 
+    /// <#Description#>
     private func setupViews() {
         view.backgroundColor = .pomodoro.background
         view.addSubview(horizontalStackView)
@@ -82,11 +103,11 @@ final class TagModalViewController: UIViewController {
         view.addSubview(tagSettingCompletedButton)
 
         horizontalStackView.addArrangedSubview(label)
-        horizontalStackView.addArrangedSubview(ellipseButton)
+        horizontalStackView.addArrangedSubview(editTagButton)
         horizontalStackView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.topMargin).offset(20)
             make.centerX.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(0.9)
+            make.width.equalToSuperview().multipliedBy(0.78)
         }
 
         tagsStackView.snp.makeConstraints { make in
@@ -99,6 +120,12 @@ final class TagModalViewController: UIViewController {
             make.trailing.equalToSuperview().offset(-45)
             make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
         }
+        // TODO: 진세 확인버튼 제약조건 참고하기
+//        confirmButton.snp.makeConstraints { make in
+//                   make.centerX.equalToSuperview()
+//                   make.bottom.equalToSuperview().offset(-170)
+//                   make.width.equalTo(212)
+//           }
     }
 
     private func addTagsToStackView() {
@@ -137,6 +164,7 @@ final class TagModalViewController: UIViewController {
     private func createRoundButton(title: String, color: UIColor, borderColor _: UIColor) -> UIButton {
         let button = UIButton().then {
             $0.setTitle(title, for: .normal)
+            $0.titleLabel?.font = .pomodoroFont.heading4()
             $0.backgroundColor = color
             $0.setTitleColor(.white, for: .normal)
             $0.layer.cornerRadius = 40
@@ -179,8 +207,8 @@ final class TagModalViewController: UIViewController {
 
     @objc func configureTag() {
         let configureTagViewController = TagConfigurationViewController()
-        configureTagViewController.modalPresentationStyle = .overCurrentContext
-        present(configureTagViewController, animated: true, completion: nil)
+        let navigationController = UINavigationController(rootViewController: configureTagViewController)
+        self.present(navigationController, animated: true, completion: nil)
     }
 
     @objc private func didTapSettingCompleteButton() {
