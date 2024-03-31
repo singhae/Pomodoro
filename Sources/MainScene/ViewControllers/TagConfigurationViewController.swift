@@ -14,10 +14,9 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     // TODO: navigationbar 타이틀 왜 적용안되는지 확인
     private func configureNavigationBar() {
         navigationItem.title = "태그 설정"
-        navigationItem.rightBarButtonItem =
-        UIBarButtonItem(barButtonSystemItem: .close, 
-                        target: self, 
-                        action: #selector(dismissModal))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
+                                                            target: self,
+                                                            action: #selector(dismissModal))
     }
     // MARK: 태그명 레이블
     private lazy var titleLabel: UILabel = {
@@ -46,9 +45,8 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         }()
 
     // TODO: 태그 생성 폰트 적용
-    private lazy var createTagConfirmButton = 
-    PomodoroConfirmButton(title: "태그 생성",
-                          didTapHandler: saveTagButtonTapped)
+    private lazy var createTagConfirmButton = PomodoroConfirmButton(title: "태그 생성",
+                                                                    didTapHandler: saveTagButtonTapped)
 
     private let colorPaletteStackView = UIStackView().then {
         $0.axis = .horizontal
@@ -57,7 +55,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
     
     weak var delegate: TagCreationDelegate?
-  
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
@@ -72,11 +70,10 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     @objc private func dismissModal() {
         dismiss(animated: true, completion: nil)
     }
-    
+
     @objc func saveTagButtonTapped() {
         guard let tagText = textField.text, !tagText.isEmpty else {
             print("태그를 입력하세요.")
-
             PomodoroPopupBuilder()
                 .add(body: "태그를 입력해주십시오.")
                 .add(
@@ -91,14 +88,14 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         delegate?.createTag(tag: tagText)
         dismiss(animated: true, completion: nil)
     }
-    
+
     private func setupViews() {
         view.addSubview(titleLabel)
         view.addSubview(textField)
         view.addSubview(createTagConfirmButton)
         view.addSubview(colorPaletteStackView)
     }
-    
+
     private func setupConstraints() {
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(50)
