@@ -94,7 +94,8 @@ final class TagModalViewController: UIViewController {
                 Tag(tagName: "health", tagColor: "two", position: 8))
         
     }
-
+    
+    /// <#Description#>
     private func setupViews() {
         view.backgroundColor = .pomodoro.background
         view.addSubview(horizontalStackView)
@@ -120,6 +121,12 @@ final class TagModalViewController: UIViewController {
             make.trailing.equalToSuperview().offset(-45)
             make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
         }
+        // TODO: 진세 확인버튼 제약조건 참고하기
+//        confirmButton.snp.makeConstraints { make in
+//                   make.centerX.equalToSuperview()
+//                   make.bottom.equalToSuperview().offset(-170)
+//                   make.width.equalTo(212)
+//           }
     }
 
     private func addTagsToStackView() {
