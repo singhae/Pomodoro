@@ -22,11 +22,6 @@ final class TimeSettingViewController: UIViewController {
     private var endTime: String?
     private var isSelectedCellBiggerfive: Bool = true
     private let stepManager = PomodoroStepManger()
-    private var isHiddenTimeButton = true {
-        didSet {
-            timeSettingbutton.isHidden = isHiddenTimeButton
-        }
-    }
 
     private weak var delegate: TimeSettingViewControllerDelegate?
 
@@ -60,7 +55,7 @@ final class TimeSettingViewController: UIViewController {
     }
 
     private let explanationLabel = UILabel().then {
-        $0.text = "드레그하여 시간을 설정하세요"
+        $0.text = "드래그하여 시간을 설정하세요"
         $0.textColor = .pomodoro.blackMedium
         $0.font = .pomodoroFont.text2()
     }
@@ -78,7 +73,6 @@ final class TimeSettingViewController: UIViewController {
         $0.layer.cornerRadius = 60 / 2
         $0.layer.masksToBounds = true
         $0.backgroundColor = .pomodoro.blackHigh
-        $0.isHidden = isHiddenTimeButton
         $0.addTarget(self, action: #selector(onClickTimerSetting), for: .touchUpInside)
     }
 
@@ -138,7 +132,7 @@ final class TimeSettingViewController: UIViewController {
             make.height.equalTo(15)
         }
         titleTime.snp.makeConstraints { make in
-            make.top.equalTo(timeSettingTitleLabel.snp.bottom).offset(171)
+            make.top.equalTo(timeSettingTitleLabel.snp.bottom).offset(165)
             make.centerX.equalToSuperview()
         }
         timerImageView.snp.makeConstraints { make in
@@ -161,7 +155,7 @@ final class TimeSettingViewController: UIViewController {
         }
         timeSettingbutton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(collectionView.snp.bottom).offset(96)
+            make.bottom.equalToSuperview().offset(-170)
             make.width.equalTo(212)
             make.height.equalTo(60)
         }
@@ -302,13 +296,8 @@ extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDeleg
         }
     }
 
-    func collectionView(_: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func collectionView(_: UICollectionView, didSelectItemAt _: IndexPath) {
         updateCellPositions()
-        if indexPath.row >= 5 {
-            isHiddenTimeButton = false
-        } else {
-            isHiddenTimeButton = true
-        }
     }
 
     func updateCellPositions() {
@@ -350,15 +339,9 @@ extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDeleg
             y: collectionView.bounds.height / 2
         )
 
-        guard let centerIndexPathCalculation = collectionView.indexPathForItem(at: center) else {
-            return
-        }
-
-        if centerIndexPathCalculation.row >= 3 {
-            isHiddenTimeButton = false
-        } else {
-            isHiddenTimeButton = true
-        }
+//        guard let centerIndexPathCalculation = collectionView.indexPathForItem(at: center) else {
+//            return
+//        }
     }
 
     func collectionView(

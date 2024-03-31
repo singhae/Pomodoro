@@ -63,7 +63,7 @@ final class BreakTimerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
-
+        navigationController?.isNavigationBarHidden = true
         addSubviews()
         setupConstraints()
         startTimer()
@@ -75,6 +75,7 @@ final class BreakTimerViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateTimeLabel()
+        navigationController?.isNavigationBarHidden = true
         // FIXME: Remove startTimer() after implementing time setup
     }
 
