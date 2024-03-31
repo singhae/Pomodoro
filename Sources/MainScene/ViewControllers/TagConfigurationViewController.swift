@@ -57,7 +57,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
     
     weak var delegate: TagCreationDelegate?
-    
+  
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
