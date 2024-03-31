@@ -41,7 +41,7 @@ final class TagModalViewController: UIViewController {
         $0.textColor = .black
         $0.font = UIFont.boldSystemFont(ofSize: 15)
     }
-    private lazy var ellipseButton = UIButton().then {
+    private lazy var editTagButton = UIButton().then {
         $0.setTitle("Edit", for: .normal)
         $0.titleLabel?.font = .pomodoroFont.heading5()
         $0.setTitleColor(.pomodoro.blackHigh, for: .normal)
@@ -84,7 +84,7 @@ final class TagModalViewController: UIViewController {
         view.addSubview(tagSettingCompletedButton)
 
         horizontalStackView.addArrangedSubview(label)
-        horizontalStackView.addArrangedSubview(ellipseButton)
+        horizontalStackView.addArrangedSubview(editTagButton)
         horizontalStackView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.topMargin).offset(20)
             make.centerX.equalToSuperview()
