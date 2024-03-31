@@ -14,18 +14,19 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     // TODO: navigationbar 타이틀 왜 적용안되는지 확인
     private func configureNavigationBar() {
         navigationItem.title = "태그 설정"
-        let dismissButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .close, target: self, action: #selector(dismissModal)
-        )
-        navigationItem.leftBarButtonItem = dismissButtonItem
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(dismissModal))
+//        let dismissButtonItem = UIBarButtonItem(
+//            barButtonSystemItem: .close, target: self, action: #selector(dismissModal)
+//        )
+//        navigationItem.leftBarButtonItem = dismissButtonItem
     }
     // TODO: navigationbar 닫기 버튼
-    private lazy var closeButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("X", for: .normal)
-        //button.addTarget(self, action: #selector(didTapCloseButton), for: .touchUpInside)
-        return button
-    }()
+//    private lazy var closeButton: UIButton = {
+//        let button = UIButton(type: .system)
+//        button.setTitle("X", for: .normal)
+//        //button.addTarget(self, action: #selector(didTapCloseButton), for: .touchUpInside)
+//        return button
+//    }()
     
     // MARK: 태그명 레이블
     private lazy var titleLabel: UILabel = {
@@ -101,7 +102,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
     
     private func setupViews() {
-        view.addSubview(closeButton)
+        //view.addSubview(closeButton)
         view.addSubview(titleLabel)
         view.addSubview(textField)
         view.addSubview(saveTagButton)
@@ -109,10 +110,10 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
     
     private func setupConstraints() {
-        closeButton.snp.makeConstraints { make in
-            make.size.equalTo(CGSize(width: 44, height: 44))
-        }
-        
+//        closeButton.snp.makeConstraints { make in
+//            make.size.equalTo(CGSize(width: 44, height: 44))
+//        }
+//        
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(50)
             make.centerX.equalToSuperview()

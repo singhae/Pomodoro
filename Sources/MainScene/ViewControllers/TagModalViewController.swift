@@ -26,7 +26,7 @@ final class TagModalViewController: UIViewController {
         let dismissButtonItem = UIBarButtonItem(
             barButtonSystemItem: .close, target: self, action: #selector(dismissModal)
         )
-        navigationItem.leftBarButtonItem = dismissButtonItem
+        navigationItem.rightBarButtonItem = dismissButtonItem
     }
 
     private let horizontalStackView = UIStackView().then {
@@ -172,8 +172,8 @@ final class TagModalViewController: UIViewController {
 
     @objc func configureTag() {
         let configureTagViewController = TagConfigurationViewController()
-        configureTagViewController.modalPresentationStyle = .overCurrentContext
-        present(configureTagViewController, animated: true, completion: nil)
+        let navigationController = UINavigationController(rootViewController: configureTagViewController)
+        self.present(navigationController, animated: true, completion: nil)
     }
 
     @objc private func didTapSettingCompleteButton() {
