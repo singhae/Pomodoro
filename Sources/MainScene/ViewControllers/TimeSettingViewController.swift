@@ -66,14 +66,8 @@ final class TimeSettingViewController: UIViewController {
         $0.font = .pomodoroFont.text3()
     }
 
-    private lazy var timeSettingbutton = UIButton().then {
-        $0.setTitle("설정 완료", for: .normal)
-        $0.titleLabel?.font = .pomodoroFont.heading3()
-        $0.setTitleColor(.white, for: .normal)
-        $0.layer.cornerRadius = 60 / 2
-        $0.layer.masksToBounds = true
-        $0.backgroundColor = .pomodoro.blackHigh
-        $0.addTarget(self, action: #selector(onClickTimerSetting), for: .touchUpInside)
+    private lazy var confirmButton = PomodoroConfirmButton(title: "설정 완료") { [weak self] in
+        self?.didTapConfirmButton()
     }
 
     private var titleTime = UILabel().then {
@@ -117,7 +111,7 @@ final class TimeSettingViewController: UIViewController {
         view.addSubview(timerImageView)
         view.addSubview(explanationLabel)
         view.addSubview(collectionView)
-        view.addSubview(timeSettingbutton)
+        view.addSubview(confirmButton)
     }
 
     private func setupConstraints() {
@@ -153,7 +147,7 @@ final class TimeSettingViewController: UIViewController {
             make.width.equalTo(308)
             make.height.equalTo(78)
         }
-        timeSettingbutton.snp.makeConstraints { make in
+        confirmButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-170)
             make.width.equalTo(212)
@@ -175,7 +169,7 @@ final class TimeSettingViewController: UIViewController {
         endTimeLabel.text = self.endTime ?? ""
     }
 
-    @objc private func onClickTimerSetting() {
+    private func didTapConfirmButton() {
         delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
         // router 시작..입니다..?
         dismiss(animated: true)
