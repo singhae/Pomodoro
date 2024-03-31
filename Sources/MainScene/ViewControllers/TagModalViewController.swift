@@ -21,7 +21,7 @@ protocol TagModalViewControllerDelegate: AnyObject {
 final class TagModalViewController: UIViewController {
     // realm database
     let database = DatabaseManager.shared
-    
+
     private weak var selectionDelegate: TagModalViewControllerDelegate?
 
     private func configureNavigationBar() {
@@ -62,12 +62,12 @@ final class TagModalViewController: UIViewController {
         $0.alignment = .center
         $0.distribution = .equalSpacing
     }
-    
+
     private lazy var tagSettingCompletedButton = PomodoroConfirmButton(
         title: "설정 완료",
 //        font: .pomodoroFont.heading2(), // TODO: font 변경
         didTapHandler: didTapSettingCompleteButton
-        
+
     )
 
     override func viewDidLoad() {
@@ -77,7 +77,7 @@ final class TagModalViewController: UIViewController {
         configureNavigationBar()
         setupViews()
         addTagsToStackView()
-        
+
         let tags = database.read(Tag.self)
 //        if tags.isEmpty {
 //            database.write(
@@ -92,7 +92,6 @@ final class TagModalViewController: UIViewController {
         // database  에 태그 값 저장.
         database.write(
                 Tag(tagName: "health", tagColor: "two", position: 8))
-        
     }
     
     /// <#Description#>
