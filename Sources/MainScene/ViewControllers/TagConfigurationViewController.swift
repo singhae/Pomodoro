@@ -14,11 +14,10 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     // TODO: navigationbar 타이틀 왜 적용안되는지 확인
     private func configureNavigationBar() {
         navigationItem.title = "태그 설정"
-        //navigationItem.titleTextAttributes = [NSAttributedString.Key.font : BMHANNA_11yrs_otf.otf]
-        if let customFont = UIFont(name: "BMHANNA_11yrs_otf", size: 20) {
-            navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: customFont]
-        }
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(dismissModal))
+        navigationItem.rightBarButtonItem =
+        UIBarButtonItem(barButtonSystemItem: .close, 
+                        target: self, 
+                        action: #selector(dismissModal))
     }
     // MARK: 태그명 레이블
     private lazy var titleLabel: UILabel = {
@@ -45,10 +44,12 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
             }
             return textField
         }()
-    
+
     // TODO: 태그 생성 폰트 적용
-    private lazy var createTagConfirmButton = PomodoroConfirmButton(title: "태그 생성", didTapHandler: saveTagButtonTapped)
-    
+    private lazy var createTagConfirmButton = 
+    PomodoroConfirmButton(title: "태그 생성",
+                          didTapHandler: saveTagButtonTapped)
+
     private let colorPaletteStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.distribution = .equalSpacing
@@ -75,9 +76,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     @objc func saveTagButtonTapped() {
         guard let tagText = textField.text, !tagText.isEmpty else {
             print("태그를 입력하세요.")
-            //            let alert = UIAlertController(title: "경고", message: "태그를 입력하세요.", preferredStyle: .alert)
-            //            alert.addAction(UIAlertAction(title: "확인", style: .default))
-            //            present(alert, animated: true)
+
             PomodoroPopupBuilder()
                 .add(body: "태그를 입력해주십시오.")
                 .add(
@@ -94,7 +93,6 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
     
     private func setupViews() {
-        //view.addSubview(closeButton)
         view.addSubview(titleLabel)
         view.addSubview(textField)
         view.addSubview(createTagConfirmButton)
@@ -110,7 +108,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         textField.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(20)
             make.left.right.equalTo(view.safeAreaLayoutGuide).inset(40)
-            //make.height.equalTo(44)
+//            make.height.equalTo(44)
         }
         
         colorPaletteStackView.snp.makeConstraints { make in
@@ -153,7 +151,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         
         // 각 행에 색상 버튼 추가
         for (index, color) in colors.enumerated() {
-            let colorButton = UIButton().then{
+            let colorButton = UIButton().then {
                 $0.backgroundColor = color
                 $0.layer.cornerRadius = 33
                 $0.snp.makeConstraints { make in
