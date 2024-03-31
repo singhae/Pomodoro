@@ -102,10 +102,6 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
     
     private func setupConstraints() {
-//        closeButton.snp.makeConstraints { make in
-//            make.size.equalTo(CGSize(width: 44, height: 44))
-//        }
-//        
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(50)
             make.left.equalTo(view.safeAreaLayoutGuide).inset(40)
@@ -120,7 +116,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         colorPaletteStackView.snp.makeConstraints { make in
             make.centerY.equalToSuperview().offset(-20)
             make.left.right.equalToSuperview().inset(40)
-            make.height.equalTo(120)
+            make.height.equalTo(150)
         }
         
         saveTagButton.snp.makeConstraints { make in
@@ -145,14 +141,13 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         // colorPaletteStackView 설정
         colorPaletteStackView.axis = .vertical
         colorPaletteStackView.distribution = .fillEqually
-        colorPaletteStackView.spacing = 10
-        
+        colorPaletteStackView.spacing = 20
         // 2행 4열
         let rows = [UIStackView(), UIStackView()]
         rows.forEach { row in
             row.axis = .horizontal
             row.distribution = .fillEqually
-            row.spacing = 10
+            row.spacing = 15
             colorPaletteStackView.addArrangedSubview(row)
         }
         
@@ -160,9 +155,9 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         for (index, color) in colors.enumerated() {
             let colorButton = UIButton().then{
                 $0.backgroundColor = color
-                $0.layer.cornerRadius = 25
+                $0.layer.cornerRadius = 33
                 $0.snp.makeConstraints { make in
-                    make.size.equalTo(CGSize(width: 50, height: 50))
+                    make.size.equalTo(CGSize(width: 55, height: 55))
                 }
                     $0.addTarget(self, action: #selector(colorButtonTapped(_:)), for: .touchUpInside)
                 }

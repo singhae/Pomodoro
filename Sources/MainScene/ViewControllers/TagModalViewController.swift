@@ -43,9 +43,10 @@ final class TagModalViewController: UIViewController {
     }
     private lazy var ellipseButton = UIButton().then {
         $0.setTitle("Edit", for: .normal)
-        $0.titleLabel?.font = .pomodoroFont.heading4()
+        $0.titleLabel?.font = .pomodoroFont.heading5()
+        $0.setTitleColor(.pomodoro.blackHigh, for: .normal)
         $0.contentMode = .scaleAspectFit
-        $0.tintColor = .black
+//        $0.tintColor = .black
         $0.backgroundColor = .pomodoro.background
         $0.layer.cornerRadius = 15
         $0.clipsToBounds = true
@@ -61,7 +62,9 @@ final class TagModalViewController: UIViewController {
 
     private lazy var tagSettingCompletedButton = PomodoroConfirmButton(
         title: "설정 완료",
+//        font: .pomodoroFont.heading2(),
         didTapHandler: didTapSettingCompleteButton
+        
     )
 
     override func viewDidLoad() {
@@ -136,6 +139,7 @@ final class TagModalViewController: UIViewController {
     private func createRoundButton(title: String, color: UIColor, borderColor: UIColor) -> UIButton {
         let button = UIButton().then {
             $0.setTitle(title, for: .normal)
+            $0.titleLabel?.font = .pomodoroFont.heading4()
             $0.backgroundColor = color
             $0.setTitleColor(.white, for: .normal)
             $0.layer.cornerRadius = 40
