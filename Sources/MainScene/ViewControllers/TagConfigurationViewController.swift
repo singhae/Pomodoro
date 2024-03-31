@@ -14,26 +14,18 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     // TODO: navigationbar 타이틀 왜 적용안되는지 확인
     private func configureNavigationBar() {
         navigationItem.title = "태그 설정"
+        //navigationItem.titleTextAttributes = [NSAttributedString.Key.font : BMHANNA_11yrs_otf.otf]
+        if let customFont = UIFont(name: "BMHANNA_11yrs_otf", size: 20) {
+            navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: customFont]
+        }
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(dismissModal))
-//        let dismissButtonItem = UIBarButtonItem(
-//            barButtonSystemItem: .close, target: self, action: #selector(dismissModal)
-//        )
-//        navigationItem.leftBarButtonItem = dismissButtonItem
     }
-    // TODO: navigationbar 닫기 버튼
-//    private lazy var closeButton: UIButton = {
-//        let button = UIButton(type: .system)
-//        button.setTitle("X", for: .normal)
-//        //button.addTarget(self, action: #selector(didTapCloseButton), for: .touchUpInside)
-//        return button
-//    }()
-    
     // MARK: 태그명 레이블
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "태그명"
-        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
-        label.textAlignment = .center
+        label.font = .pomodoroFont.heading5()
+        label.textAlignment = .left
         return label
     }()
 
@@ -116,7 +108,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
 //        
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(50)
-            make.centerX.equalToSuperview()
+            make.left.equalTo(view.safeAreaLayoutGuide).inset(40)
         }
         
         textField.snp.makeConstraints { make in
