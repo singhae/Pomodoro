@@ -41,9 +41,9 @@ final class TagModalViewController: UIViewController {
         $0.textColor = .black
         $0.font = UIFont.boldSystemFont(ofSize: 15)
     }
-
     private lazy var ellipseButton = UIButton().then {
-        $0.setImage(UIImage(systemName: "line.horizontal.3"), for: .normal)
+        $0.setTitle("Edit", for: .normal)
+        $0.titleLabel?.font = .pomodoroFont.heading4()
         $0.contentMode = .scaleAspectFit
         $0.tintColor = .black
         $0.backgroundColor = .pomodoro.background

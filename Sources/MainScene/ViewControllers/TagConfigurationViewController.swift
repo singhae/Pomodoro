@@ -119,7 +119,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         
         colorPaletteStackView.snp.makeConstraints { make in
             make.centerY.equalToSuperview().offset(-20)
-            make.left.right.equalToSuperview().inset(20)
+            make.left.right.equalToSuperview().inset(40)
             make.height.equalTo(120)
         }
         
