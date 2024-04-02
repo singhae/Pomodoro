@@ -30,6 +30,15 @@ final class MainViewController: UIViewController {
         $0.textAlignment = .center
     }
 
+    private let pressToSetButton = UIButton().then {
+        var config = UIButton.Configuration.plain()
+        config.baseForegroundColor = .pomodoro.primary900
+        var attributedTitle = AttributedString("터치해서 설정하기")
+        attributedTitle.font = UIFont.pomodoroFont.heading6()
+        config.attributedTitle = attributedTitle
+        $0.configuration = config
+    }
+
     private let timeLabel = UILabel().then {
         $0.textAlignment = .center
         $0.font = UIFont.pomodoroFont.heading1()
@@ -369,6 +378,7 @@ extension MainViewController {
         view.addSubview(appIconStackView)
         view.addSubview(startTimerLabel)
         view.addSubview(startTimerButton)
+        view.addSubview(pressToSetButton)
         view.addSubview(timeLabel)
         view.addSubview(tagButton)
         view.addSubview(longPressGuideLabel)
@@ -391,6 +401,10 @@ extension MainViewController {
         timeLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().offset(-30)
+        }
+        pressToSetButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalTo(timeLabel).offset(-70)
         }
         startTimerLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
