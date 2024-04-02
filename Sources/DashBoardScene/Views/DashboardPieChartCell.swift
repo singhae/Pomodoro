@@ -7,10 +7,14 @@
 //
 
 import DGCharts
+import RealmSwift
 import SnapKit
 import UIKit
 
 final class DashboardPieChartCell: UICollectionViewCell {
+    private var database: Realm?
+    let tags = DatabaseManager.shared.read(Tag.self)
+
     private var selectedDate: Date = .init()
     private var dayData: [String] = []
     private var priceData: [Double] = [10]
@@ -115,26 +119,33 @@ final class DashboardPieChartCell: UICollectionViewCell {
         let (startDate, endDate) = getDateRange(for: date, dateType: dateType)
         let focusTimePerTag = calculateFocusTimePerTag(from: startDate, to: endDate)
         let sortedFocusTimePerTag = focusTimePerTag.sorted { $0.value > $1.value }
-        let pieChartDataEntries = sortedFocusTimePerTag.map {
-            PieChartDataEntry(value: Double($1), label: $0)
+        var tagColors: [String: UIColor] = [:]
+        for tag in tags {
+            let color = tag.setupTagTypoColor()
+            tagColors[tag.tagName] = color
+        }
+        let pieChartDataEntries = sortedFocusTimePerTag.map { (tag: String, time: Int) -> PieChartDataEntry in
+            let entryColor = tagColors[tag] ?? .gray
+            return PieChartDataEntry(value: Double(time), label: tag, data: entryColor as AnyObject)
         }
 
         let pieChartDataSet = PieChartDataSet(entries: pieChartDataEntries, label: "").then {
-            let colors: [UIColor] = [.systemTeal, .systemPink, .systemIndigo]
             var dataSetColors: [UIColor] = []
-            for index in 0 ..< pieChartDataEntries.count {
-                let color = colors[index % colors.count]
-                dataSetColors.append(color)
+            for entry in pieChartDataEntries {
+                if let color = entry.data as? UIColor {
+                    dataSetColors.append(color)
+                }
             }
             $0.colors = dataSetColors
             $0.drawValuesEnabled = false
         }
+
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
         donutPieChartView.data = pieChartData
 
         let totalFocusTime = focusTimePerTag.reduce(0) { $0 + $1.value }
         updatePieChartText(totalFocusTime: totalFocusTime)
-        updateLegendLabel(with: focusTimePerTag)
+        updateLegendLabel(with: focusTimePerTag, tagColors: tagColors)
     }
 
     private func setLegendLabel() {
@@ -160,49 +171,75 @@ final class DashboardPieChartCell: UICollectionViewCell {
         }
     }
 
-    private func updateLegendLabel(with focusTimePerTag: [String: Int]) {
+    private func setupLabels(font: UIFont, textColor: UIColor, text: String? = nil) -> UILabel {
+        let label = UILabel()
+        label.font = font
+        label.textColor = textColor
+        if let text {
+            label.text = text
+        }
+        return label
+    }
+
+    private func setupStackView(axis: NSLayoutConstraint.Axis, spacing: CGFloat = 0) -> UIStackView {
+        let stackView = UIStackView()
+        stackView.axis = axis
+        stackView.spacing = spacing
+        return stackView
+    }
+
+    private func parsingTimes(from focusTime: Int) -> String {
+        let days = focusTime / (24 * 60)
+        let hours = (focusTime % (24 * 60)) / 60
+        let minutes = focusTime % 60
+        var timeText = ""
+        if days > 0 { timeText += "\(days)일 " }
+        if hours > 0 || days > 0 { timeText += "\(hours)시간 " }
+        timeText += "\(minutes)분"
+        return timeText
+    }
+
+    private func updateLegendLabel(with focusTimePerTag: [String: Int], tagColors: [String: UIColor]) {
         legendStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         let sortedFocusTime = focusTimePerTag.sorted { $0.value > $1.value }
         let totalFocusTime = sortedFocusTime.reduce(0) { $0 + $1.value }
+
         for (tagId, focusTime) in sortedFocusTime {
-            let tagLabel = UILabel()
-            let timeRatioTextLabel = UILabel()
-            let labelStackView = UIStackView()
-
-            tagLabel.font = .pomodoroFont.heading5()
-            tagLabel.textColor = .pomodoro.blackHigh
-            timeRatioTextLabel.font = .pomodoroFont.text4()
-            timeRatioTextLabel.textColor = .pomodoro.blackHigh
-            labelStackView.axis = .horizontal
-
-            let days = focusTime / (24 * 60)
-            let hours = (focusTime % (24 * 60)) / 60
-            let minutes = focusTime % 60
-            var timeText = ""
-            if days > 0 {
-                timeText += "\(days)일 "
-            }
-            if hours > 0 || days > 0 {
-                timeText += "\(hours)시간 "
-            }
-            timeText += "\(minutes)분"
-            let percentage = (Double(focusTime) / Double(totalFocusTime)) * 100
-
-            tagLabel.text = tagId
-            timeRatioTextLabel.text = "\(timeText) (\(String(format: "%.0f", percentage))%)"
-            timeRatioTextLabel.setAttributedTextColor(
-                targetString: "(\(String(format: "%.0f", percentage))%)", color: UIColor.pomodoro.blackMedium
+            let tagLabel = setupLabels(
+                font: .pomodoroFont.heading5(),
+                textColor: .pomodoro.blackHigh,
+                text: tagId
             )
-            timeRatioTextLabel.textAlignment = .right
+            let timeRatioTextLabel = setupLabels(
+                font: .pomodoroFont.text4(),
+                textColor: .pomodoro.blackHigh
+            )
 
-            labelStackView.addArrangedSubview(tagLabel)
+            let tagColor = UIView()
+            tagColor.layer.cornerRadius = 7
+            tagColor.backgroundColor = tagColors[tagId] ?? .gray
+            NSLayoutConstraint.activate([
+                tagColor.widthAnchor.constraint(equalToConstant: 15),
+                tagColor.heightAnchor.constraint(equalToConstant: 15)
+            ])
+
+            let timeText = parsingTimes(from: focusTime)
+            let percentage = (Double(focusTime) / Double(totalFocusTime)) * 100
+            timeRatioTextLabel.text = "\(timeText) (\(String(format: "%.0f", percentage))%)"
+
+            let labelandColorStackView = setupStackView(axis: .horizontal, spacing: 5)
+            labelandColorStackView.addArrangedSubview(tagColor)
+            labelandColorStackView.addArrangedSubview(tagLabel)
+
+            let labelStackView = setupStackView(axis: .horizontal)
+            labelStackView.addArrangedSubview(labelandColorStackView)
             labelStackView.addArrangedSubview(timeRatioTextLabel)
+
             legendStackView.addArrangedSubview(labelStackView)
         }
+
         tagLabelHeightConstraint?.update(offset: 360 + 25 * sortedFocusTime.count)
-        UIView.animate(withDuration: 0) {
-            self.layoutIfNeeded()
-        }
+        UIView.animate(withDuration: 0) { self.layoutIfNeeded() }
     }
 
     private func updatePieChartText(totalFocusTime: Int) {
