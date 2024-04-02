@@ -13,6 +13,9 @@ import UIKit
 final class MainViewController: UIViewController {
     let pomodoroTimeManager = PomodoroTimeManager.shared
     let database = DatabaseManager.shared
+    let onBoardingManager = OnboardingManager.shared
+
+    private var isOnboarding: Bool = true
     private var notificationId: String?
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
@@ -39,10 +42,10 @@ final class MainViewController: UIViewController {
         $0.configuration = config
     }
 
-    private let timeLabel = UILabel().then {
+    private var timeLabel = UILabel().then {
+        $0.textColor = UIColor.pomodoro.blackHigh
         $0.textAlignment = .center
         $0.font = UIFont.pomodoroFont.heading1()
-        $0.textColor = UIColor.pomodoro.blackHigh
     }
 
     private let longPressGuideLabel = UILabel().then {
@@ -62,9 +65,14 @@ final class MainViewController: UIViewController {
     }
 
     private lazy var tagButton = UIButton().then {
-        $0.setTitle("Tag", for: .normal)
-        $0.setTitleColor(.black, for: .normal)
-        $0.titleLabel?.font = .pomodoroFont.heading6()
+        if isOnboarding == true {
+            $0.setImage(UIImage(named: "onBoardingTag"), for: .normal)
+        } else {
+            $0.setTitle("Tag", for: .normal)
+            $0.setTitleColor(.black, for: .normal)
+            $0.titleLabel?.font = .pomodoroFont.heading6()
+        }
+
         $0.addTarget(
             self,
             action: #selector(openTagModal),
@@ -123,6 +131,9 @@ final class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // OnBoarding 체크
+        isOnboarding = onBoardingManager.checkOnboarding()
+
         stepManager.setRouterObservers()
         setUpPomodoroCurrentStepLabel()
 
@@ -130,13 +141,6 @@ final class MainViewController: UIViewController {
             self,
             selector: #selector(didEnterBackground),
             name: UIApplication.didEnterBackgroundNotification,
-            object: nil
-        )
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(didEnterForeground),
-            name: UIApplication.willEnterForegroundNotification,
             object: nil
         )
 
@@ -156,6 +160,9 @@ final class MainViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        if isOnboarding == true {
+            pomodoroTimeManager.setupMaxTime(time: 25 * 60)
+        }
         updateTimeLabel()
 
         if pomodoroTimeManager.isRestored == true {
@@ -298,10 +305,12 @@ extension MainViewController {
         if isStopped == false {
             startTimerLabel.isHidden = true
             startTimerButton.isHidden = true
+            pressToSetButton.isHidden = true
             timeLabelTapGestureRecognizer.isEnabled = true
         } else {
             startTimerLabel.isHidden = false
             startTimerButton.isHidden = false
+            pressToSetButton.isHidden = false
             timeLabelTapGestureRecognizer.isEnabled = true
         }
     }
@@ -375,11 +384,11 @@ extension MainViewController {
 
 extension MainViewController {
     private func addSubviews() {
+        view.addSubview(timeLabel)
         view.addSubview(appIconStackView)
         view.addSubview(startTimerLabel)
         view.addSubview(startTimerButton)
         view.addSubview(pressToSetButton)
-        view.addSubview(timeLabel)
         view.addSubview(tagButton)
         view.addSubview(longPressGuideLabel)
         view.addSubview(progressBar)
@@ -387,6 +396,10 @@ extension MainViewController {
     }
 
     private func setupConstraints() {
+        timeLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(-30)
+        }
         currentStepLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalTo(timeLabel.snp.top).offset(-23)
@@ -397,10 +410,6 @@ extension MainViewController {
             make.left.equalTo(30)
             make.right.equalTo(-30)
             make.height.equalTo(50)
-        }
-        timeLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(-30)
         }
         pressToSetButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
