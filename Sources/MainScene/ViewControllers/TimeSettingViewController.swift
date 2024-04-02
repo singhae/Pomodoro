@@ -66,16 +66,10 @@ final class TimeSettingViewController: UIViewController {
         $0.font = .pomodoroFont.text3()
     }
 
-    private lazy var timeSettingbutton = UIButton().then {
-        $0.setTitle("설정 완료", for: .normal)
-        $0.titleLabel?.font = .pomodoroFont.heading3()
-        $0.setTitleColor(.white, for: .normal)
-        $0.layer.cornerRadius = 60 / 2
-        $0.layer.masksToBounds = true
-        $0.backgroundColor = .pomodoro.blackHigh
-        $0.addTarget(self, action: #selector(onClickTimerSetting), for: .touchUpInside)
-    }
-
+    private lazy var timeSettingbutton = PomodoroConfirmButton(
+        title: "설정 완료",
+        didTapHandler: onClickTimerSetting
+    )
     private var titleTime = UILabel().then {
         $0.font = .pomodoroFont.heading1(size: 80)
         $0.textAlignment = .center
@@ -339,9 +333,9 @@ extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDeleg
             y: collectionView.bounds.height / 2
         )
 
-//        guard let centerIndexPathCalculation = collectionView.indexPathForItem(at: center) else {
-//            return
-//        }
+        guard let centerIndexPathCalculation = collectionView.indexPathForItem(at: center) else {
+            return
+        }
     }
 
     func collectionView(
