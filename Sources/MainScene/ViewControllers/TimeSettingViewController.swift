@@ -69,7 +69,7 @@ final class TimeSettingViewController: UIViewController {
     private lazy var confirmButton = PomodoroConfirmButton(title: "설정 완료") { [weak self] in
         self?.didTapConfirmButton()
     }
-  
+
     private var titleTime = UILabel().then {
         $0.font = .pomodoroFont.heading1(size: 80)
         $0.textAlignment = .center
