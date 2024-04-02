@@ -11,9 +11,9 @@ import UIKit
 
 final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     weak var delegate: BreakTimeDelegate?
-
+    weak var setLongDelegate: PomodoroBreakLongSelectionDelegate?
     let database = DatabaseManager.shared
-
+    private let pomodoroStep = PomodoroStepManger()
     private let label = UILabel().then {
         $0.text = "긴 휴식"
         $0.font = .pomodoroFont.heading3()
@@ -41,7 +41,6 @@ final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate
         view.addSubview(label)
         view.addSubview(minutePicker)
         view.addSubview(confirmButton)
-
         minutePicker.sizeToFit()
         minutePicker.delegate = self
         minutePicker.dataSource = self
@@ -109,5 +108,6 @@ final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate
 
     func pickerView(_: UIPickerView, didSelectRow row: Int, inComponent _: Int) {
         tempLongBreakTime = row
+        setLongDelegate?.didSelectLongBreak(time: row + 1)
     }
 }

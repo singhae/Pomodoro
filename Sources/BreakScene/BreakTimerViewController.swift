@@ -13,7 +13,7 @@ final class BreakTimerViewController: UIViewController {
     private var timer: Timer?
     private var notificationId: String?
     private var currentTime = 0
-    private var maxTime = 1 * 60
+    private lazy var maxTime: Int = stepManager.timeSetting.setUpBreakTime()
     private var timerHeightConstraint: Constraint?
     var stepManager = PomodoroStepManger()
     private let timeLabel = UILabel().then {
@@ -68,7 +68,6 @@ final class BreakTimerViewController: UIViewController {
         setupConstraints()
         startTimer()
         startAnimationTimer()
-
         setupLongPressGestureRecognizer()
     }
 

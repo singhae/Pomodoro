@@ -10,7 +10,7 @@ import UIKit
 class PomodoroStepManger {
     var router = PomodoroRouter.shared
     var label = PomodoroStepLabel()
-    var timeSetting = PomodoroStepTimeChage()
+    var timeSetting = PomodoroStepTimeChange()
 
     func setRouterObservers() {
         router.addObservers(observer: label)

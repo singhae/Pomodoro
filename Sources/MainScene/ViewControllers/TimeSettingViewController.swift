@@ -333,9 +333,9 @@ extension TimeSettingViewController: UIScrollViewDelegate, UICollectionViewDeleg
             y: collectionView.bounds.height / 2
         )
 
-//        guard let centerIndexPathCalculation = collectionView.indexPathForItem(at: center) else {
-//            return
-//        }
+        guard let centerIndexPathCalculation = collectionView.indexPathForItem(at: center) else {
+            return
+        }
     }
 
     func collectionView(

@@ -26,6 +26,7 @@ final class MainViewController: UIViewController {
 
     lazy var currentStepLabel = UILabel().then {
         $0.text = stepManager.label.setUpLabelInCurrentStep(currentStep: stepManager.router.currentStep)
+        $0.font = .pomodoroFont.heading3()
         $0.textAlignment = .center
     }
 
@@ -251,9 +252,7 @@ extension MainViewController {
     }
 
     @objc private func setPomodoroTime() {
-        stepManager.router.currentStep = .start
-        stepManager.timeSetting.initPomodoroStep()
-        setUpPomodoroCurrentStepLabel()
+        print("set pomodorotime")
         let timeSettingViewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
         if let sheet = timeSettingViewController.sheetPresentationController {
             sheet.detents = [
@@ -290,11 +289,11 @@ extension MainViewController {
         if isStopped == false {
             startTimerLabel.isHidden = true
             startTimerButton.isHidden = true
-            timeLabelTapGestureRecognizer.isEnabled = false
+            timeLabelTapGestureRecognizer.isEnabled = true
         } else {
             startTimerLabel.isHidden = false
             startTimerButton.isHidden = false
-            timeLabelTapGestureRecognizer.isEnabled = false
+            timeLabelTapGestureRecognizer.isEnabled = true
         }
     }
 
@@ -329,7 +328,6 @@ extension MainViewController {
             if minutes == 0, seconds == 0 {
                 timer.invalidate()
                 setupUIWhenTimerStart(isStopped: true)
-
                 database.update(currentPomodoro!) { updatedPomodoro in
                     updatedPomodoro.phase += 1
                     if updatedPomodoro.phase == 5 {
@@ -357,9 +355,7 @@ extension MainViewController {
     }
 
     private func setUpPomodoroCurrentStepLabel() {
-        stepManager.timeSetting.setUptimeInCurrentStep(
-            currentStep: stepManager.router.currentStep
-        )
+        stepManager.timeSetting.setUptimeInCurrentStep()
         currentStepLabel.text = stepManager.label.setUpLabelInCurrentStep(
             currentStep: stepManager.router.currentStep
         )
@@ -383,7 +379,7 @@ extension MainViewController {
     private func setupConstraints() {
         currentStepLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(timeLabel.snp.top).offset(-20)
+            make.bottom.equalTo(timeLabel.snp.top).offset(-23)
         }
         tagButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
