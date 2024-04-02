@@ -145,7 +145,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
 
         let totalFocusTime = focusTimePerTag.reduce(0) { $0 + $1.value }
         updatePieChartText(totalFocusTime: totalFocusTime)
-        updateLegendLabel(with: focusTimePerTag)
+        updateLegendLabel(with: focusTimePerTag, tagColors: tagColors)
     }
 
     private func setLegendLabel() {
@@ -171,7 +171,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         }
     }
 
-    private func updateLegendLabel(with focusTimePerTag: [String: Int]) {
+    private func updateLegendLabel(with focusTimePerTag: [String: Int], tagColors: [String: UIColor]) {
         legendStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         let sortedFocusTime = focusTimePerTag.sorted { $0.value > $1.value }
         let totalFocusTime = sortedFocusTime.reduce(0) { $0 + $1.value }
@@ -191,7 +191,11 @@ final class DashboardPieChartCell: UICollectionViewCell {
             labelandColorStackView.spacing = 5
             labelandColorStackView.axis = .horizontal
             tagColor.layer.cornerRadius = 7
-            tagColor.backgroundColor = .yellow
+            if let color = tagColors[tagId] {
+                tagColor.backgroundColor = color
+            } else {
+                tagColor.backgroundColor = .gray
+            }
 
             let days = focusTime / (24 * 60)
             let hours = (focusTime % (24 * 60)) / 60
