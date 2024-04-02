@@ -89,12 +89,8 @@ final class TagModalViewController: UIViewController {
 //                )
 //            )
 //        }
-        // database  에 태그 값 저장.
-        database.write(
-            Tag(tagName: "health", tagColor: "two", position: 8))
     }
 
-    /// <#Description#>
     private func setupViews() {
         view.backgroundColor = .pomodoro.background
         view.addSubview(horizontalStackView)
@@ -196,7 +192,7 @@ final class TagModalViewController: UIViewController {
 
         // MARK: minusButton에 삭제 액션 추가
 
-        // minusButton.addTarget(self, action: #selector(deletTag(_:)), for: .touchUpInside)
+//        minusButton.addTarget(self, action: #selector(deletTag(_:)), for: .touchUpInside)
 
         return button
     }
