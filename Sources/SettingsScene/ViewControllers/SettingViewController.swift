@@ -93,6 +93,7 @@ final class SettingViewController: UIViewController, BreakTimeDelegate {
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
 
+        database.getLocationOfDefaultRealm()
         let options = database.read(Option.self)
         if options.isEmpty {
             database.write(
@@ -177,7 +178,6 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedOption = SettingOption.allCases[indexPath.row]
-
         switch selectedOption {
         case .shortBreak:
             let shortBreakModal = ShortBreakModalViewController()
@@ -193,9 +193,7 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
             showCancellablePopup(
                 title: "데이터 초기화 하기",
                 body: "데이터를 초기화 하시겠습니까?\n태그, 뽀모도로 기록 등\n모든 데이터와 설정이 초기화됩니다."
-            ) { [weak self] in
-                guard let self else { return }
-
+            ) { [weak self] in guard let self else { return }
                 database.deleteAll()
                 database.write(
                     Option(
@@ -205,6 +203,8 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
                         isTimerEffect: true
                     )
                 )
+                database.write(Tag(tagName: "집중", colorIndex: "one", position: 0))
+                database.write(Tag(tagName: "업무", colorIndex: "two", position: 1))
                 updateTableViewRows()
             }
         case .timerEffect:
