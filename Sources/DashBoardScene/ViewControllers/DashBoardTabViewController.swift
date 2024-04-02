@@ -32,6 +32,25 @@ final class DashBoardTabViewController: UIViewController {
         setupSegmentedControl()
         setupContainerView()
         segmentChanged()
+        tagColorTest()
+    }
+
+    private func tagColorTest() {
+        let testTag: Tag
+        let data = database.read(Pomodoro.self)
+        let tagData = data.first?.currentTag
+        let test = database.read(Tag.self)
+        let tagColor = test.first?.tagName
+
+        if tagData == tagColor {
+            testTag = test.first!
+            print("-=> ", testTag.setupTagTypoColor())
+            print("type === ", type(of: testTag.setupTagTypoColor()))
+        }
+
+        print("---> ", test)
+        print(tagData)
+        print("color : ", tagColor)
     }
 
     private func caculateTotalParticipate() -> Int {

@@ -173,8 +173,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
             let labelandColorStackView = UIStackView()
 
             tagLabel.font = .pomodoroFont.heading5()
-            //            tagLabel.textColor = .pomodoro.blackHigh
-            tagLabel.textColor = .red
+            tagLabel.textColor = .pomodoro.blackHigh
             timeRatioTextLabel.font = .pomodoroFont.text4()
             timeRatioTextLabel.textColor = .pomodoro.blackHigh
             labelStackView.axis = .horizontal
@@ -206,10 +205,8 @@ final class DashboardPieChartCell: UICollectionViewCell {
             labelandColorStackView.addArrangedSubview(tagLabel)
             NSLayoutConstraint.activate([
                 tagColor.widthAnchor.constraint(equalToConstant: 15),
-                tagColor.heightAnchor.constraint(equalToConstant: 15),
+                tagColor.heightAnchor.constraint(equalToConstant: 15)
             ])
-//            labelStackView.addArrangedSubview(tagColor)
-//            labelStackView.addArrangedSubview(tagLabel)
             labelStackView.addArrangedSubview(labelandColorStackView)
             labelStackView.addArrangedSubview(timeRatioTextLabel)
             legendStackView.addArrangedSubview(labelStackView)
