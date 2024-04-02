@@ -164,16 +164,24 @@ final class DashboardPieChartCell: UICollectionViewCell {
         legendStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         let sortedFocusTime = focusTimePerTag.sorted { $0.value > $1.value }
         let totalFocusTime = sortedFocusTime.reduce(0) { $0 + $1.value }
+
         for (tagId, focusTime) in sortedFocusTime {
             let tagLabel = UILabel()
+            let tagColor = UIView()
             let timeRatioTextLabel = UILabel()
             let labelStackView = UIStackView()
+            let labelandColorStackView = UIStackView()
 
             tagLabel.font = .pomodoroFont.heading5()
-            tagLabel.textColor = .pomodoro.blackHigh
+            //            tagLabel.textColor = .pomodoro.blackHigh
+            tagLabel.textColor = .red
             timeRatioTextLabel.font = .pomodoroFont.text4()
             timeRatioTextLabel.textColor = .pomodoro.blackHigh
             labelStackView.axis = .horizontal
+            labelandColorStackView.spacing = 5
+            labelandColorStackView.axis = .horizontal
+            tagColor.layer.cornerRadius = 7
+            tagColor.backgroundColor = .yellow
 
             let days = focusTime / (24 * 60)
             let hours = (focusTime % (24 * 60)) / 60
@@ -194,11 +202,19 @@ final class DashboardPieChartCell: UICollectionViewCell {
                 targetString: "(\(String(format: "%.0f", percentage))%)", color: UIColor.pomodoro.blackMedium
             )
             timeRatioTextLabel.textAlignment = .right
-
-            labelStackView.addArrangedSubview(tagLabel)
+            labelandColorStackView.addArrangedSubview(tagColor)
+            labelandColorStackView.addArrangedSubview(tagLabel)
+            NSLayoutConstraint.activate([
+                tagColor.widthAnchor.constraint(equalToConstant: 15),
+                tagColor.heightAnchor.constraint(equalToConstant: 15),
+            ])
+//            labelStackView.addArrangedSubview(tagColor)
+//            labelStackView.addArrangedSubview(tagLabel)
+            labelStackView.addArrangedSubview(labelandColorStackView)
             labelStackView.addArrangedSubview(timeRatioTextLabel)
             legendStackView.addArrangedSubview(labelStackView)
         }
+
         tagLabelHeightConstraint?.update(offset: 360 + 25 * sortedFocusTime.count)
         UIView.animate(withDuration: 0) {
             self.layoutIfNeeded()
