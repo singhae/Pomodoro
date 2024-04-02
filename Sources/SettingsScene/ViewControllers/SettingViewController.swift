@@ -85,6 +85,7 @@ final class SettingViewController: UIViewController, BreakTimeDelegate {
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
 
+        database.getLocationOfDefaultRealm()
         let options = database.read(Option.self)
         if options.isEmpty {
             database.write(
@@ -196,6 +197,12 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
                         isVibrate: false,
                         isTimerEffect: true
                     )
+                )
+                database.write(
+                    Tag(tagName: "집중", colorIndex: "one", position: 0)
+                )
+                database.write(
+                    Tag(tagName: "업무", colorIndex: "two", position: 1)
                 )
                 updateTableViewRows()
             }
