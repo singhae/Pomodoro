@@ -17,13 +17,13 @@ protocol DataBase {
 
 final class DatabaseManager: DataBase {
     static let shared = DatabaseManager()
-
     private var database: Realm?
 
     private init() {
         print("Database Init")
         do {
             database = try Realm()
+            getLocationOfDefaultRealm()
         } catch {
             print("Error initalizing Realm: \(error)")
         }

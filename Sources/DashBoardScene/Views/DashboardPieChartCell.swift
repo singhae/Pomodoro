@@ -7,10 +7,14 @@
 //
 
 import DGCharts
+import RealmSwift
 import SnapKit
 import UIKit
 
 final class DashboardPieChartCell: UICollectionViewCell {
+    private var database: Realm?
+    let tags = DatabaseManager.shared.read(Tag.self)
+
     private var selectedDate: Date = .init()
     private var dayData: [String] = []
     private var priceData: [Double] = [10]
@@ -115,20 +119,27 @@ final class DashboardPieChartCell: UICollectionViewCell {
         let (startDate, endDate) = getDateRange(for: date, dateType: dateType)
         let focusTimePerTag = calculateFocusTimePerTag(from: startDate, to: endDate)
         let sortedFocusTimePerTag = focusTimePerTag.sorted { $0.value > $1.value }
-        let pieChartDataEntries = sortedFocusTimePerTag.map {
-            PieChartDataEntry(value: Double($1), label: $0)
+        var tagColors: [String: UIColor] = [:]
+        for tag in tags {
+            let color = tag.setupTagTypoColor()
+            tagColors[tag.tagName] = color
+        }
+        let pieChartDataEntries = sortedFocusTimePerTag.map { (tag: String, time: Int) -> PieChartDataEntry in
+            let entryColor = tagColors[tag] ?? .gray
+            return PieChartDataEntry(value: Double(time), label: tag, data: entryColor as AnyObject)
         }
 
         let pieChartDataSet = PieChartDataSet(entries: pieChartDataEntries, label: "").then {
-            let colors: [UIColor] = [.systemTeal, .systemPink, .systemIndigo]
             var dataSetColors: [UIColor] = []
-            for index in 0 ..< pieChartDataEntries.count {
-                let color = colors[index % colors.count]
-                dataSetColors.append(color)
+            for entry in pieChartDataEntries {
+                if let color = entry.data as? UIColor {
+                    dataSetColors.append(color)
+                }
             }
             $0.colors = dataSetColors
             $0.drawValuesEnabled = false
         }
+
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
         donutPieChartView.data = pieChartData
 
