@@ -11,13 +11,14 @@ import UIKit
 
 final class ShortBreakModalViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     weak var delegate: BreakTimeDelegate?
-
+    weak var setShortDelegate: PomodoroBreakShortSelectionDelegate?
     let database = DatabaseManager.shared
-
     private let label = UILabel().then {
         $0.text = "짧은 휴식"
         $0.font = .pomodoroFont.heading3()
     }
+
+    private let pomodoroStep = PomodoroStepManger()
 
     private lazy var confirmButton = PomodoroConfirmButton(title: "확인", didTapHandler: confirmShortBreakInfo)
 
@@ -41,7 +42,6 @@ final class ShortBreakModalViewController: UIViewController, UIPickerViewDelegat
         view.addSubview(label)
         view.addSubview(minutePicker)
         view.addSubview(confirmButton)
-
         minutePicker.sizeToFit()
         minutePicker.delegate = self
         minutePicker.dataSource = self
@@ -108,5 +108,6 @@ final class ShortBreakModalViewController: UIViewController, UIPickerViewDelegat
 
     func pickerView(_: UIPickerView, didSelectRow row: Int, inComponent _: Int) {
         tempShortBreakTime = row
+        setShortDelegate?.didSelectShortBreak(time: row + 1)
     }
 }

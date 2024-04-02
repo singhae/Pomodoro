@@ -15,6 +15,14 @@ protocol BreakTimeDelegate: AnyObject {
     func updateTableViewRows()
 }
 
+protocol PomodoroBreakLongSelectionDelegate: AnyObject {
+    func didSelectLongBreak(time: Int)
+}
+
+protocol PomodoroBreakShortSelectionDelegate: AnyObject {
+    func didSelectShortBreak(time: Int)
+}
+
 final class SettingViewController: UIViewController, BreakTimeDelegate {
     let database = DatabaseManager.shared
 
