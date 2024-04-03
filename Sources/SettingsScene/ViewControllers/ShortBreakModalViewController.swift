@@ -79,7 +79,7 @@ final class ShortBreakModalViewController: UIViewController, UIPickerViewDelegat
     }
 
     func pickerView(_: UIPickerView, numberOfRowsInComponent _: Int) -> Int {
-        20
+        10
     }
 
     func pickerView(_: UIPickerView, rowHeightForComponent _: Int) -> CGFloat {
