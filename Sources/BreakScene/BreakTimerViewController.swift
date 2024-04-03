@@ -187,6 +187,7 @@ extension BreakTimerViewController {
             self.timeLabel.textColor = self.breakLabel.frame.minY < timerBackgroundMinY ?? .infinity
                 ? .black
                 : .white
+            self.breakLabel.textColor = self.breakLabel.frame.minY < timerBackgroundMinY ?? .infinity ? .black : .white
         }
         timer?.fire()
     }
