@@ -71,7 +71,11 @@ final class DashboardPieChartCell: UICollectionViewCell {
 
     private func calculateFocusTimePerTag(for selectedDate: Date) -> [String: Int] {
         let startOfDay = Calendar.current.startOfDay(for: selectedDate)
-        guard let endOfDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay) else { return [:] }
+        guard let endOfDay = Calendar.current.date(
+            byAdding: .day,
+            value: 1,
+            to: startOfDay
+        ) else { return [:] }
 
         let sessions = database.read(Pomodoro.self).filter {
             $0.participateDate >= startOfDay && $0.participateDate < endOfDay
