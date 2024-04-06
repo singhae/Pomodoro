@@ -12,7 +12,7 @@ import SnapKit
 import UIKit
 
 final class DashboardPieChartCell: UICollectionViewCell {
-    private var database: Realm?
+    private let database = DatabaseManager.shared
     let tags = DatabaseManager.shared.read(Tag.self)
 
     private var selectedDate: Date = .init()
@@ -70,14 +70,22 @@ final class DashboardPieChartCell: UICollectionViewCell {
     }
 
     private func calculateFocusTimePerTag(for selectedDate: Date) -> [String: Int] {
-        let calendar = Calendar.current
+        let startOfDay = Calendar.current.startOfDay(for: selectedDate)
+        guard let endOfDay = Calendar.current.date(
+            byAdding: .day,
+            value: 1,
+            to: startOfDay
+        ) else { return [:] }
+
+        let sessions = database.read(Pomodoro.self).filter {
+            $0.participateDate >= startOfDay && $0.participateDate < endOfDay
+        }
+
         var focusTimePerTag = [String: Int]()
-        let filteredSessions = PomodoroData.dummyData.filter { session in
-            calendar.isDate(session.participateDate, inSameDayAs: selectedDate)
+        for session in sessions {
+            focusTimePerTag[session.currentTag, default: 0] += 1
         }
-        for session in filteredSessions {
-            focusTimePerTag[session.tagId, default: 0] += session.focusTime
-        }
+
         return focusTimePerTag
     }
 
@@ -106,11 +114,11 @@ final class DashboardPieChartCell: UICollectionViewCell {
 
     private func calculateFocusTimePerTag(from startDate: Date, to endDate: Date) -> [String: Int] {
         var focusTimePerTag = [String: Int]()
-        let filteredSessions = PomodoroData.dummyData.filter { session in
-            session.participateDate >= startDate && session.participateDate < endDate
+        let filteredSessions = database.read(Pomodoro.self).filter {
+            $0.participateDate >= startDate && $0.participateDate < endDate
         }
         for session in filteredSessions {
-            focusTimePerTag[session.tagId, default: 0] += session.focusTime
+            focusTimePerTag[session.currentTag, default: 0] += session.phase
         }
         return focusTimePerTag
     }
