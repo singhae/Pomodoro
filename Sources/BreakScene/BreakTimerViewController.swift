@@ -5,11 +5,13 @@
 //  Created by 김하람 on 2/19/24.
 //
 
+import RealmSwift
 import SnapKit
 import Then
 import UIKit
 
 final class BreakTimerViewController: UIViewController {
+    let database = DatabaseManager.shared
     private var timer: Timer?
     private var notificationId: String?
     private var currentTime = 0
@@ -61,13 +63,20 @@ final class BreakTimerViewController: UIViewController {
     }
 
     override func viewDidLoad() {
+        let realmOption = database.read(Option.self).first
+        let isTimer = realmOption?.isTimerEffect
+        guard let isTimerEffect = isTimer else {
+            return print("it is optional")
+        }
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
         navigationController?.isNavigationBarHidden = true
         addSubviews()
         setupConstraints()
         startTimer()
-        startAnimationTimer()
+        if isTimerEffect {
+            startAnimationTimer()
+        }
         setupLongPressGestureRecognizer()
     }
 
