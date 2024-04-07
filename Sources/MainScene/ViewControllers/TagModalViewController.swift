@@ -63,10 +63,9 @@ final class TagModalViewController: UIViewController {
         $0.alignment = .center
         $0.distribution = .equalSpacing
     }
-
-    private lazy var tagSettingCompletedButton = PomodoroConfirmButton(
+    // MARK: 컬러 변경, 비활성화 가능하게 수정 부탁하기. - 하람, 여훈
+    private lazy var tagSettingCompletedButton = PomodoroConfirmButton (
         title: "설정 완료",
-//        font: .pomodoroFont.heading2(), // TODO: font 변경
         didTapHandler: didTapSettingCompleteButton
     )
 
@@ -123,7 +122,7 @@ final class TagModalViewController: UIViewController {
 //                   make.width.equalTo(212)
 //           }
     }
-
+// MARK: 1. 기본으로 + 버튼으로 태그 버튼 생성 2.태그모달뷰 불러올 때 렘에서 1~5번 정보 불러오기
     private func addTagsToStackView() {
         let buttonTitlesAndColors = [
             ("명상", UIColor.red),
@@ -205,16 +204,15 @@ final class TagModalViewController: UIViewController {
         let configureTagViewController = TagConfigurationViewController()
         let navigationController = UINavigationController(rootViewController: configureTagViewController)
         present(navigationController, animated: true, completion: nil)
-    }
 
-    @objc private func didTapSettingCompleteButton() {
+    @objc func didTapSettingCompleteButton() {
         tagSettingCompletedButton.isEnabled.toggle()
         PomodoroPopupBuilder()
         dismiss(animated: true)
     }
 
     // TODO: Tag 삭제 버튼 연결
-    @objc private func deletTag() {
+    @objc func deletTag() {
         PomodoroPopupBuilder()
             .add(title: "태그 삭제")
             .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
