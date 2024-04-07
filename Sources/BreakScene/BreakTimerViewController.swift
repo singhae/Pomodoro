@@ -74,8 +74,9 @@ final class BreakTimerViewController: UIViewController {
         addSubviews()
         setupConstraints()
         startTimer()
-        isTimerEffect ?
-            startAnimationTimer() : print("timer effect is false")
+        if isTimerEffect {
+            startAnimationTimer()
+        }
         setupLongPressGestureRecognizer()
     }
 
