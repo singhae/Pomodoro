@@ -115,6 +115,12 @@ final class MainViewController: UIViewController {
         super.viewDidLoad()
         stepManager.setRouterObservers()
         setUpPomodoroCurrentStepLabel()
+        
+        let documentsDirectory = NSSearchPathForDirectoriesInDomains(
+            .documentDirectory, .userDomainMask, 
+            true
+        )[0]
+        print(documentsDirectory)
 
         NotificationCenter.default.addObserver(
             self,
@@ -238,7 +244,9 @@ extension MainViewController {
                 self.longPressGestureRecognizer.isEnabled = false
             }
 
-            stepManager.timeSetting.initPomodoroStep()
+            stepManager.timeSetting.stopPomodoroStep(
+                currentTime: pomodoroTimeManager.currentTime
+            )
             currentStepLabel.text = ""
 
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
@@ -251,9 +259,11 @@ extension MainViewController {
     }
 
     @objc private func setPomodoroTime() {
-        stepManager.router.currentStep = .start
-        stepManager.timeSetting.initPomodoroStep()
-        setUpPomodoroCurrentStepLabel()
+//        stepManager.router.currentStep = .start
+//        stepManager.timeSetting.stopPomodoroStep(
+//            currentTime: pomodoroTimeManager.currentTime
+//        )
+//        setUpPomodoroCurrentStepLabel()
         let timeSettingViewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
         if let sheet = timeSettingViewController.sheetPresentationController {
             sheet.detents = [
