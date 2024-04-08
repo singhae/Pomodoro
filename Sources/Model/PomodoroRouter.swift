@@ -83,8 +83,8 @@ final class PomodoroRouter {
             pomodoroMainViewController.stepManager.router = self
             navigationController.pushViewController(pomodoroMainPageViewController, animated: true)
         case .rest:
-            if maxStep < PomodoroRouter.pomodoroCount {
-                breakTimerViewController.stepManager.router = self
+            if maxStep < pomodoroCount {
+                pomodoroMainViewController.stepManager.router = self
                 navigationController.popToRootViewController(animated: true)
             } else {
                 breakTimerViewController.stepManager.router = self
@@ -105,9 +105,12 @@ final class PomodoroRouter {
         case var .rest(count):
             count = pomodoroCount
             if count < maxStep {
-                PomodoroRouter.pomodoroCount += 1
-                currentStep = .focus(count: PomodoroRouter.pomodoroCount)
+                pomodoroCount += 1
+                currentStep = .focus(count: pomodoroCount)
+            } else if count == maxStep {
+                currentStep = .end
             } else {
+                pomodoroCount = 0
                 currentStep = .end
                 currentStep = .start
             }
@@ -122,7 +125,7 @@ final class PomodoroRouter {
 
 final class PomodoroStepTimeChange {
     private let pomodoroTimeManager = PomodoroTimeManager.shared
-    private var pomodoroCurrentCount = PomodoroRouter.pomodoroCount
+    private var pomodoroCurrentCount = PomodoroRouter.shared.pomodoroCount
     private var currentStep: PomodoroTimerStep?
     private var shortBreakTime: Int?
     private var longBreakTime: Int?
@@ -187,6 +190,9 @@ extension PomodoroStepTimeChage: PomodoroStepObserver {
         pomodoroCurrentCount = counter
     }
 extension PomodoroStepTimeChange: PomodoroStepObserver {
+    func didPomodoroStepCounterChange(stepCounter counter: Int) {
+        pomodoroCurrentCount = counter
+    }
     func didPomodoroStepChange(to step: PomodoroTimerStep) {
         currentStep = step
     }
