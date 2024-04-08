@@ -64,20 +64,18 @@ final class TagModalViewController: UIViewController {
         $0.distribution = .equalSpacing
     }
 
-//    private lazy var tagSettingCompletedButton = PomodoroConfirmButton (
-//        title: "설정 완료",
-//        // didTapHandler: didTapSettingCompleteButton,
-//        didTapHandler: configureTag,
-//        self.isEnabled.toggle()
-//    )
-    private lazy var tagSettingCompletedButton: PomodoroConfirmButton = {
-        // 'PomodoroConfirmButton'의 초기화 방식에 따라 변경될 수 있음
-        let button = PomodoroConfirmButton(title: "설정 완료", didTapHandler: { [weak self] in
-            self?.didTapSettingCompleteButton()
-        })
-        button.isEnabled = false // 초기 화면에서 버튼 비활성화
-        return button
-    }()
+    private lazy var tagSettingCompletedButton = PomodoroConfirmButton (
+        title: "설정 완료",
+        didTapHandler: didTapSettingCompleteButton
+    )
+//    private lazy var tagSettingCompletedButton: PomodoroConfirmButton = {
+//        // 'PomodoroConfirmButton'의 초기화 방식에 따라 변경될 수 있음
+//        let button = PomodoroConfirmButton(title: "설정 완료", didTapHandler: { [weak self] in
+//            self?.didTapSettingCompleteButton()
+//        })
+//        button.isEnabled = false // 초기 화면에서 버튼 비활성화
+//        return button
+//    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,9 +83,16 @@ final class TagModalViewController: UIViewController {
         navigationController?.isNavigationBarHidden = false
         configureNavigationBar()
         setupViews()
-        addTagsToStackView()
+//        addTagsToStackView()
+        tagSettingCompletedButton.isEnabled = false // 첫 화면에는 설정완료 비활성화
+        
+        // 데이터베이스에서 태그 데이터 로드
+        let tags = DatabaseManager.shared.read(Tag.self)
+        
+        // 태그 버튼들을 스택 뷰에 추가
+        addTagsToStackView(tags: tags)
 
-        let tags = database.read(Tag.self)
+//        let tags = database.read(Tag.self)
 //        if tags.isEmpty {
 //            database.write(
 //                Option(
@@ -119,8 +124,8 @@ final class TagModalViewController: UIViewController {
             make.width.equalToSuperview().multipliedBy(0.8)
         }
         tagSettingCompletedButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(45)
-            make.trailing.equalToSuperview().offset(-45)
+//            make.leading.equalToSuperview().offset(45)
+//            make.trailing.equalToSuperview().offset(-45)
             make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
         }
         
@@ -133,7 +138,8 @@ final class TagModalViewController: UIViewController {
     }
     
 // MARK: 1. 기본으로 + 버튼으로 태그 버튼 생성 2.태그모달뷰 불러올 때 렘에서 1~5번 정보 불러오기
-    private func addTagsToStackView() {
+//    private func addTagsToStackView() {
+    private func addTagsToStackView(tags: [Tag]) {
         let buttonTitlesAndColors = [
             ("명상", UIColor.red),
             ("운동", UIColor.green),
@@ -166,7 +172,10 @@ final class TagModalViewController: UIViewController {
     }
 
     // TODO: 테두리 컬러 확인
-    private func createRoundButton(title: String, color: UIColor, borderColor _: UIColor) -> UIButton {
+    private func createRoundButton(title: String,
+                                   color: UIColor,
+                                   borderColor _: UIColor,
+                                   isEditButton: Bool = false) -> UIButton {
         let button = UIButton().then {
             $0.setTitle(title, for: .normal)
             $0.titleLabel?.font = .pomodoroFont.heading4()
@@ -177,6 +186,13 @@ final class TagModalViewController: UIViewController {
                 make.size.equalTo(CGSize(width: 80, height: 80))
             }
             $0.addTarget(self, action: #selector(configureTag), for: .touchUpInside)
+        }
+        
+        // MARK: 'editTagButton' 추가 액션 설정
+        if isEditButton {
+            button.addTarget(self, action: #selector(editTagButtonTapped), for: .touchUpInside)
+        } else {
+            button.addTarget(self, action: #selector(configureTag), for: .touchUpInside)
         }
 
         // MARK: `-` 버튼 추가
@@ -199,12 +215,29 @@ final class TagModalViewController: UIViewController {
         }
 
         // MARK: minusButton에 삭제 액션 추가
+        minusButton.addTarget(self, action: #selector(minusButtonTapped), for: .touchUpInside)
 
-//        minusButton.addTarget(self, action: #selector(deletTag(_:)), for: .touchUpInside)
 
         return button
     }
+    // TODO: 'editTagButton' 역할 생성 버튼
+    private func setupEditButton() {
+        let editButton = createRoundButton(title: "Edit", color: .pomodoro.background, borderColor: .clear, isEditButton: true)
+        // editButton을 뷰에 추가하는 로직 (예: 레이아웃 설정)
+    }
+    
+    // MARK: 'editTagButton' 버튼이 눌렸을 때 실행 메소드
+    @objc private func editTagButtonTapped() {
+        tagSettingCompletedButton.isEnabled.toggle()
+    }
 
+
+    
+    @objc private func minusButtonTapped() {
+        // minusButton 클릭 시 실행될 로직
+        tagSettingCompletedButton.isEnabled.toggle() // 태그 설정 완료 버튼 활성화
+    }
+    
     @objc private func dismissModal() {
         dismiss(animated: true, completion: nil)
     }
@@ -213,7 +246,8 @@ final class TagModalViewController: UIViewController {
         let configureTagViewController = TagConfigurationViewController()
         let navigationController = UINavigationController(rootViewController: configureTagViewController)
         present(navigationController, animated: true, completion: nil)
-       // tagSettingCompletedButton.isEnabled.toggle()
+        // TODO: minusbutton 클릭하하고 태그값 설정하려면 설정완료버튼 비활성화되는 오류 수정필요
+        tagSettingCompletedButton.isEnabled.toggle()
     }
     
     @objc func didTapSettingCompleteButton() {
@@ -225,6 +259,7 @@ final class TagModalViewController: UIViewController {
 
     // TODO: Tag 삭제 버튼 연결
     @objc func deletTag() {
+        tagSettingCompletedButton.isEnabled.toggle()
         PomodoroPopupBuilder()
             .add(title: "태그 삭제")
             .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
@@ -242,6 +277,7 @@ final class TagModalViewController: UIViewController {
 
     // TODO: ellipsisbutton 클릭시 - 버튼 활성화 함수
     @objc private func createMinusButton() {
+        tagSettingCompletedButton.isEnabled.toggle()
         for case let button as UIButton in tagsStackView.arrangedSubviews.flatMap(\.subviews) {
             if let minusButton = button.viewWithTag(101) as? UIButton {
                 minusButton.isHidden.toggle()
