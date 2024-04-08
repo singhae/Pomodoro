@@ -63,11 +63,21 @@ final class TagModalViewController: UIViewController {
         $0.alignment = .center
         $0.distribution = .equalSpacing
     }
-    // MARK: 컬러 변경, 비활성화 가능하게 수정 부탁하기. - 하람, 여훈
-    private lazy var tagSettingCompletedButton = PomodoroConfirmButton (
-        title: "설정 완료",
-        didTapHandler: didTapSettingCompleteButton
-    )
+
+//    private lazy var tagSettingCompletedButton = PomodoroConfirmButton (
+//        title: "설정 완료",
+//        // didTapHandler: didTapSettingCompleteButton,
+//        didTapHandler: configureTag,
+//        self.isEnabled.toggle()
+//    )
+    private lazy var tagSettingCompletedButton: PomodoroConfirmButton = {
+        // 'PomodoroConfirmButton'의 초기화 방식에 따라 변경될 수 있음
+        let button = PomodoroConfirmButton(title: "설정 완료", didTapHandler: { [weak self] in
+            self?.didTapSettingCompleteButton()
+        })
+        button.isEnabled = false // 초기 화면에서 버튼 비활성화
+        return button
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -91,12 +101,10 @@ final class TagModalViewController: UIViewController {
     }
 
     private func setupViews() {
-        view.backgroundColor = .pomodoro.background
         view.addSubview(horizontalStackView)
         view.addSubview(tagSettingCompletedButton)
         view.addSubview(tagsStackView)
-        view.addSubview(tagSettingCompletedButton)
-
+        
         horizontalStackView.addArrangedSubview(label)
         horizontalStackView.addArrangedSubview(editTagButton)
         horizontalStackView.snp.makeConstraints { make in
@@ -104,7 +112,7 @@ final class TagModalViewController: UIViewController {
             make.centerX.equalToSuperview()
             make.width.equalToSuperview().multipliedBy(0.78)
         }
-
+        
         tagsStackView.snp.makeConstraints { make in
             make.top.equalTo(horizontalStackView.snp.bottom).offset(view.bounds.height * 0.1)
             make.centerX.equalToSuperview()
@@ -115,13 +123,15 @@ final class TagModalViewController: UIViewController {
             make.trailing.equalToSuperview().offset(-45)
             make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
         }
-        // TODO: 진세 확인버튼 제약조건 참고하기
-//        confirmButton.snp.makeConstraints { make in
-//                   make.centerX.equalToSuperview()
-//                   make.bottom.equalToSuperview().offset(-170)
-//                   make.width.equalTo(212)
-//           }
+        
+        
+//        tagSettingCompletedButton.snp.makeConstraints { make in
+//            make.centerX.equalToSuperview()
+//            make.bottom.equalToSuperview().offset(-170)
+//            make.width.equalTo(212)
+//        }
     }
+    
 // MARK: 1. 기본으로 + 버튼으로 태그 버튼 생성 2.태그모달뷰 불러올 때 렘에서 1~5번 정보 불러오기
     private func addTagsToStackView() {
         let buttonTitlesAndColors = [
@@ -182,7 +192,6 @@ final class TagModalViewController: UIViewController {
         button.addSubview(minusButton)
 
         // MARK: minusButton 위치 설정
-
         minusButton.snp.makeConstraints { make in
             make.top.equalTo(button.snp.top).offset(5)
             make.right.equalTo(button.snp.right).offset(-5)
@@ -204,11 +213,14 @@ final class TagModalViewController: UIViewController {
         let configureTagViewController = TagConfigurationViewController()
         let navigationController = UINavigationController(rootViewController: configureTagViewController)
         present(navigationController, animated: true, completion: nil)
-
+       // tagSettingCompletedButton.isEnabled.toggle()
+    }
+    
     @objc func didTapSettingCompleteButton() {
         tagSettingCompletedButton.isEnabled.toggle()
-        PomodoroPopupBuilder()
-        dismiss(animated: true)
+        if !tagSettingCompletedButton.isEnabled {
+            dismiss(animated: true, completion: nil)
+        }
     }
 
     // TODO: Tag 삭제 버튼 연결
@@ -240,7 +252,6 @@ final class TagModalViewController: UIViewController {
 }
 
 // MARK: - TagCreationDelegate
-
 extension TagModalViewController: TagCreationDelegate {
     func createTag(tag: String) {
         TagCollectionViewData.data.append(tag)
