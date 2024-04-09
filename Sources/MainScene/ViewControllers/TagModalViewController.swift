@@ -83,23 +83,21 @@ final class TagModalViewController: UIViewController {
         tagSettingCompletedButton.isEnabled = false // 첫 화면에는 설정완료 비활성화
         database.getLocationOfDefaultRealm()
 
-//        let tags = database.read(Tag.self)
-//        if tags.isEmpty {
-//            database.write(
-//                Option(
-//                    shortBreakTime: 5,
-//                    longBreakTime: 20,
-//                    isVibrate: false,
-//                    isTimerEffect: true
-//                )
-//            )
-//        }
+        let tags = database.read(Tag.self)
+        if tags.isEmpty {
+            database.write(
+                Tag(
+                    tagName: "운동",
+                    colorIndex: "one",
+                    position: 1
+                )
+            )
+        }
     }
     
     // MARK: Realm에서 태그 정보를 불러오는 메서드
     private func loadTagsFromDatabase() {
         let tags = database.read(Tag.self).sorted(byKeyPath: "position", ascending: true)
-     //   addTagsToStackView(tags: tags)
     }
 
     private func setupViews() {
