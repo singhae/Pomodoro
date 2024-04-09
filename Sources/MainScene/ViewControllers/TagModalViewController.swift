@@ -31,7 +31,6 @@ final class TagModalViewController: UIViewController {
         )
         navigationItem.rightBarButtonItem = dismissButtonItem
     }
-
     private let horizontalStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 10
@@ -78,7 +77,7 @@ final class TagModalViewController: UIViewController {
         setupViews()
         addTagsToStackView()
 
-        let tags = database.read(Tag.self)
+//        let tags = database.read(Tag.self)
 //        if tags.isEmpty {
 //            database.write(
 //                Option(
@@ -123,46 +122,74 @@ final class TagModalViewController: UIViewController {
 //                   make.width.equalTo(212)
 //           }
     }
+    
+    private func makeRowStackView() -> UIStackView {
+        UIStackView().then {
+            $0.axis = .horizontal
+            $0.spacing = 10
+            $0.alignment = .fill
+            $0.distribution = .fillEqually
+        }
+    }
 
     private func addTagsToStackView() {
         let buttonTitlesAndColors = [
             ("명상", UIColor.red),
             ("운동", UIColor.green),
-            ("공부", UIColor.purple),
-            ("+", UIColor.pomodoro.background),
-            ("+", UIColor.gray),
-            ("+", UIColor.gray),
-            ("+", UIColor.gray)
+            ("공부", UIColor.purple)
         ]
-        let tagsPerRow = [2, 3, 2]
+        let maxTags = 7
         var currentIndex = 0
-
-        for count in tagsPerRow {
-            let rowStackView = UIStackView().then {
-                $0.axis = .horizontal
-                $0.spacing = 10
-                $0.alignment = .fill
-                $0.distribution = .fillEqually
+        let firstRow = makeRowStackView()
+        let secondRow = makeRowStackView()
+        let thirdRow = makeRowStackView()
+        
+        (0...maxTags).forEach {
+            let button: UIButton
+            if (buttonTitlesAndColors.count - 1) < $0 {
+                button = createEmptyButton(borderColor: .pomodoro.tagBackground1)
             }
-
-            for _ in 0 ..< count {
-                let (title, color) = buttonTitlesAndColors[currentIndex % buttonTitlesAndColors.count]
-                let button = createRoundButton(title: title, color: color, borderColor: color)
-                rowStackView.addArrangedSubview(button)
-                currentIndex += 1
+            else {
+                let (title, color) = buttonTitlesAndColors[$0]
+                button = createRoundButton(title: title, color: color)
             }
-
-            tagsStackView.addArrangedSubview(rowStackView)
+            switch $0 {
+            case 0...1:
+                firstRow.addArrangedSubview(button)
+            case 2...4:
+                secondRow.addArrangedSubview(button)
+            case 5...6:
+                thirdRow.addArrangedSubview(button)
+            default: break
+            }
         }
+
+        tagsStackView.addArrangedSubview(firstRow)
+        tagsStackView.addArrangedSubview(secondRow)
+        tagsStackView.addArrangedSubview(thirdRow)
     }
 
-    // TODO: 테두리 컬러 확인
-    private func createRoundButton(title: String, color: UIColor, borderColor _: UIColor) -> UIButton {
+    private func createEmptyButton(borderColor: UIColor) -> UIButton {
+        UIButton().then {
+            $0.titleLabel?.font = .pomodoroFont.heading4()
+            $0.backgroundColor = .clear // TODO: change colo
+            $0.layer.borderColor = borderColor.cgColor
+            $0.layer.borderWidth = 1
+            $0.layer.cornerRadius = 40
+            $0.setImage(UIImage(named: "plusButton"), for: .normal)
+            $0.snp.makeConstraints { make in
+                make.size.equalTo(CGSize(width: 80, height: 80))
+            }
+            $0.addTarget(self, action: #selector(configureTag), for: .touchUpInside)
+        }
+    }
+    
+    private func createRoundButton(title: String, color: UIColor) -> UIButton {
         let button = UIButton().then {
             $0.setTitle(title, for: .normal)
             $0.titleLabel?.font = .pomodoroFont.heading4()
-            $0.backgroundColor = color
-            $0.setTitleColor(.white, for: .normal)
+            $0.backgroundColor = .pomodoro.tagBackground1 // TODO: change color
+            $0.setTitleColor(.pomodoro.tagTypo1, for: .normal) // TODO: change color
             $0.layer.cornerRadius = 40
             $0.snp.makeConstraints { make in
                 make.size.equalTo(CGSize(width: 80, height: 80))
