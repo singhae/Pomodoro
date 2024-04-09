@@ -24,26 +24,6 @@ final class TagModalViewController: UIViewController {
 
     private weak var selectionDelegate: TagModalViewControllerDelegate?
 
-    private func configureNavigationBar() {
-        navigationItem.title = "태그 설정"
-        let dismissButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .close, target: self, action: #selector(dismissModal)
-        )
-        navigationItem.rightBarButtonItem = dismissButtonItem
-    }
-    private let horizontalStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 10
-        $0.alignment = .center
-        $0.distribution = .equalSpacing
-    }
-
-    private let label = UILabel().then {
-        $0.text = ""
-        $0.textColor = .black
-        $0.font = UIFont.boldSystemFont(ofSize: 15)
-    }
-
     private lazy var editTagButton = UIButton().then {
         $0.setTitle("Edit", for: .normal)
         $0.titleLabel?.font = .pomodoroFont.heading5()
@@ -62,6 +42,19 @@ final class TagModalViewController: UIViewController {
         $0.alignment = .center
         $0.distribution = .equalSpacing
     }
+    
+    private let dimmedView = UIView().then {
+        $0.backgroundColor = .pomodoro.blackHigh.withAlphaComponent(0.2)
+    }
+    
+    private let titleView = UILabel().then {
+        $0.text = "태그 설정"
+        $0.font = .pomodoroFont.heading4()
+    }
+    
+    private let closeButton = UIButton().then {
+        $0.setImage(UIImage(named: "closeButton"), for: .normal)
+    }
 
     private lazy var tagSettingCompletedButton = PomodoroConfirmButton(
         title: "설정 완료",
@@ -71,11 +64,9 @@ final class TagModalViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .pomodoro.background
-        navigationController?.isNavigationBarHidden = false
-        configureNavigationBar()
         setupViews()
         addTagsToStackView()
+        closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
 
 //        let tags = database.read(Tag.self)
 //        if tags.isEmpty {
@@ -92,28 +83,52 @@ final class TagModalViewController: UIViewController {
 
     private func setupViews() {
         view.backgroundColor = .pomodoro.background
-        view.addSubview(horizontalStackView)
-        view.addSubview(tagSettingCompletedButton)
-        view.addSubview(tagsStackView)
-        view.addSubview(tagSettingCompletedButton)
-
-        horizontalStackView.addArrangedSubview(label)
-        horizontalStackView.addArrangedSubview(editTagButton)
-        horizontalStackView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.topMargin).offset(20)
-            make.centerX.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(0.78)
+        view.addSubview(dimmedView)
+        
+        let contentView = UIView().then {
+            $0.backgroundColor = .pomodoro.background
+            $0.layer.cornerRadius = 20
+        }
+        dimmedView.addSubview(contentView)
+        
+        contentView.addSubview(closeButton)
+        contentView.addSubview(titleView)
+        contentView.addSubview(tagSettingCompletedButton)
+        contentView.addSubview(tagsStackView)
+        contentView.addSubview(tagSettingCompletedButton)
+        
+        contentView.snp.makeConstraints {
+            $0.leading.trailing.bottom.equalToSuperview()
+            $0.height.equalTo(view.frame.height * 0.8)
+        }
+        
+        closeButton.snp.makeConstraints {
+            $0.top.trailing.equalToSuperview().inset(20)
+        }
+        
+        titleView.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.centerY.equalTo(closeButton.snp.centerY)
+        }
+        
+        dimmedView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
 
+        contentView.addSubview(editTagButton)
+        editTagButton.snp.makeConstraints { make in
+            make.top.equalTo(titleView.snp.bottom).offset(20)
+            make.trailing.equalTo(closeButton.snp.trailing)
+        }
         tagsStackView.snp.makeConstraints { make in
-            make.top.equalTo(horizontalStackView.snp.bottom).offset(view.bounds.height * 0.1)
+            make.top.equalTo(editTagButton.snp.bottom).offset(30)
             make.centerX.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(0.8)
+            make.leading.trailing.equalToSuperview().inset(45)
         }
         tagSettingCompletedButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(45)
-            make.trailing.equalToSuperview().offset(-45)
-            make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
+            make.leading.trailing.equalToSuperview().inset(110)
+            make.top.equalTo(tagsStackView.snp.bottom).offset(60)
+            make.height.equalTo(60)
         }
         // TODO: 진세 확인버튼 제약조건 참고하기
 //        confirmButton.snp.makeConstraints { make in
