@@ -42,16 +42,16 @@ final class TagModalViewController: UIViewController {
         $0.alignment = .center
         $0.distribution = .equalSpacing
     }
-    
+
     private let dimmedView = UIView().then {
         $0.backgroundColor = .pomodoro.blackHigh.withAlphaComponent(0.2)
     }
-    
+
     private let titleView = UILabel().then {
         $0.text = "태그 설정"
         $0.font = .pomodoroFont.heading4()
     }
-    
+
     private let closeButton = UIButton().then {
         $0.setImage(UIImage(named: "closeButton"), for: .normal)
     }
@@ -84,33 +84,33 @@ final class TagModalViewController: UIViewController {
     private func setupViews() {
         view.backgroundColor = .pomodoro.background
         view.addSubview(dimmedView)
-        
+
         let contentView = UIView().then {
             $0.backgroundColor = .pomodoro.background
             $0.layer.cornerRadius = 20
         }
         dimmedView.addSubview(contentView)
-        
+
         contentView.addSubview(closeButton)
         contentView.addSubview(titleView)
         contentView.addSubview(tagSettingCompletedButton)
         contentView.addSubview(tagsStackView)
         contentView.addSubview(tagSettingCompletedButton)
-        
+
         contentView.snp.makeConstraints {
             $0.leading.trailing.bottom.equalToSuperview()
             $0.height.equalTo(view.frame.height * 0.8)
         }
-        
+
         closeButton.snp.makeConstraints {
             $0.top.trailing.equalToSuperview().inset(20)
         }
-        
+
         titleView.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.centerY.equalTo(closeButton.snp.centerY)
         }
-        
+
         dimmedView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
@@ -137,7 +137,7 @@ final class TagModalViewController: UIViewController {
 //                   make.width.equalTo(212)
 //           }
     }
-    
+
     private func makeRowStackView() -> UIStackView {
         UIStackView().then {
             $0.axis = .horizontal
@@ -151,29 +151,28 @@ final class TagModalViewController: UIViewController {
         let buttonTitlesAndColors = [
             ("명상", UIColor.red),
             ("운동", UIColor.green),
-            ("공부", UIColor.purple)
+            ("공부", UIColor.purple),
         ]
         let maxTags = 7
         var currentIndex = 0
         let firstRow = makeRowStackView()
         let secondRow = makeRowStackView()
         let thirdRow = makeRowStackView()
-        
-        (0...maxTags).forEach {
+
+        for item in 0 ... maxTags {
             let button: UIButton
-            if (buttonTitlesAndColors.count - 1) < $0 {
+            if (buttonTitlesAndColors.count - 1) < item {
                 button = createEmptyButton(borderColor: .pomodoro.tagBackground1)
-            }
-            else {
-                let (title, color) = buttonTitlesAndColors[$0]
+            } else {
+                let (title, color) = buttonTitlesAndColors[item]
                 button = createRoundButton(title: title, color: color)
             }
-            switch $0 {
-            case 0...1:
+            switch item {
+            case 0 ... 1:
                 firstRow.addArrangedSubview(button)
-            case 2...4:
+            case 2 ... 4:
                 secondRow.addArrangedSubview(button)
-            case 5...6:
+            case 5 ... 6:
                 thirdRow.addArrangedSubview(button)
             default: break
             }
@@ -198,8 +197,8 @@ final class TagModalViewController: UIViewController {
             $0.addTarget(self, action: #selector(presentTagEditViewController), for: .touchUpInside)
         }
     }
-    
-    private func createRoundButton(title: String, color: UIColor) -> UIButton {
+
+    private func createRoundButton(title: String, color _: UIColor) -> UIButton {
         let button = UIButton().then {
             $0.setTitle(title, for: .normal)
             $0.titleLabel?.font = .pomodoroFont.heading4()
