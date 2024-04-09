@@ -11,7 +11,7 @@ import Realm
 import RealmSwift
 import UIKit
 
-enum TagCase: String {
+enum TagCase: String, CaseIterable  {
     case one, two, three, four, five, six, seven, eight
 
     var backgroundColor: UIColor {

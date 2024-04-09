@@ -9,6 +9,7 @@ import PomodoroDesignSystem
 import SnapKit
 import Then
 import UIKit
+import RealmSwift
 
 protocol TagCreationDelegate: AnyObject {
     func createTag(tag: String)
@@ -21,6 +22,8 @@ protocol TagModalViewControllerDelegate: AnyObject {
 final class TagModalViewController: UIViewController {
     // realm database
     let database = DatabaseManager.shared
+
+    private var tags: Results<Tag>?
 
     private weak var selectionDelegate: TagModalViewControllerDelegate?
 
@@ -68,29 +71,17 @@ final class TagModalViewController: UIViewController {
         title: "설정 완료",
         didTapHandler: didTapSettingCompleteButton
     )
-//    private lazy var tagSettingCompletedButton: PomodoroConfirmButton = {
-//        // 'PomodoroConfirmButton'의 초기화 방식에 따라 변경될 수 있음
-//        let button = PomodoroConfirmButton(title: "설정 완료", didTapHandler: { [weak self] in
-//            self?.didTapSettingCompleteButton()
-//        })
-//        button.isEnabled = false // 초기 화면에서 버튼 비활성화
-//        return button
-//    }()
-
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
         navigationController?.isNavigationBarHidden = false
         configureNavigationBar()
         setupViews()
-//        addTagsToStackView()
+        // MARK: 태그 정보 불러오는 메소드 따로 호출
+        loadTagsFromDatabase()
+        addTagsToStackView()
         tagSettingCompletedButton.isEnabled = false // 첫 화면에는 설정완료 비활성화
-        
-        // 데이터베이스에서 태그 데이터 로드
-        let tags = DatabaseManager.shared.read(Tag.self)
-        
-        // 태그 버튼들을 스택 뷰에 추가
-        addTagsToStackView(tags: tags)
+        database.getLocationOfDefaultRealm()
 
 //        let tags = database.read(Tag.self)
 //        if tags.isEmpty {
@@ -103,6 +94,12 @@ final class TagModalViewController: UIViewController {
 //                )
 //            )
 //        }
+    }
+    
+    // MARK: Realm에서 태그 정보를 불러오는 메서드
+    private func loadTagsFromDatabase() {
+        let tags = database.read(Tag.self).sorted(byKeyPath: "position", ascending: true)
+     //   addTagsToStackView(tags: tags)
     }
 
     private func setupViews() {
@@ -124,31 +121,50 @@ final class TagModalViewController: UIViewController {
             make.width.equalToSuperview().multipliedBy(0.8)
         }
         tagSettingCompletedButton.snp.makeConstraints { make in
-//            make.leading.equalToSuperview().offset(45)
-//            make.trailing.equalToSuperview().offset(-45)
+            make.leading.equalToSuperview().offset(80)
+            make.trailing.equalToSuperview().offset(-80)
             make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
         }
-        
-        
-//        tagSettingCompletedButton.snp.makeConstraints { make in
-//            make.centerX.equalToSuperview()
-//            make.bottom.equalToSuperview().offset(-170)
-//            make.width.equalTo(212)
-//        }
     }
     
 // MARK: 1. 기본으로 + 버튼으로 태그 버튼 생성 2.태그모달뷰 불러올 때 렘에서 1~5번 정보 불러오기
 //    private func addTagsToStackView() {
-    private func addTagsToStackView(tags: [Tag]) {
-        let buttonTitlesAndColors = [
-            ("명상", UIColor.red),
-            ("운동", UIColor.green),
-            ("공부", UIColor.purple),
-            ("+", UIColor.pomodoro.background),
-            ("+", UIColor.gray),
-            ("+", UIColor.gray),
-            ("+", UIColor.gray)
-        ]
+//        let buttonTitlesAndColors = [
+//            ("명상", UIColor.red),
+//            ("운동", UIColor.green),
+//            ("공부", UIColor.purple),
+//            ("+", UIColor.pomodoro.background),
+//            ("+", UIColor.gray),
+//            ("+", UIColor.gray),
+//            ("+", UIColor.gray)
+//        ]
+//        let tagsPerRow = [2, 3, 2]
+//        var currentIndex = 0
+//
+//        for count in tagsPerRow {
+//            let rowStackView = UIStackView().then {
+//                $0.axis = .horizontal
+//                $0.spacing = 10
+//                $0.alignment = .fill
+//                $0.distribution = .fillEqually
+//            }
+//
+//            for _ in 0 ..< count {
+//                let (title, color) = buttonTitlesAndColors[currentIndex % buttonTitlesAndColors.count]
+//                let button = createRoundButton(title: title, color: color, borderColor: color)
+//                rowStackView.addArrangedSubview(button)
+//                currentIndex += 1
+//            }
+//
+//            tagsStackView.addArrangedSubview(rowStackView)
+//        }
+//    }
+    
+    // MARK: 커스텀 없이 만들고 렘이랑 연결
+   //  태그 버튼을 추가하는 메서드
+    private func addTagsToStackView() {
+        guard let tags = tags else { return } // 여기서 안전하게 옵셔널을 언래핑합니다.
+        
         let tagsPerRow = [2, 3, 2]
         var currentIndex = 0
 
@@ -159,12 +175,13 @@ final class TagModalViewController: UIViewController {
                 $0.alignment = .fill
                 $0.distribution = .fillEqually
             }
-
             for _ in 0 ..< count {
-                let (title, color) = buttonTitlesAndColors[currentIndex % buttonTitlesAndColors.count]
-                let button = createRoundButton(title: title, color: color, borderColor: color)
-                rowStackView.addArrangedSubview(button)
-                currentIndex += 1
+                if currentIndex < tags.count { // 인덱스 검사
+                    let tag = tags[currentIndex]
+                    let button = createRoundButton(tag: tag) // 태그 정보를 버튼 생성에 사용
+                    rowStackView.addArrangedSubview(button)
+                    currentIndex += 1
+                }
             }
 
             tagsStackView.addArrangedSubview(rowStackView)
@@ -172,14 +189,16 @@ final class TagModalViewController: UIViewController {
     }
 
     // TODO: 테두리 컬러 확인
-    private func createRoundButton(title: String,
-                                   color: UIColor,
-                                   borderColor _: UIColor,
-                                   isEditButton: Bool = false) -> UIButton {
-        let button = UIButton().then {
+//    private func createRoundButton(title: String,
+//                                   color: UIColor,
+//                                   borderColor _: UIColor,
+//                                   isEditButton: Bool = false) -> UIButton {
+    private func createRoundButton(tag: Tag, isEditButton: Bool = false) -> UIButton {
+    let button = UIButton().then {
             $0.setTitle(title, for: .normal)
             $0.titleLabel?.font = .pomodoroFont.heading4()
-            $0.backgroundColor = color
+//            $0.backgroundColor = color
+        $0.backgroundColor = .lightGray
             $0.setTitleColor(.white, for: .normal)
             $0.layer.cornerRadius = 40
             $0.snp.makeConstraints { make in
@@ -187,13 +206,24 @@ final class TagModalViewController: UIViewController {
             }
             $0.addTarget(self, action: #selector(configureTag), for: .touchUpInside)
         }
+//    private func createRoundButton(tag: Tag) -> UIButton {
+//        let button = UIButton().then {
+//            $0.setTitle(tag.tagName, for: .normal)
+//            $0.titleLabel?.font = .pomodoroFont.heading4()
+//            $0.backgroundColor = tag.setupTagBackgroundColor() // 태그 색상 적용
+//            $0.setTitleColor(tag.setupTagTypoColor(), for: .normal) // 태그 텍스트 색상 적용
+//            $0.layer.cornerRadius = 20
+//            $0.snp.makeConstraints { make in
+//                make.size.equalTo(CGSize(width: 80, height: 80))
+//            }
+//        }
         
         // MARK: 'editTagButton' 추가 액션 설정
-        if isEditButton {
-            button.addTarget(self, action: #selector(editTagButtonTapped), for: .touchUpInside)
-        } else {
-            button.addTarget(self, action: #selector(configureTag), for: .touchUpInside)
-        }
+//        if isEditButton {
+//            button.addTarget(self, action: #selector(editTagButtonTapped), for: .touchUpInside)
+//        } else {
+//            button.addTarget(self, action: #selector(configureTag), for: .touchUpInside)
+//        }
 
         // MARK: `-` 버튼 추가
 
@@ -222,7 +252,7 @@ final class TagModalViewController: UIViewController {
     }
     // TODO: 'editTagButton' 역할 생성 버튼
     private func setupEditButton() {
-        let editButton = createRoundButton(title: "Edit", color: .pomodoro.background, borderColor: .clear, isEditButton: true)
+//        let editButton = createRoundButton(title: "Edit", color: .pomodoro.background, borderColor: .clear, isEditButton: true)
         // editButton을 뷰에 추가하는 로직 (예: 레이아웃 설정)
     }
     
@@ -231,8 +261,6 @@ final class TagModalViewController: UIViewController {
         tagSettingCompletedButton.isEnabled.toggle()
     }
 
-
-    
     @objc private func minusButtonTapped() {
         // minusButton 클릭 시 실행될 로직
         tagSettingCompletedButton.isEnabled.toggle() // 태그 설정 완료 버튼 활성화
