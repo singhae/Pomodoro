@@ -151,7 +151,7 @@ final class TagModalViewController: UIViewController {
         let buttonTitlesAndColors = [
             ("명상", UIColor.red),
             ("운동", UIColor.green),
-            ("공부", UIColor.purple),
+            ("공부", UIColor.purple)
         ]
         let maxTags = 7
         var currentIndex = 0
@@ -174,7 +174,8 @@ final class TagModalViewController: UIViewController {
                 secondRow.addArrangedSubview(button)
             case 5 ... 6:
                 thirdRow.addArrangedSubview(button)
-            default: break
+            default: 
+                break
             }
         }
 
