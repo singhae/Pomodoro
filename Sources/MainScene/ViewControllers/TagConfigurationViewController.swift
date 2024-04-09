@@ -68,6 +68,11 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         setupConstraints()
         setupColorPalette()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        textField.becomeFirstResponder()
+    }
 
     @objc private func dismissModal() {
         dismiss(animated: true, completion: nil)
