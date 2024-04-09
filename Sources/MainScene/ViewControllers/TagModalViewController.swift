@@ -180,7 +180,7 @@ final class TagModalViewController: UIViewController {
             $0.snp.makeConstraints { make in
                 make.size.equalTo(CGSize(width: 80, height: 80))
             }
-            $0.addTarget(self, action: #selector(configureTag), for: .touchUpInside)
+            $0.addTarget(self, action: #selector(presentTagEditViewController), for: .touchUpInside)
         }
     }
     
@@ -194,7 +194,7 @@ final class TagModalViewController: UIViewController {
             $0.snp.makeConstraints { make in
                 make.size.equalTo(CGSize(width: 80, height: 80))
             }
-            $0.addTarget(self, action: #selector(configureTag), for: .touchUpInside)
+            $0.addTarget(self, action: #selector(presentTagEditViewController), for: .touchUpInside)
         }
 
         // MARK: `-` 버튼 추가
@@ -228,10 +228,10 @@ final class TagModalViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
 
-    @objc func configureTag() {
+    @objc func presentTagEditViewController() {
         let configureTagViewController = TagConfigurationViewController()
-        let navigationController = UINavigationController(rootViewController: configureTagViewController)
-        present(navigationController, animated: true, completion: nil)
+        configureTagViewController.modalPresentationStyle = .fullScreen
+        present(configureTagViewController, animated: true)
     }
 
     @objc private func didTapSettingCompleteButton() {

@@ -11,14 +11,6 @@ import Then
 import UIKit
 
 final class TagConfigurationViewController: UIViewController, UITextFieldDelegate {
-    // TODO: navigationbar 타이틀 왜 적용안되는지 확인
-    private func configureNavigationBar() {
-        navigationItem.title = "태그 설정"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
-                                                            target: self,
-                                                            action: #selector(dismissModal))
-    }
-
     // MARK: 태그명 레이블
 
     private lazy var titleLabel: UILabel = {
@@ -28,12 +20,20 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         label.textAlignment = .left
         return label
     }()
+    
+    private let paletteTitleLabel = UILabel().then { label in
+        label.text = "태그 색상"
+        label.font = .pomodoroFont.heading5()
+        label.textAlignment = .left
+    }
 
     private lazy var textField: UITextField = {
         let textField = UITextField()
         textField.borderStyle = .none
+        textField.returnKeyType = .done
         textField.placeholder = "ex. 공부"
         textField.font = .pomodoroFont.heading6()
+        textField.delegate = self
         textField.textAlignment = .left
         let bottomLine = UIView()
         bottomLine.backgroundColor = .black
@@ -55,15 +55,26 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         $0.distribution = .equalSpacing
         $0.spacing = 8
     }
+    
+    private let dimmedView = UIView().then {
+        $0.backgroundColor = .pomodoro.blackHigh.withAlphaComponent(0.2)
+    }
+    
+    private let titleView = UILabel().then {
+        $0.text = "태그 설정"
+        $0.font = .pomodoroFont.heading4()
+    }
+    
+    private let closeButton = UIButton().then {
+        $0.setImage(UIImage(named: "closeButton"), for: .normal)
+    }
 
     weak var delegate: TagCreationDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
-        configureNavigationBar()
         navigationController?.isNavigationBarHidden = false
-        textField.delegate = self
         setupViews()
         setupConstraints()
         setupColorPalette()
@@ -97,34 +108,66 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
 
     private func setupViews() {
-        view.addSubview(titleLabel)
-        view.addSubview(textField)
-        view.addSubview(createTagConfirmButton)
-        view.addSubview(colorPaletteStackView)
+        closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
+        let contentView = UIView().then {
+            $0.backgroundColor = .pomodoro.background
+            $0.layer.cornerRadius = 20
+            $0.addSubview(titleView)
+            $0.addSubview(closeButton)
+            $0.addSubview(titleLabel)
+            $0.addSubview(textField)
+            $0.addSubview(paletteTitleLabel)
+            $0.addSubview(createTagConfirmButton)
+            $0.addSubview(colorPaletteStackView)
+        }
+        dimmedView.addSubview(contentView)
+        view.addSubview(dimmedView)
+        contentView.snp.makeConstraints {
+            $0.leading.trailing.bottom.equalToSuperview()
+            $0.height.equalTo(view.frame.height * 0.8)
+        }
     }
 
     private func setupConstraints() {
+        closeButton.snp.makeConstraints {
+            $0.top.trailing.equalToSuperview().inset(20)
+        }
+        
+        titleView.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.centerY.equalTo(closeButton.snp.centerY)
+        }
+        
+        dimmedView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(50)
-            make.left.equalTo(view.safeAreaLayoutGuide).inset(40)
+            make.top.equalTo(titleView.snp.bottom).offset(59)
+            make.left.equalToSuperview().inset(40)
         }
 
         textField.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(20)
-            make.left.right.equalTo(view.safeAreaLayoutGuide).inset(40)
+            make.left.right.equalToSuperview().inset(40)
 //            make.height.equalTo(44)
+        }
+        
+        paletteTitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(textField.snp.bottom).offset(52)
+            make.leading.trailing.equalToSuperview().inset(40)
         }
 
         colorPaletteStackView.snp.makeConstraints { make in
-            make.centerY.equalToSuperview().offset(-20)
+            make.top.equalTo(paletteTitleLabel.snp.bottom).offset(34)
             make.left.right.equalToSuperview().inset(40)
             make.height.equalTo(150)
         }
 
         createTagConfirmButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(45)
-            make.trailing.equalToSuperview().offset(-45)
-            make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
+            make.leading.trailing.equalToSuperview().inset(110)
+            make.top.equalTo(colorPaletteStackView.snp.bottom).offset(66)
+            make.height.equalTo(60)
         }
     }
 
@@ -175,5 +218,11 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     // TODO: color 버튼 클릭시 정보 전달 로직, 화면상 나타나는 표시(컬러 변경이 더 쉬울 것 같음)
     @objc private func colorButtonTapped(_ sender: UIButton) {
         guard let selectedColor = sender.backgroundColor else { return }
+    }
+}
+
+extension TagConfigurationViewController {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
     }
 }
