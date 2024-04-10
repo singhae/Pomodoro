@@ -11,8 +11,12 @@ import Then
 import UIKit
 
 final class TagConfigurationViewController: UIViewController, UITextFieldDelegate {
-    // MARK: 태그명 레이블
+    // TODO: Realm Tag write
+    private let database = DatabaseManager.shared
+    
+    private var selectedColorIndex: Int?
 
+    // MARK: 태그명 레이블
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "태그명"
@@ -46,7 +50,6 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         return textField
     }()
 
-    // TODO: 태그 생성 폰트 적용
     private lazy var createTagConfirmButton = PomodoroConfirmButton(title: "태그 생성",
                                                                     didTapHandler: saveTagButtonTapped)
 
@@ -88,9 +91,9 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     @objc private func dismissModal() {
         dismiss(animated: true, completion: nil)
     }
-
     @objc func saveTagButtonTapped() {
-        guard let tagText = textField.text, !tagText.isEmpty else {
+        guard let tagText = textField.text, !tagText.isEmpty,
+              let colorIndex = self.selectedColorIndex else {
             print("태그를 입력하세요.")
             PomodoroPopupBuilder()
                 .add(body: "태그를 입력해주십시오.")
@@ -103,9 +106,11 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
                 .show(on: self)
             return
         }
-        delegate?.createTag(tag: tagText)
+        delegate?.createTag(tagName: tagText, colorIndex: colorIndex, position: colorIndex)
         dismiss(animated: true, completion: nil)
     }
+
+    
 
     private func setupViews() {
         closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
@@ -173,16 +178,15 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
 
     private func setupColorPalette() {
         let colors: [UIColor] = [
-            .red,
-            .orange,
-            .yellow,
-            .green,
-            .blue,
-            .purple,
-            .brown,
-            .magenta,
+            .pomodoro.tagBackground1,
+            .pomodoro.tagBackground2,
+            .pomodoro.tagBackground3,
+            .pomodoro.tagBackground4,
+            .pomodoro.tagBackground5,
+            .pomodoro.tagBackground6,
+            .pomodoro.tagBackground7,
+            .pomodoro.blackMedium,
         ]
-
         // colorPaletteStackView 설정
         colorPaletteStackView.axis = .vertical
         colorPaletteStackView.distribution = .fillEqually
@@ -205,6 +209,8 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
                     make.size.equalTo(CGSize(width: 55, height: 55))
                 }
                 $0.addTarget(self, action: #selector(colorButtonTapped(_:)), for: .touchUpInside)
+                $0.tag = index  // 각 버튼에 태그 설정
+                print("tag:/(index)")
             }
             // 적절한 행에 버튼 추가
             if index < 4 {
@@ -217,7 +223,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
 
     // TODO: color 버튼 클릭시 정보 전달 로직, 화면상 나타나는 표시(컬러 변경이 더 쉬울 것 같음)
     @objc private func colorButtonTapped(_ sender: UIButton) {
-        guard let selectedColor = sender.backgroundColor else { return }
+        self.selectedColorIndex = sender.tag
     }
 }
 
