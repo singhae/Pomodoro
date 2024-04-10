@@ -67,6 +67,7 @@ final class TagModalViewController: UIViewController {
         setupViews()
         addTagsToStackView()
         closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
+        tagSettingCompletedButton.isEnabled = false // 첫 화면에는 설정완료 비활성화
 
 //        let tags = database.read(Tag.self)
 //        if tags.isEmpty {
@@ -130,12 +131,6 @@ final class TagModalViewController: UIViewController {
             make.top.equalTo(tagsStackView.snp.bottom).offset(60)
             make.height.equalTo(60)
         }
-        // TODO: 진세 확인버튼 제약조건 참고하기
-//        confirmButton.snp.makeConstraints { make in
-//                   make.centerX.equalToSuperview()
-//                   make.bottom.equalToSuperview().offset(-170)
-//                   make.width.equalTo(212)
-//           }
     }
 
     private func makeRowStackView() -> UIStackView {
@@ -213,7 +208,6 @@ final class TagModalViewController: UIViewController {
         }
 
         // MARK: `-` 버튼 추가
-
         let minusButton = UIButton().then {
             $0.setTitle("-", for: .normal)
             $0.setTitleColor(.black, for: .normal)
@@ -235,6 +229,7 @@ final class TagModalViewController: UIViewController {
         // MARK: minusButton에 삭제 액션 추가
 
 //        minusButton.addTarget(self, action: #selector(deletTag(_:)), for: .touchUpInside)
+        minusButton.addTarget(self, action: #selector(deletTag), for: .touchUpInside)
 
         return button
     }
@@ -247,6 +242,7 @@ final class TagModalViewController: UIViewController {
         let configureTagViewController = TagConfigurationViewController()
         configureTagViewController.modalPresentationStyle = .fullScreen
         present(configureTagViewController, animated: true)
+        tagSettingCompletedButton.isEnabled.toggle()
     }
 
     @objc private func didTapSettingCompleteButton() {
@@ -272,8 +268,9 @@ final class TagModalViewController: UIViewController {
             .show(on: self)
     }
 
-    // TODO: ellipsisbutton 클릭시 - 버튼 활성화 함수
+    // TODO: Editbutton 클릭시 - 버튼 활성화 함수
     @objc private func createMinusButton() {
+        tagSettingCompletedButton.isEnabled.toggle()
         for case let button as UIButton in tagsStackView.arrangedSubviews.flatMap(\.subviews) {
             if let minusButton = button.viewWithTag(101) as? UIButton {
                 minusButton.isHidden.toggle()
