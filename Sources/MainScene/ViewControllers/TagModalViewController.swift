@@ -24,27 +24,6 @@ final class TagModalViewController: UIViewController {
 
     private weak var selectionDelegate: TagModalViewControllerDelegate?
 
-    private func configureNavigationBar() {
-        navigationItem.title = "태그 설정"
-        let dismissButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .close, target: self, action: #selector(dismissModal)
-        )
-        navigationItem.rightBarButtonItem = dismissButtonItem
-    }
-
-    private let horizontalStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 10
-        $0.alignment = .center
-        $0.distribution = .equalSpacing
-    }
-
-    private let label = UILabel().then {
-        $0.text = ""
-        $0.textColor = .black
-        $0.font = UIFont.boldSystemFont(ofSize: 15)
-    }
-
     private lazy var editTagButton = UIButton().then {
         $0.setTitle("Edit", for: .normal)
         $0.titleLabel?.font = .pomodoroFont.heading5()
@@ -64,6 +43,19 @@ final class TagModalViewController: UIViewController {
         $0.distribution = .equalSpacing
     }
 
+    private let dimmedView = UIView().then {
+        $0.backgroundColor = .pomodoro.blackHigh.withAlphaComponent(0.2)
+    }
+
+    private let titleView = UILabel().then {
+        $0.text = "태그 설정"
+        $0.font = .pomodoroFont.heading4()
+    }
+
+    private let closeButton = UIButton().then {
+        $0.setImage(UIImage(named: "closeButton"), for: .normal)
+    }
+
     private lazy var tagSettingCompletedButton = PomodoroConfirmButton(
         title: "설정 완료",
 //        font: .pomodoroFont.heading2(), // TODO: font 변경
@@ -72,13 +64,11 @@ final class TagModalViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .pomodoro.background
-        navigationController?.isNavigationBarHidden = false
-        configureNavigationBar()
         setupViews()
         addTagsToStackView()
+        closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
 
-        let tags = database.read(Tag.self)
+//        let tags = database.read(Tag.self)
 //        if tags.isEmpty {
 //            database.write(
 //                Option(
@@ -93,28 +83,52 @@ final class TagModalViewController: UIViewController {
 
     private func setupViews() {
         view.backgroundColor = .pomodoro.background
-        view.addSubview(horizontalStackView)
-        view.addSubview(tagSettingCompletedButton)
-        view.addSubview(tagsStackView)
-        view.addSubview(tagSettingCompletedButton)
+        view.addSubview(dimmedView)
 
-        horizontalStackView.addArrangedSubview(label)
-        horizontalStackView.addArrangedSubview(editTagButton)
-        horizontalStackView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.topMargin).offset(20)
-            make.centerX.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(0.78)
+        let contentView = UIView().then {
+            $0.backgroundColor = .pomodoro.background
+            $0.layer.cornerRadius = 20
+        }
+        dimmedView.addSubview(contentView)
+
+        contentView.addSubview(closeButton)
+        contentView.addSubview(titleView)
+        contentView.addSubview(tagSettingCompletedButton)
+        contentView.addSubview(tagsStackView)
+        contentView.addSubview(tagSettingCompletedButton)
+
+        contentView.snp.makeConstraints {
+            $0.leading.trailing.bottom.equalToSuperview()
+            $0.height.equalTo(view.frame.height * 0.8)
         }
 
+        closeButton.snp.makeConstraints {
+            $0.top.trailing.equalToSuperview().inset(20)
+        }
+
+        titleView.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.centerY.equalTo(closeButton.snp.centerY)
+        }
+
+        dimmedView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+
+        contentView.addSubview(editTagButton)
+        editTagButton.snp.makeConstraints { make in
+            make.top.equalTo(titleView.snp.bottom).offset(20)
+            make.trailing.equalTo(closeButton.snp.trailing)
+        }
         tagsStackView.snp.makeConstraints { make in
-            make.top.equalTo(horizontalStackView.snp.bottom).offset(view.bounds.height * 0.1)
+            make.top.equalTo(editTagButton.snp.bottom).offset(30)
             make.centerX.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(0.8)
+            make.leading.trailing.equalToSuperview().inset(45)
         }
         tagSettingCompletedButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(45)
-            make.trailing.equalToSuperview().offset(-45)
-            make.bottom.equalToSuperview().offset(-(view.bounds.height * 0.2))
+            make.leading.trailing.equalToSuperview().inset(110)
+            make.top.equalTo(tagsStackView.snp.bottom).offset(60)
+            make.height.equalTo(60)
         }
         // TODO: 진세 확인버튼 제약조건 참고하기
 //        confirmButton.snp.makeConstraints { make in
@@ -124,50 +138,78 @@ final class TagModalViewController: UIViewController {
 //           }
     }
 
+    private func makeRowStackView() -> UIStackView {
+        UIStackView().then {
+            $0.axis = .horizontal
+            $0.spacing = 10
+            $0.alignment = .fill
+            $0.distribution = .fillEqually
+        }
+    }
+
     private func addTagsToStackView() {
         let buttonTitlesAndColors = [
             ("명상", UIColor.red),
             ("운동", UIColor.green),
-            ("공부", UIColor.purple),
-            ("+", UIColor.pomodoro.background),
-            ("+", UIColor.gray),
-            ("+", UIColor.gray),
-            ("+", UIColor.gray)
+            ("공부", UIColor.purple)
         ]
-        let tagsPerRow = [2, 3, 2]
+        let maxTags = 7
         var currentIndex = 0
+        let firstRow = makeRowStackView()
+        let secondRow = makeRowStackView()
+        let thirdRow = makeRowStackView()
 
-        for count in tagsPerRow {
-            let rowStackView = UIStackView().then {
-                $0.axis = .horizontal
-                $0.spacing = 10
-                $0.alignment = .fill
-                $0.distribution = .fillEqually
+        for item in 0 ... maxTags {
+            let button: UIButton
+            if (buttonTitlesAndColors.count - 1) < item {
+                button = createEmptyButton(borderColor: .pomodoro.tagBackground1)
+            } else {
+                let (title, color) = buttonTitlesAndColors[item]
+                button = createRoundButton(title: title, color: color)
             }
-
-            for _ in 0 ..< count {
-                let (title, color) = buttonTitlesAndColors[currentIndex % buttonTitlesAndColors.count]
-                let button = createRoundButton(title: title, color: color, borderColor: color)
-                rowStackView.addArrangedSubview(button)
-                currentIndex += 1
+            switch item {
+            case 0 ... 1:
+                firstRow.addArrangedSubview(button)
+            case 2 ... 4:
+                secondRow.addArrangedSubview(button)
+            case 5 ... 6:
+                thirdRow.addArrangedSubview(button)
+            default: 
+                break
             }
+        }
 
-            tagsStackView.addArrangedSubview(rowStackView)
+        tagsStackView.addArrangedSubview(firstRow)
+        tagsStackView.addArrangedSubview(secondRow)
+        tagsStackView.addArrangedSubview(thirdRow)
+    }
+
+    private func createEmptyButton(borderColor: UIColor) -> UIButton {
+        UIButton().then {
+            $0.titleLabel?.font = .pomodoroFont.heading4()
+            $0.backgroundColor = .clear // TODO: change colo
+            $0.layer.borderColor = borderColor.cgColor
+            $0.layer.borderWidth = 1
+            $0.layer.cornerRadius = 40
+            $0.setImage(UIImage(named: "plusButton"), for: .normal)
+            $0.snp.makeConstraints { make in
+                make.size.equalTo(CGSize(width: 80, height: 80))
+            }
+            $0.addTarget(self, action: #selector(presentTagEditViewController), for: .touchUpInside)
         }
     }
 
-    // TODO: 테두리 컬러 확인
-    private func createRoundButton(title: String, color: UIColor, borderColor _: UIColor) -> UIButton {
+    private func createRoundButton(title: String, color _: UIColor) -> UIButton {
         let button = UIButton().then {
             $0.setTitle(title, for: .normal)
             $0.titleLabel?.font = .pomodoroFont.heading4()
-            $0.backgroundColor = color
-            $0.setTitleColor(.white, for: .normal)
+            $0.backgroundColor = .pomodoro.tagBackground1 // TODO: change color
+            $0.setTitleColor(.pomodoro.tagTypo1, for: .normal) // TODO: change color
             $0.layer.cornerRadius = 40
             $0.snp.makeConstraints { make in
                 make.size.equalTo(CGSize(width: 80, height: 80))
             }
-            $0.addTarget(self, action: #selector(configureTag), for: .touchUpInside)
+            $0.addTarget(self, action: #selector(presentTagEditViewController), for: .touchUpInside)
         }
 
         // MARK: `-` 버튼 추가
@@ -201,10 +243,10 @@ final class TagModalViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
 
-    @objc func configureTag() {
+    @objc func presentTagEditViewController() {
         let configureTagViewController = TagConfigurationViewController()
-        let navigationController = UINavigationController(rootViewController: configureTagViewController)
-        present(navigationController, animated: true, completion: nil)
+        configureTagViewController.modalPresentationStyle = .fullScreen
+        present(configureTagViewController, animated: true)
     }
 
     @objc private func didTapSettingCompleteButton() {
