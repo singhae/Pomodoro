@@ -9,10 +9,18 @@ import PomodoroDesignSystem
 import SnapKit
 import Then
 import UIKit
+import Realm
+import RealmSwift
 
 final class TagConfigurationViewController: UIViewController, UITextFieldDelegate {
-    // MARK: 태그명 레이블
+    // TODO: Realm Tag write
+    private let database = DatabaseManager.shared
+    
+    private var selectedColorIndex: String?
+    private var selectedPosition: Int?
 
+
+    // MARK: 태그명 레이블
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "태그명"
@@ -46,7 +54,6 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         return textField
     }()
 
-    // TODO: 태그 생성 폰트 적용
     private lazy var createTagConfirmButton = PomodoroConfirmButton(title: "태그 생성",
                                                                     didTapHandler: saveTagButtonTapped)
 
@@ -88,9 +95,10 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     @objc private func dismissModal() {
         dismiss(animated: true, completion: nil)
     }
-
     @objc func saveTagButtonTapped() {
-        guard let tagText = textField.text, !tagText.isEmpty else {
+        guard let tagText = textField.text, !tagText.isEmpty,
+              let colorIndex = self.selectedColorIndex,
+              let position = self.selectedPosition else {
             print("태그를 입력하세요.")
             PomodoroPopupBuilder()
                 .add(body: "태그를 입력해주십시오.")
@@ -103,9 +111,11 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
                 .show(on: self)
             return
         }
-        delegate?.createTag(tag: tagText)
+        delegate?.createTag(tagName: tagText, colorIndex: colorIndex, position: position)
         dismiss(animated: true, completion: nil)
     }
+
+    
 
     private func setupViews() {
         closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
@@ -150,7 +160,6 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         textField.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(20)
             make.left.right.equalToSuperview().inset(40)
-            //            make.height.equalTo(44)
         }
 
         paletteTitleLabel.snp.makeConstraints { make in
@@ -173,16 +182,15 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
 
     private func setupColorPalette() {
         let colors: [UIColor] = [
-            .red,
-            .orange,
-            .yellow,
-            .green,
-            .blue,
-            .purple,
-            .brown,
-            .magenta,
+            .pomodoro.tagBackground1,
+            .pomodoro.tagBackground2,
+            .pomodoro.tagBackground3,
+            .pomodoro.tagBackground4,
+            .pomodoro.tagBackground5,
+            .pomodoro.tagBackground6,
+            .pomodoro.tagBackground7,
+            .pomodoro.blackMedium,
         ]
-
         // colorPaletteStackView 설정
         colorPaletteStackView.axis = .vertical
         colorPaletteStackView.distribution = .fillEqually
@@ -205,6 +213,8 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
                     make.size.equalTo(CGSize(width: 55, height: 55))
                 }
                 $0.addTarget(self, action: #selector(colorButtonTapped(_:)), for: .touchUpInside)
+                $0.tag = index  // 각 버튼에 태그 설정
+                print("tag:/(index)")
             }
             // 적절한 행에 버튼 추가
             if index < 4 {
@@ -216,9 +226,41 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
 
     // TODO: color 버튼 클릭시 정보 전달 로직, 화면상 나타나는 표시(컬러 변경이 더 쉬울 것 같음)
-    @objc private func colorButtonTapped(_ sender: UIButton) {
-        guard let selectedColor = sender.backgroundColor else { return }
+//    @objc private func colorButtonTapped(_ sender: UIButton) {
+//        self.selectedColorIndex = sender.tag
+//    }
+    
+    // 인덱스를 string으로 변환
+    func indexToString(_ index: Int) -> String {
+        switch index {
+        case 0:
+            return "one"
+        case 1:
+            return "two"
+        case 2:
+            return "three"
+        case 3:
+            return "four"
+        case 4:
+            return "five"
+        case 5:
+            return "six"
+        case 6:
+            return "seven"
+        case 7:
+            return "eight"
+        default:
+            return "unknown"
+        }
     }
+
+    @objc private func colorButtonTapped(_ sender: UIButton) {
+        let index = sender.tag // 버튼의 태그로부터 인덱스 얻기
+        let colorString = indexToString(index) // 인덱스를 문자열로 변환
+        self.selectedColorIndex = colorString // 변환 문자열을 저장
+        self.selectedPosition = index
+    }
+
 }
 
 extension TagConfigurationViewController {
