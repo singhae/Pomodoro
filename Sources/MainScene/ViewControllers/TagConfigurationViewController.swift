@@ -17,7 +17,6 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     private let database = DatabaseManager.shared
 
     private var selectedColorIndex: String?
-    private var selectedPosition: Int?
 
     // MARK: 태그명 레이블
 
@@ -108,7 +107,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
                     button: .confirm(
                         title: "확인",
                         action: { /* 확인 동작 */
-                            self.database.write(Tag(tagName: self.textField.text!, colorIndex: self.selectedColorIndex!, position: 1))
+                            self.database.write(Tag(tagName: self.textField.text!, colorIndex: self.selectedColorIndex!))
                         }
                     )
                 )
@@ -117,7 +116,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         }
         delegate?.createTag(tag: tagText, color: colorIndex)
         print("->>>>> ", tagText, colorIndex)
-        database.write(Tag(tagName: tagText, colorIndex: colorIndex, position: 1))
+        database.write(Tag(tagName: tagText, colorIndex: colorIndex))
         dismiss(animated: true, completion: nil)
     }
     private func setupViews() {

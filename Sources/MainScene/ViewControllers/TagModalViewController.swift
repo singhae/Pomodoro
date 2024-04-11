@@ -276,7 +276,7 @@ final class TagModalViewController: UIViewController {
 extension TagModalViewController: TagCreationDelegate {
     func createTag(tag: String , color: String) {
         // TODO: 추가된 태그 정보값 전달
-        database.write(Tag(tagName: tag, colorIndex: color, position: 1))
+        database.write(Tag(tagName: tag, colorIndex: color))
         print("=====> ", tag)
     }
 }
