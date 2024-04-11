@@ -146,7 +146,7 @@ final class TagModalViewController: UIViewController {
         let buttonTitlesAndColors = [
             ("명상", UIColor.red),
             ("운동", UIColor.green),
-            ("공부", UIColor.purple)
+            ("공부", UIColor.purple),
         ]
         let maxTags = 7
         var currentIndex = 0
@@ -169,7 +169,7 @@ final class TagModalViewController: UIViewController {
                 secondRow.addArrangedSubview(button)
             case 5 ... 6:
                 thirdRow.addArrangedSubview(button)
-            default: 
+            default:
                 break
             }
         }
@@ -208,6 +208,7 @@ final class TagModalViewController: UIViewController {
         }
 
         // MARK: `-` 버튼 추가
+
         let minusButton = UIButton().then {
             $0.setTitle("-", for: .normal)
             $0.setTitleColor(.black, for: .normal)
