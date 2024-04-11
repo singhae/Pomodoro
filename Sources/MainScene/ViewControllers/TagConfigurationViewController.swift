@@ -97,26 +97,29 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
 
     @objc func saveTagButtonTapped() {
+        let tags = database.write(Tag())
+        
         guard let tagText = textField.text, !tagText.isEmpty,
-              let colorIndex = selectedColorIndex,
-              let position = selectedPosition
-        else {
+              let colorIndex = self.selectedColorIndex else {
             print("태그를 입력하세요.")
             PomodoroPopupBuilder()
                 .add(body: "태그를 입력해주십시오.")
                 .add(
                     button: .confirm(
                         title: "확인",
-                        action: { /* 확인 동작 */ }
+                        action: { /* 확인 동작 */
+                            self.database.write(Tag(tagName: self.textField.text!, colorIndex: self.selectedColorIndex!, position: 1))
+                        }
                     )
                 )
                 .show(on: self)
             return
         }
-        delegate?.createTag(tagName: tagText, colorIndex: colorIndex, position: position)
+        delegate?.createTag(tag: tagText, color: colorIndex)
+        print("->>>>> ", tagText, colorIndex)
+        database.write(Tag(tagName: tagText, colorIndex: colorIndex, position: 1))
         dismiss(animated: true, completion: nil)
     }
-
     private func setupViews() {
         closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
         let contentView = UIView().then {
@@ -255,10 +258,9 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
 
     @objc private func colorButtonTapped(_ sender: UIButton) {
-        let index = sender.tag // 버튼의 태그로부터 인덱스 얻기
-        let colorString = indexToString(index) // 인덱스를 문자열로 변환
-        selectedColorIndex = colorString // 변환 문자열을 저장
-        selectedPosition = index
+        let index = sender.tag
+        let colorString = indexToString(index)
+        self.selectedColorIndex = colorString
     }
 }
 

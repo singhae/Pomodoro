@@ -12,9 +12,9 @@ import SnapKit
 import Then
 import UIKit
 
-protocol TagCreationDelegate: AnyObject {
-    func createTag(tagName: String, colorIndex: String, position: Int)
-}
+ protocol TagCreationDelegate: AnyObject {
+    func createTag(tag: String, color: String)
+ }
 
 protocol TagModalViewControllerDelegate: AnyObject {
     func tagSelected(tag: String)
@@ -23,6 +23,8 @@ protocol TagModalViewControllerDelegate: AnyObject {
 final class TagModalViewController: UIViewController {
     // realm database
     let database = DatabaseManager.shared
+    
+    let tags = DatabaseManager.shared.read(Tag.self)
 
     private weak var selectionDelegate: TagModalViewControllerDelegate?
 
@@ -134,7 +136,6 @@ final class TagModalViewController: UIViewController {
     private func addTagsToStackView() {
         let tagList = database.read(Tag.self)
         print("TAGLIST: \(tagList)")
-
         let maxTags = 7
 //        var currentIndex = 0
         let firstRow = makeRowStackView()
@@ -167,7 +168,6 @@ final class TagModalViewController: UIViewController {
         tagsStackView.addArrangedSubview(secondRow)
         tagsStackView.addArrangedSubview(thirdRow)
     }
-
     private func createRoundButton(title: String, colorIndex: String) -> UIButton {
         print(TagCase(rawValue: colorIndex)?.typoColor ?? .black)
 
@@ -273,19 +273,10 @@ final class TagModalViewController: UIViewController {
 }
 
 // MARK: - TagCreationDelegate
-
-// extension TagModalViewController: TagCreationDelegate {
-//    func createTag(tagName: String, colorIndex: String, position: Int) {
-//        // TODO: 추가된 태그 정보값 전달
-//        let tags = DatabaseManager.shared.write(Tag(tagName: "공부", colorIndex: "one", position: 1)
-//        )
-//    }
-// }
 extension TagModalViewController: TagCreationDelegate {
-    func createTag(tagName: String, colorIndex: String, position: Int) {
-        print("tagName")
-        let newTag = DatabaseManager.shared.write(Tag(tagName: tagName, colorIndex: colorIndex, position: position))
-        //       let tags = DatabaseManager.shared.write(Tag(tagName: "공부", colorIndex: "one", position: 0))
-        // DatabaseManager.shared.write(newTag)
+    func createTag(tag: String , color: String) {
+        // TODO: 추가된 태그 정보값 전달
+        database.write(Tag(tagName: tag, colorIndex: color, position: 1))
+        print("=====> ", tag)
     }
 }
