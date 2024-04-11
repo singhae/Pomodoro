@@ -22,6 +22,7 @@ final class TimeSettingViewController: UIViewController {
     private var endTime: String?
     private var isSelectedCellBiggerfive: Bool = true
     private let stepManager = PomodoroStepManger()
+    private let dataBase = DatabaseManager.shared
 
     private weak var delegate: TimeSettingViewControllerDelegate?
 
@@ -170,7 +171,11 @@ final class TimeSettingViewController: UIViewController {
     }
 
     private func didTapConfirmButton() {
+        print("selected : ", Int(centerIndexPath?.item ?? 0))
         delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
+        let datas = dataBase.createPomodoro(tag: "DEFUALT")
+        let data = dataBase.read(Pomodoro.self).last
+        print(data)
         // router 시작..입니다..?
         dismiss(animated: true)
     }

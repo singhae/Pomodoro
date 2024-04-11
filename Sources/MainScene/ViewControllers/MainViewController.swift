@@ -108,6 +108,7 @@ final class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         stepManager.setRouterObservers()
+        print(stepManager.router.currentStep)
         setUpPomodoroCurrentStepLabel()
         
         let documentsDirectory = NSSearchPathForDirectoriesInDomains(
@@ -257,11 +258,9 @@ extension MainViewController {
                 self.longPressGestureRecognizer.isEnabled = false
             }
 
-            stepManager.timeSetting.stopPomodoroStep(
-                currentTime: pomodoroTimeManager.currentTime
-            )
+            stepManager.timeSetting.setUptimeInCurrentStep()
+//            stepManager.timeSetting.setUpBreakTime()
             currentStepLabel.text = ""
-
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
             setupTimeAndTag()
 
@@ -377,6 +376,7 @@ extension MainViewController {
 
     private func setUpPomodoroCurrentStepLabel() {
         stepManager.timeSetting.setUptimeInCurrentStep()
+        // stepManager.realmSetting.setUpRealmInCurrentStep()
         currentStepLabel.text = stepManager.label.setUpLabelInCurrentStep(
             currentStep: stepManager.router.currentStep
         )
