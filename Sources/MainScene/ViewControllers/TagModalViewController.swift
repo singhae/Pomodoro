@@ -12,12 +12,10 @@ import UIKit
 import Realm
 import RealmSwift
 
-// protocol TagCreationDelegate: AnyObject {
-//    func createTag(tagName: String, colorIndex: String, position: Int)
-// }
-protocol TagCreationDelegate: AnyObject {
-    func createTag(tag: String)
-}
+ protocol TagCreationDelegate: AnyObject {
+    func createTag(tag: String, color: String)
+ }
+
 protocol TagModalViewControllerDelegate: AnyObject {
     func tagSelected(tag: String)
 }
@@ -141,10 +139,6 @@ final class TagModalViewController: UIViewController {
             ("운동", UIColor.green),
             ("공부", UIColor.purple)
         ]
-        
-//        database.write(Tag(tagName: "집중", colorIndex: 0, position: 0))
-//        database.write(Tag(tagName: "업무", colorIndex: 1, position: 1))
-//        
         let maxTags = 7
         var currentIndex = 0
         let firstRow = makeRowStackView()
@@ -284,27 +278,10 @@ final class TagModalViewController: UIViewController {
 }
 
 // MARK: - TagCreationDelegate
-
-//extension TagModalViewController: TagCreationDelegate {
-//    func createTag(tagName: String, colorIndex: String, position: Int) {
-//        // TODO: 추가된 태그 정보값 전달
-//        let tags = DatabaseManager.shared.write(Tag(tagName: "공부", colorIndex: "one", position: 1)
-//        )
-//    }
-//}
-//extension TagModalViewController: TagCreationDelegate {
-//    func createTag(tagName: String, colorIndex: String, position: Int) {
-//        print("tagName")
-//        let newTag = DatabaseManager.shared.write(Tag(tagName: tagName, colorIndex: colorIndex, position: position))
-// //       let tags = DatabaseManager.shared.write(Tag(tagName: "공부", colorIndex: "one", position: 0))
-//       // DatabaseManager.shared.write(newTag)
-//    }
-//}
-
 extension TagModalViewController: TagCreationDelegate {
-    func createTag(tag: String) {
+    func createTag(tag: String , color: String) {
         // TODO: 추가된 태그 정보값 전달
-        database.write(Tag(tagName: tag, colorIndex: "one", position: 1))
+        database.write(Tag(tagName: tag, colorIndex: color, position: 1))
         print("=====> ", tag)
     }
 }
