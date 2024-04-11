@@ -6,11 +6,11 @@
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
 import PomodoroDesignSystem
+import Realm
+import RealmSwift
 import SnapKit
 import Then
 import UIKit
-import Realm
-import RealmSwift
 
  protocol TagCreationDelegate: AnyObject {
     func createTag(tag: String, color: String)
@@ -134,24 +134,23 @@ final class TagModalViewController: UIViewController {
     }
 
     private func addTagsToStackView() {
-        let buttonTitlesAndColors = [
-            ("명상", UIColor.red),
-            ("운동", UIColor.green),
-            ("공부", UIColor.purple)
-        ]
+        let tagList = database.read(Tag.self)
+        print("TAGLIST: \(tagList)")
         let maxTags = 7
-        var currentIndex = 0
+//        var currentIndex = 0
         let firstRow = makeRowStackView()
         let secondRow = makeRowStackView()
         let thirdRow = makeRowStackView()
 
         for item in 0 ... maxTags {
             let button: UIButton
-            if (buttonTitlesAndColors.count - 1) < item {
+
+            if (tagList.count - 1) < item {
                 button = createEmptyButton(borderColor: .pomodoro.tagBackground1)
             } else {
-                let (title, color) = buttonTitlesAndColors[item]
-                button = createRoundButton(title: title, color: color)
+                let title = tagList[item].tagName
+                let index = tagList[item].colorIndex
+                button = createRoundButton(title: title, colorIndex: index)
             }
             switch item {
             case 0 ... 1:
@@ -160,7 +159,7 @@ final class TagModalViewController: UIViewController {
                 secondRow.addArrangedSubview(button)
             case 5 ... 6:
                 thirdRow.addArrangedSubview(button)
-            default: 
+            default:
                 break
             }
         }
@@ -169,19 +168,14 @@ final class TagModalViewController: UIViewController {
         tagsStackView.addArrangedSubview(secondRow)
         tagsStackView.addArrangedSubview(thirdRow)
     }
+    private func createRoundButton(title: String, colorIndex: String) -> UIButton {
+        print(TagCase(rawValue: colorIndex)?.typoColor ?? .black)
 
-    private func createRoundButton(title: String, color _: UIColor) -> UIButton {
-        var tagColors: [String: UIColor] = [:] // MARK: tag color 사용
-        for tag in tags {
-            let color = tag.setupTagTypoColor()
-            tagColors[tag.tagName] = color
-        }
         let button = UIButton().then {
             $0.setTitle(title, for: .normal)
             $0.titleLabel?.font = .pomodoroFont.heading4()
-            $0.backgroundColor = .pomodoro.tagBackground1 // TODO: change color
-//            $0.backgroundColor = tagColors[tag.tagName]
-            $0.setTitleColor(.pomodoro.tagTypo1, for: .normal) // TODO: change color
+            $0.backgroundColor = TagCase(rawValue: colorIndex)?.backgroundColor ?? .black
+            $0.setTitleColor(TagCase(rawValue: colorIndex)?.typoColor ?? .black, for: .normal)
             $0.layer.cornerRadius = 40
             $0.snp.makeConstraints { make in
                 make.size.equalTo(CGSize(width: 80, height: 80))
@@ -190,6 +184,7 @@ final class TagModalViewController: UIViewController {
         }
 
         // MARK: `-` 버튼 추가
+
         let minusButton = UIButton().then {
             $0.setTitle("-", for: .normal)
             $0.setTitleColor(.black, for: .normal)
@@ -209,6 +204,7 @@ final class TagModalViewController: UIViewController {
         }
 
         // MARK: minusButton에 삭제 액션 추가
+
         minusButton.addTarget(self, action: #selector(deletTag), for: .touchUpInside)
 
         return button
@@ -228,7 +224,6 @@ final class TagModalViewController: UIViewController {
             $0.addTarget(self, action: #selector(presentTagEditViewController), for: .touchUpInside)
         }
     }
-
 
     @objc private func dismissModal() {
         dismiss(animated: true, completion: nil)

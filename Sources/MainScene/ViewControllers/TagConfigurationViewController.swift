@@ -6,21 +6,21 @@
 //
 
 import PomodoroDesignSystem
+import Realm
+import RealmSwift
 import SnapKit
 import Then
 import UIKit
-import Realm
-import RealmSwift
 
 final class TagConfigurationViewController: UIViewController, UITextFieldDelegate {
     // TODO: Realm Tag write
     private let database = DatabaseManager.shared
-    
+
     private var selectedColorIndex: String?
     private var selectedPosition: Int?
 
-
     // MARK: 태그명 레이블
+
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "태그명"
@@ -120,9 +120,6 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         database.write(Tag(tagName: tagText, colorIndex: colorIndex, position: 1))
         dismiss(animated: true, completion: nil)
     }
-    
-    
-
     private func setupViews() {
         closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
         let contentView = UIView().then {
@@ -219,7 +216,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
                     make.size.equalTo(CGSize(width: 55, height: 55))
                 }
                 $0.addTarget(self, action: #selector(colorButtonTapped(_:)), for: .touchUpInside)
-                $0.tag = index  // 각 버튼에 태그 설정
+                $0.tag = index // 각 버튼에 태그 설정
                 print("tag:/(index)")
             }
             // 적절한 행에 버튼 추가
@@ -235,7 +232,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
 //    @objc private func colorButtonTapped(_ sender: UIButton) {
 //        self.selectedColorIndex = sender.tag
 //    }
-    
+
     // 인덱스를 string으로 변환
     func indexToString(_ index: Int) -> String {
         switch index {
@@ -265,7 +262,6 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         let colorString = indexToString(index)
         self.selectedColorIndex = colorString
     }
-
 }
 
 extension TagConfigurationViewController {

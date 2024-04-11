@@ -269,7 +269,7 @@ extension MainViewController {
             sheet.detents = [
                 .custom { context in
                     context.maximumDetentValue * 0.95
-                }
+                },
             ]
             sheet.preferredCornerRadius = 40
             sheet.prefersScrollingExpandsWhenScrolledToEdge = true
@@ -306,6 +306,7 @@ extension MainViewController {
             startTimerLabel.isHidden = false
             startTimerButton.isHidden = false
             pressToSetButton.isHidden = false
+
             timeLabelTapGestureRecognizer.isEnabled = true
         }
     }
@@ -372,6 +373,11 @@ extension MainViewController {
         currentStepLabel.text = stepManager.label.setUpLabelInCurrentStep(
             currentStep: stepManager.router.currentStep
         )
+        if stepManager.router.currentStep != .start {
+            pressToSetButton.isHidden = true
+        } else {
+            pressToSetButton.isHidden = false
+        }
     }
 }
 
