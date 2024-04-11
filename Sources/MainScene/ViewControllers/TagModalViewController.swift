@@ -12,10 +12,12 @@ import UIKit
 import Realm
 import RealmSwift
 
+// protocol TagCreationDelegate: AnyObject {
+//    func createTag(tagName: String, colorIndex: String, position: Int)
+// }
 protocol TagCreationDelegate: AnyObject {
-    func createTag(tagName: String, colorIndex: String, position: Int)
+    func createTag(tag: String)
 }
-
 protocol TagModalViewControllerDelegate: AnyObject {
     func tagSelected(tag: String)
 }
@@ -23,6 +25,8 @@ protocol TagModalViewControllerDelegate: AnyObject {
 final class TagModalViewController: UIViewController {
     // realm database
     let database = DatabaseManager.shared
+    
+    let tags = DatabaseManager.shared.read(Tag.self)
 
     private weak var selectionDelegate: TagModalViewControllerDelegate?
 
@@ -173,10 +177,16 @@ final class TagModalViewController: UIViewController {
     }
 
     private func createRoundButton(title: String, color _: UIColor) -> UIButton {
+        var tagColors: [String: UIColor] = [:] // MARK: tag color 사용
+        for tag in tags {
+            let color = tag.setupTagTypoColor()
+            tagColors[tag.tagName] = color
+        }
         let button = UIButton().then {
             $0.setTitle(title, for: .normal)
             $0.titleLabel?.font = .pomodoroFont.heading4()
             $0.backgroundColor = .pomodoro.tagBackground1 // TODO: change color
+//            $0.backgroundColor = tagColors[tag.tagName]
             $0.setTitleColor(.pomodoro.tagTypo1, for: .normal) // TODO: change color
             $0.layer.cornerRadius = 40
             $0.snp.makeConstraints { make in
@@ -282,11 +292,19 @@ final class TagModalViewController: UIViewController {
 //        )
 //    }
 //}
+//extension TagModalViewController: TagCreationDelegate {
+//    func createTag(tagName: String, colorIndex: String, position: Int) {
+//        print("tagName")
+//        let newTag = DatabaseManager.shared.write(Tag(tagName: tagName, colorIndex: colorIndex, position: position))
+// //       let tags = DatabaseManager.shared.write(Tag(tagName: "공부", colorIndex: "one", position: 0))
+//       // DatabaseManager.shared.write(newTag)
+//    }
+//}
+
 extension TagModalViewController: TagCreationDelegate {
-    func createTag(tagName: String, colorIndex: String, position: Int) {
-        print("tagName")
-        let newTag = DatabaseManager.shared.write(Tag(tagName: tagName, colorIndex: colorIndex, position: position))
- //       let tags = DatabaseManager.shared.write(Tag(tagName: "공부", colorIndex: "one", position: 0))
-       // DatabaseManager.shared.write(newTag)
+    func createTag(tag: String) {
+        // TODO: 추가된 태그 정보값 전달
+        database.write(Tag(tagName: tag, colorIndex: "one", position: 1))
+        print("=====> ", tag)
     }
 }

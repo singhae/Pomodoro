@@ -95,26 +95,51 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     @objc private func dismissModal() {
         dismiss(animated: true, completion: nil)
     }
+//    @objc func saveTagButtonTapped() {
+//        guard let tagText = textField.text, !tagText.isEmpty,
+//              let colorIndex = self.selectedColorIndex,
+//              let position = self.selectedPosition else {
+//            print("태그를 입력하세요.")
+//            PomodoroPopupBuilder()
+//                .add(body: "태그를 입력해주십시오.")
+//                .add(
+//                    button: .confirm(
+//                        title: "확인",
+//                        action: { /* 확인 동작 */ }
+//                    )
+//                )
+//                .show(on: self)
+//            return
+//        }
+//        delegate?.createTag(tagName: tagText, colorIndex: colorIndex, position: position)
+//        dismiss(animated: true, completion: nil)
+//    }
+    
     @objc func saveTagButtonTapped() {
+        let tags = database.write(Tag())
+        
         guard let tagText = textField.text, !tagText.isEmpty,
-              let colorIndex = self.selectedColorIndex,
-              let position = self.selectedPosition else {
+              let colorIndex = self.selectedColorIndex else {
             print("태그를 입력하세요.")
             PomodoroPopupBuilder()
                 .add(body: "태그를 입력해주십시오.")
                 .add(
                     button: .confirm(
                         title: "확인",
-                        action: { /* 확인 동작 */ }
+                        action: { /* 확인 동작 */
+                            self.database.write(Tag(tagName: self.textField.text!, colorIndex:  self.selectedColorIndex, position: 1))
+                        }
                     )
                 )
                 .show(on: self)
             return
         }
-        delegate?.createTag(tagName: tagText, colorIndex: colorIndex, position: position)
+        delegate?.createTag(tag: tagText)
+        print("->>>>> ", tagText)
+        database.write(Tag(tagName: tagText, colorIndex: "four", position: 1))
         dismiss(animated: true, completion: nil)
     }
-
+    
     
 
     private func setupViews() {
@@ -258,7 +283,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         let index = sender.tag // 버튼의 태그로부터 인덱스 얻기
         let colorString = indexToString(index) // 인덱스를 문자열로 변환
         self.selectedColorIndex = colorString // 변환 문자열을 저장
-        self.selectedPosition = index
+        print("\(selectedColorIndex)")
     }
 
 }
