@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum PomodoroTimerStep {
+enum PomodoroTimerStep: Equatable {
     case start
     case focus(count: Int)
     case rest(count: Int)

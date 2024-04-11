@@ -6,11 +6,11 @@
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
 import PomodoroDesignSystem
+import Realm
+import RealmSwift
 import SnapKit
 import Then
 import UIKit
-import Realm
-import RealmSwift
 
 protocol TagCreationDelegate: AnyObject {
     func createTag(tagName: String, colorIndex: String, position: Int)
@@ -132,28 +132,24 @@ final class TagModalViewController: UIViewController {
     }
 
     private func addTagsToStackView() {
-        let buttonTitlesAndColors = [
-            ("명상", UIColor.red),
-            ("운동", UIColor.green),
-            ("공부", UIColor.purple)
-        ]
-        
-//        database.write(Tag(tagName: "집중", colorIndex: 0, position: 0))
-//        database.write(Tag(tagName: "업무", colorIndex: 1, position: 1))
-//        
+        let tagList = database.read(Tag.self)
+        print("TAGLIST: \(tagList)")
+
         let maxTags = 7
-        var currentIndex = 0
+//        var currentIndex = 0
         let firstRow = makeRowStackView()
         let secondRow = makeRowStackView()
         let thirdRow = makeRowStackView()
 
         for item in 0 ... maxTags {
             let button: UIButton
-            if (buttonTitlesAndColors.count - 1) < item {
+
+            if (tagList.count - 1) < item {
                 button = createEmptyButton(borderColor: .pomodoro.tagBackground1)
             } else {
-                let (title, color) = buttonTitlesAndColors[item]
-                button = createRoundButton(title: title, color: color)
+                let title = tagList[item].tagName
+                let index = tagList[item].colorIndex
+                button = createRoundButton(title: title, colorIndex: index)
             }
             switch item {
             case 0 ... 1:
@@ -162,7 +158,7 @@ final class TagModalViewController: UIViewController {
                 secondRow.addArrangedSubview(button)
             case 5 ... 6:
                 thirdRow.addArrangedSubview(button)
-            default: 
+            default:
                 break
             }
         }
@@ -172,12 +168,14 @@ final class TagModalViewController: UIViewController {
         tagsStackView.addArrangedSubview(thirdRow)
     }
 
-    private func createRoundButton(title: String, color _: UIColor) -> UIButton {
+    private func createRoundButton(title: String, colorIndex: String) -> UIButton {
+        print(TagCase(rawValue: colorIndex)?.typoColor ?? .black)
+
         let button = UIButton().then {
             $0.setTitle(title, for: .normal)
             $0.titleLabel?.font = .pomodoroFont.heading4()
-            $0.backgroundColor = .pomodoro.tagBackground1 // TODO: change color
-            $0.setTitleColor(.pomodoro.tagTypo1, for: .normal) // TODO: change color
+            $0.backgroundColor = TagCase(rawValue: colorIndex)?.backgroundColor ?? .black
+            $0.setTitleColor(TagCase(rawValue: colorIndex)?.typoColor ?? .black, for: .normal)
             $0.layer.cornerRadius = 40
             $0.snp.makeConstraints { make in
                 make.size.equalTo(CGSize(width: 80, height: 80))
@@ -186,6 +184,7 @@ final class TagModalViewController: UIViewController {
         }
 
         // MARK: `-` 버튼 추가
+
         let minusButton = UIButton().then {
             $0.setTitle("-", for: .normal)
             $0.setTitleColor(.black, for: .normal)
@@ -205,6 +204,7 @@ final class TagModalViewController: UIViewController {
         }
 
         // MARK: minusButton에 삭제 액션 추가
+
         minusButton.addTarget(self, action: #selector(deletTag), for: .touchUpInside)
 
         return button
@@ -224,7 +224,6 @@ final class TagModalViewController: UIViewController {
             $0.addTarget(self, action: #selector(presentTagEditViewController), for: .touchUpInside)
         }
     }
-
 
     @objc private func dismissModal() {
         dismiss(animated: true, completion: nil)
@@ -275,18 +274,18 @@ final class TagModalViewController: UIViewController {
 
 // MARK: - TagCreationDelegate
 
-//extension TagModalViewController: TagCreationDelegate {
+// extension TagModalViewController: TagCreationDelegate {
 //    func createTag(tagName: String, colorIndex: String, position: Int) {
 //        // TODO: 추가된 태그 정보값 전달
 //        let tags = DatabaseManager.shared.write(Tag(tagName: "공부", colorIndex: "one", position: 1)
 //        )
 //    }
-//}
+// }
 extension TagModalViewController: TagCreationDelegate {
     func createTag(tagName: String, colorIndex: String, position: Int) {
         print("tagName")
         let newTag = DatabaseManager.shared.write(Tag(tagName: tagName, colorIndex: colorIndex, position: position))
- //       let tags = DatabaseManager.shared.write(Tag(tagName: "공부", colorIndex: "one", position: 0))
-       // DatabaseManager.shared.write(newTag)
+        //       let tags = DatabaseManager.shared.write(Tag(tagName: "공부", colorIndex: "one", position: 0))
+        // DatabaseManager.shared.write(newTag)
     }
 }
