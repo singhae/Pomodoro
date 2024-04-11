@@ -11,10 +11,8 @@ import Realm
 import RealmSwift
 import UIKit
 
-//enum TagCase: String {
-enum TagCase: Int {
-//    case one, two, three, four, five, six, seven, eight
-    case one = 1, two, three, four, five, six, seven, eight
+enum TagCase: String {
+    case one, two, three, four, five, six, seven, eight
 
     var backgroundColor: UIColor {
         switch self {
@@ -61,12 +59,10 @@ enum TagCase: Int {
 
 class Tag: Object {
     @Persisted(primaryKey: true) var tagName: String
-//    @Persisted var colorIndex: String
-    @Persisted var colorIndex: Int
+    @Persisted var colorIndex: String
     @Persisted var position: Int
 
-//    convenience init(tagName: String, colorIndex: String, position: Int) {
-        convenience init(tagName: String, colorIndex: Int, position: Int) {
+    convenience init(tagName: String, colorIndex: String, position: Int) {
         self.init()
         self.tagName = tagName
         self.colorIndex = colorIndex
