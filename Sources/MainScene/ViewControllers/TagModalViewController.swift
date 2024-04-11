@@ -9,9 +9,11 @@ import PomodoroDesignSystem
 import SnapKit
 import Then
 import UIKit
+import Realm
+import RealmSwift
 
 protocol TagCreationDelegate: AnyObject {
-    func createTag(tag: String)
+    func createTag(tagName: String, colorIndex: String, position: Int)
 }
 
 protocol TagModalViewControllerDelegate: AnyObject {
@@ -29,7 +31,6 @@ final class TagModalViewController: UIViewController {
         $0.titleLabel?.font = .pomodoroFont.heading5()
         $0.setTitleColor(.pomodoro.blackHigh, for: .normal)
         $0.contentMode = .scaleAspectFit
-//        $0.tintColor = .black
         $0.backgroundColor = .pomodoro.background
         $0.layer.cornerRadius = 15
         $0.clipsToBounds = true
@@ -58,7 +59,6 @@ final class TagModalViewController: UIViewController {
 
     private lazy var tagSettingCompletedButton = PomodoroConfirmButton(
         title: "설정 완료",
-//        font: .pomodoroFont.heading2(), // TODO: font 변경
         didTapHandler: didTapSettingCompleteButton
     )
 
@@ -68,18 +68,7 @@ final class TagModalViewController: UIViewController {
         addTagsToStackView()
         closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
         tagSettingCompletedButton.isEnabled = false // 첫 화면에는 설정완료 비활성화
-
-//        let tags = database.read(Tag.self)
-//        if tags.isEmpty {
-//            database.write(
-//                Option(
-//                    shortBreakTime: 5,
-//                    longBreakTime: 20,
-//                    isVibrate: false,
-//                    isTimerEffect: true
-//                )
-//            )
-//        }
+        database.getLocationOfDefaultRealm()
     }
 
     private func setupViews() {
@@ -148,6 +137,10 @@ final class TagModalViewController: UIViewController {
             ("운동", UIColor.green),
             ("공부", UIColor.purple),
         ]
+        
+//        database.write(Tag(tagName: "집중", colorIndex: 0, position: 0))
+//        database.write(Tag(tagName: "업무", colorIndex: 1, position: 1))
+//        
         let maxTags = 7
         var currentIndex = 0
         let firstRow = makeRowStackView()
@@ -177,21 +170,6 @@ final class TagModalViewController: UIViewController {
         tagsStackView.addArrangedSubview(firstRow)
         tagsStackView.addArrangedSubview(secondRow)
         tagsStackView.addArrangedSubview(thirdRow)
-    }
-
-    private func createEmptyButton(borderColor: UIColor) -> UIButton {
-        UIButton().then {
-            $0.titleLabel?.font = .pomodoroFont.heading4()
-            $0.backgroundColor = .clear // TODO: change colo
-            $0.layer.borderColor = borderColor.cgColor
-            $0.layer.borderWidth = 1
-            $0.layer.cornerRadius = 40
-            $0.setImage(UIImage(named: "plusButton"), for: .normal)
-            $0.snp.makeConstraints { make in
-                make.size.equalTo(CGSize(width: 80, height: 80))
-            }
-            $0.addTarget(self, action: #selector(presentTagEditViewController), for: .touchUpInside)
-        }
     }
 
     private func createRoundButton(title: String, color _: UIColor) -> UIButton {
@@ -228,12 +206,26 @@ final class TagModalViewController: UIViewController {
         }
 
         // MARK: minusButton에 삭제 액션 추가
-
-//        minusButton.addTarget(self, action: #selector(deletTag(_:)), for: .touchUpInside)
         minusButton.addTarget(self, action: #selector(deletTag), for: .touchUpInside)
 
         return button
     }
+
+    private func createEmptyButton(borderColor: UIColor) -> UIButton {
+        UIButton().then {
+            $0.titleLabel?.font = .pomodoroFont.heading4()
+            $0.backgroundColor = .clear // TODO: change colo
+            $0.layer.borderColor = borderColor.cgColor
+            $0.layer.borderWidth = 1
+            $0.layer.cornerRadius = 40
+            $0.setImage(UIImage(named: "plusButton"), for: .normal)
+            $0.snp.makeConstraints { make in
+                make.size.equalTo(CGSize(width: 80, height: 80))
+            }
+            $0.addTarget(self, action: #selector(presentTagEditViewController), for: .touchUpInside)
+        }
+    }
+
 
     @objc private func dismissModal() {
         dismiss(animated: true, completion: nil)
@@ -254,6 +246,7 @@ final class TagModalViewController: UIViewController {
 
     // TODO: Tag 삭제 버튼 연결
     @objc private func deletTag() {
+        tagSettingCompletedButton.isEnabled.toggle()
         PomodoroPopupBuilder()
             .add(title: "태그 삭제")
             .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
@@ -283,9 +276,18 @@ final class TagModalViewController: UIViewController {
 
 // MARK: - TagCreationDelegate
 
+//extension TagModalViewController: TagCreationDelegate {
+//    func createTag(tagName: String, colorIndex: String, position: Int) {
+//        // TODO: 추가된 태그 정보값 전달
+//        let tags = DatabaseManager.shared.write(Tag(tagName: "공부", colorIndex: "one", position: 1)
+//        )
+//    }
+//}
 extension TagModalViewController: TagCreationDelegate {
-    func createTag(tag: String) {
-        TagCollectionViewData.data.append(tag)
-        // TODO: 추가된 태그 정보값 전달
+    func createTag(tagName: String, colorIndex: String, position: Int) {
+        print("tagName")
+        let newTag = DatabaseManager.shared.write(Tag(tagName: tagName, colorIndex: colorIndex, position: position))
+ //       let tags = DatabaseManager.shared.write(Tag(tagName: "공부", colorIndex: "one", position: 0))
+       // DatabaseManager.shared.write(newTag)
     }
 }
