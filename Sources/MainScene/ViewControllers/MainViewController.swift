@@ -12,7 +12,6 @@ import UIKit
 
 final class MainViewController: UIViewController {
     let pomodoroTimeManager = PomodoroTimeManager.shared
-    let database = DatabaseManager.shared
     let onBoardingManager = OnboardingManager.shared
 
     private var isOnboarding: Bool = true
@@ -168,7 +167,7 @@ final class MainViewController: UIViewController {
         if pomodoroTimeManager.isRestored == true {
             pomodoroTimeManager.setupIsRestored(bool: false)
             // 다시 정보 불러왔을 때 타이머가 진행 중이라면 가장 마지막 뽀모도로 불러오기
-            currentPomodoro = database.read(Pomodoro.self).last
+            currentPomodoro = try? RealmService.read(Pomodoro.self).last
             startTimer()
         }
     }
@@ -240,9 +239,11 @@ extension MainViewController {
 
             longPressTimer?.invalidate()
 
-            database.update(currentPomodoro!) { pomodoro in
-                pomodoro.phase = 0
-                pomodoro.isSuccess = false
+            if let currentPomodoro {
+                RealmService.update(currentPomodoro) { pomodoro in
+                    pomodoro.phase = 0
+                    pomodoro.isSuccess = false
+                }
             }
 
             pomodoroTimeManager.stopTimer {
@@ -324,13 +325,13 @@ extension MainViewController {
 
         // 강제종료 이후 정보 불러온 상황이 아닐때 (클릭 상황)
         if pomodoroTimeManager.isRestored == false {
-            let prevPomodoro = database.read(Pomodoro.self).last
+            let prevPomodoro = try? RealmService.read(Pomodoro.self).last
 
             // 이전 뽀모도로 끝난 경우
             if prevPomodoro?.phase == 0 || prevPomodoro == nil {
-                database.createPomodoro(tag: "임시")
+                RealmService.createPomodoro(tag: "임시")
             }
-            currentPomodoro = database.read(Pomodoro.self).last
+            currentPomodoro = try? RealmService.read(Pomodoro.self).last
         }
 
         pomodoroTimeManager.startTimer(timerBlock: { [self] timer, currentTime, maxTime in
@@ -342,7 +343,7 @@ extension MainViewController {
             if minutes == 0, seconds == 0 {
                 timer.invalidate()
                 setupUIWhenTimerStart(isStopped: true)
-                database.update(currentPomodoro!) { updatedPomodoro in
+                RealmService.update(currentPomodoro!) { updatedPomodoro in
                     updatedPomodoro.phase += 1
                     if updatedPomodoro.phase == 5 {
                         updatedPomodoro.isSuccess = true

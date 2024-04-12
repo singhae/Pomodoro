@@ -12,20 +12,15 @@ import SnapKit
 import Then
 import UIKit
 
- protocol TagCreationDelegate: AnyObject {
+protocol TagCreationDelegate: AnyObject {
     func createTag(tag: String, color: String)
- }
+}
 
 protocol TagModalViewControllerDelegate: AnyObject {
     func tagSelected(tag: String)
 }
 
 final class TagModalViewController: UIViewController {
-    // realm database
-    let database = DatabaseManager.shared
-    
-    let tags = DatabaseManager.shared.read(Tag.self)
-
     private weak var selectionDelegate: TagModalViewControllerDelegate?
 
     private lazy var editTagButton = UIButton().then {
@@ -70,7 +65,6 @@ final class TagModalViewController: UIViewController {
         addTagsToStackView()
         closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
         tagSettingCompletedButton.isEnabled = false // 첫 화면에는 설정완료 비활성화
-        database.getLocationOfDefaultRealm()
     }
 
     private func setupViews() {
@@ -134,7 +128,7 @@ final class TagModalViewController: UIViewController {
     }
 
     private func addTagsToStackView() {
-        let tagList = database.read(Tag.self)
+        let tagList = try? RealmService.read(Tag.self)
         print("TAGLIST: \(tagList)")
         let maxTags = 7
 //        var currentIndex = 0
@@ -145,12 +139,12 @@ final class TagModalViewController: UIViewController {
         for item in 0 ... maxTags {
             let button: UIButton
 
-            if (tagList.count - 1) < item {
-                button = createEmptyButton(borderColor: .pomodoro.tagBackground1)
-            } else {
+            if let tagList, tagList.count > item {
                 let title = tagList[item].tagName
                 let index = tagList[item].colorIndex
                 button = createRoundButton(title: title, colorIndex: index)
+            } else {
+                button = createEmptyButton(borderColor: .pomodoro.tagBackground1)
             }
             switch item {
             case 0 ... 1:
@@ -168,6 +162,7 @@ final class TagModalViewController: UIViewController {
         tagsStackView.addArrangedSubview(secondRow)
         tagsStackView.addArrangedSubview(thirdRow)
     }
+
     private func createRoundButton(title: String, colorIndex: String) -> UIButton {
         print(TagCase(rawValue: colorIndex)?.typoColor ?? .black)
 
@@ -273,10 +268,11 @@ final class TagModalViewController: UIViewController {
 }
 
 // MARK: - TagCreationDelegate
+
 extension TagModalViewController: TagCreationDelegate {
-    func createTag(tag: String , color: String) {
+    func createTag(tag: String, color: String) {
         // TODO: 추가된 태그 정보값 전달
-        database.write(Tag(tagName: tag, colorIndex: color, position: 1))
+        RealmService.write(Tag(tagName: tag, colorIndex: color))
         print("=====> ", tag)
     }
 }

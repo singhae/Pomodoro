@@ -14,7 +14,6 @@ import UIKit
 
 final class TagConfigurationViewController: UIViewController, UITextFieldDelegate {
     // TODO: Realm Tag write
-    private let database = DatabaseManager.shared
 
     private var selectedColorIndex: String?
     private var selectedPosition: Int?
@@ -97,10 +96,11 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
 
     @objc func saveTagButtonTapped() {
-        let tags = database.write(Tag())
-        
+        RealmService.write(Tag())
+
         guard let tagText = textField.text, !tagText.isEmpty,
-              let colorIndex = self.selectedColorIndex else {
+              let colorIndex = selectedColorIndex
+        else {
             print("태그를 입력하세요.")
             PomodoroPopupBuilder()
                 .add(body: "태그를 입력해주십시오.")
@@ -108,7 +108,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
                     button: .confirm(
                         title: "확인",
                         action: { /* 확인 동작 */
-                            self.database.write(Tag(tagName: self.textField.text!, colorIndex: self.selectedColorIndex!, position: 1))
+                            RealmService.write(Tag(tagName: self.textField.text!, colorIndex: self.selectedColorIndex!))
                         }
                     )
                 )
@@ -117,9 +117,10 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         }
         delegate?.createTag(tag: tagText, color: colorIndex)
         print("->>>>> ", tagText, colorIndex)
-        database.write(Tag(tagName: tagText, colorIndex: colorIndex, position: 1))
+        RealmService.write(Tag(tagName: tagText, colorIndex: colorIndex))
         dismiss(animated: true, completion: nil)
     }
+
     private func setupViews() {
         closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
         let contentView = UIView().then {
@@ -260,7 +261,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     @objc private func colorButtonTapped(_ sender: UIButton) {
         let index = sender.tag
         let colorString = indexToString(index)
-        self.selectedColorIndex = colorString
+        selectedColorIndex = colorString
     }
 }
 
