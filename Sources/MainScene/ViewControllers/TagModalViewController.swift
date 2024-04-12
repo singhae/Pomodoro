@@ -12,9 +12,9 @@ import SnapKit
 import Then
 import UIKit
 
- protocol TagCreationDelegate: AnyObject {
+protocol TagCreationDelegate: AnyObject {
     func createTag(tag: String, color: String)
- }
+}
 
 protocol TagModalViewControllerDelegate: AnyObject {
     func tagSelected(tag: String)
@@ -23,7 +23,7 @@ protocol TagModalViewControllerDelegate: AnyObject {
 final class TagModalViewController: UIViewController {
     // realm database
     let database = DatabaseManager.shared
-    
+
     let tags = DatabaseManager.shared.read(Tag.self)
 
     private weak var selectionDelegate: TagModalViewControllerDelegate?
@@ -168,6 +168,7 @@ final class TagModalViewController: UIViewController {
         tagsStackView.addArrangedSubview(secondRow)
         tagsStackView.addArrangedSubview(thirdRow)
     }
+
     private func createRoundButton(title: String, colorIndex: String) -> UIButton {
         print(TagCase(rawValue: colorIndex)?.typoColor ?? .black)
 
@@ -273,10 +274,11 @@ final class TagModalViewController: UIViewController {
 }
 
 // MARK: - TagCreationDelegate
+
 extension TagModalViewController: TagCreationDelegate {
-    func createTag(tag: String , color: String) {
+    func createTag(tag: String, color: String) {
         // TODO: 추가된 태그 정보값 전달
-        database.write(Tag(tagName: tag, colorIndex: color, position: 1))
+        database.write(Tag(tagName: tag, colorIndex: color))
         print("=====> ", tag)
     }
 }

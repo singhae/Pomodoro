@@ -127,7 +127,9 @@ final class DashboardPieChartCell: UICollectionViewCell {
         let (startDate, endDate) = getDateRange(for: date, dateType: dateType)
         let focusTimePerTag = calculateFocusTimePerTag(from: startDate, to: endDate)
         let sortedFocusTimePerTag = focusTimePerTag.sorted { $0.value > $1.value }
+
         var tagColors: [String: UIColor] = [:] // MARK: tag color 사용
+
         for tag in tags {
             let color = tag.setupTagTypoColor()
             tagColors[tag.tagName] = color
