@@ -9,7 +9,7 @@ import Foundation
 import OSLog
 
 extension OSLog {
-    static let subsystem = Bundle.main.bundleIdentifier!
+    static let subsystem = Bundle.main.bundleIdentifier ?? ""
     static let network = OSLog(subsystem: subsystem, category: "Network")
     static let debug = OSLog(subsystem: subsystem, category: "Debug")
     static let info = OSLog(subsystem: subsystem, category: "Info")
@@ -88,7 +88,7 @@ enum Log {
             if #available(iOS 14.0, *) {
                 let extraMessage: String = arguments.map { String(describing: $0) }.joined(separator: " ")
                 let logger = Logger(subsystem: OSLog.subsystem, category: level.category)
-                let logMessage = "\(message) \(extraMessage)"
+                let logMessage = "\(level.category): \(message) \(extraMessage)"
                 switch level {
                 case .debug,
                      .custom:

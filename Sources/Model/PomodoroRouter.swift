@@ -43,7 +43,7 @@ final class PomodoroRouter {
 
     func moveToNextStep(navigationController: UINavigationController) {
         currentStep = checkCurrentStep()
-        print(currentStep)
+        Log.info(currentStep)
         navigatorToCurrentStep(
             currentStep: currentStep,
             navigationController: navigationController

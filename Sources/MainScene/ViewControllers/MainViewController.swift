@@ -15,7 +15,7 @@ final class MainViewController: UIViewController {
     let onBoardingManager = OnboardingManager.shared
 
     private var isOnboarding: Bool = true
-    private var notificationId: String?
+    private let notificationId = UUID().uuidString
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
     var stepManager = PomodoroStepManger()
@@ -179,9 +179,7 @@ final class MainViewController: UIViewController {
             (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) % 60
         )
 
-        if let id = notificationId {
-            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id])
-        }
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [notificationId])
     }
 }
 
@@ -189,7 +187,7 @@ final class MainViewController: UIViewController {
 
 extension MainViewController {
     @objc func didEnterBackground() {
-        print("max: \(pomodoroTimeManager.maxTime), curr: \(pomodoroTimeManager.currentTime)")
+        Log.info("max: \(pomodoroTimeManager.maxTime), curr: \(pomodoroTimeManager.currentTime)")
     }
 
     @objc func didEnterForeground() {
@@ -264,7 +262,7 @@ extension MainViewController {
     }
 
     @objc private func setPomodoroTime() {
-        print("set pomodorotime")
+        Log.info("set pomodorotime")
         let timeSettingViewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
         if let sheet = timeSettingViewController.sheetPresentationController {
             sheet.detents = [
@@ -279,13 +277,12 @@ extension MainViewController {
     }
 
     func setupNotification() {
-        notificationId = UUID().uuidString
         let content = UNMutableNotificationContent()
         content.title = "시간 종료!"
         content.body = "시간이 종료되었습니다. 휴식을 취해주세요."
 
         let request = UNNotificationRequest(
-            identifier: notificationId!,
+            identifier: notificationId,
             content: content,
             trigger: UNTimeIntervalNotificationTrigger(
                 timeInterval: TimeInterval(pomodoroTimeManager.maxTime),

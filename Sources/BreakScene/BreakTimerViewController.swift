@@ -65,7 +65,7 @@ final class BreakTimerViewController: UIViewController {
         let realmOption = try? RealmService.read(Option.self).first
         let isTimer = realmOption?.isTimerEffect
         guard let isTimerEffect = isTimer else {
-            return print("it is optional")
+            return
         }
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
@@ -224,7 +224,7 @@ extension BreakTimerViewController {
         UNUserNotificationCenter.current()
             .add(request) { error in
                 guard let error else { return }
-                print(error.localizedDescription)
+                Log.error(error)
             }
     }
 }
