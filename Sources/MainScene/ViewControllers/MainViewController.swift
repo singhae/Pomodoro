@@ -45,6 +45,14 @@ final class MainViewController: UIViewController {
         $0.textColor = UIColor.pomodoro.blackHigh
         $0.textAlignment = .center
         $0.font = UIFont.pomodoroFont.heading1()
+        if OnboardingManager.shared.checkOnboarding() {
+            $0.attributedText = .init(string: "25:00", attributes: [
+                .font: UIFont.pomodoroFont.heading1(),
+                .foregroundColor: UIColor.clear,
+                .strokeColor: UIColor.pomodoro.blackHigh,
+                .strokeWidth: 1,
+            ])
+        }
     }
 
     private let longPressGuideLabel = UILabel().then {
