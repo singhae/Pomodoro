@@ -11,8 +11,6 @@ import SnapKit
 import UIKit
 
 final class DashBoardTabViewController: UIViewController {
-    private let database = DatabaseManager.shared
-
     private enum SegmentItem: Int {
         case day
         case week
@@ -35,10 +33,14 @@ final class DashBoardTabViewController: UIViewController {
     }
 
     private func caculateTotalParticipate() -> Int {
-        let data = database.read(Pomodoro.self)
-        let filteredData = data.filter { $0.participateDate < Date() }
-        let participateDates = Set(filteredData.map { Calendar.current.startOfDay(for: $0.participateDate) })
-        return participateDates.count
+        if let data = try? RealmService.read(Pomodoro.self) {
+            let filteredData = data.filter { $0.participateDate < Date() }
+            let participateDates = Set(filteredData.map { Calendar.current.startOfDay(for: $0.participateDate) })
+
+            return participateDates.count
+        } else {
+            return .zero
+        }
     }
 
     private func setupTopView() {

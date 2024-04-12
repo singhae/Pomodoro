@@ -14,9 +14,9 @@ final class PomodoroTimeManager {
     private init() {}
 
     private var pomodoroTimer: Timer?
-    private var notificationId: String?
 
     private let userDefaults = UserDefaults.standard
+    private let notificationId = UUID().uuidString
 
     private(set) var currentTime = 0
 
@@ -49,14 +49,12 @@ final class PomodoroTimeManager {
         }
         pomodoroTimer?.fire()
 
-        notificationId = UUID().uuidString
-
         let content = UNMutableNotificationContent()
         content.title = "시간 종료!"
         content.body = "시간이 종료되었습니다. 휴식을 취해주세요."
 
         let request = UNNotificationRequest(
-            identifier: notificationId!,
+            identifier: notificationId,
             content: content,
             trigger: UNTimeIntervalNotificationTrigger(
                 timeInterval: TimeInterval(maxTime),
