@@ -20,7 +20,7 @@ final class MainViewController: UIViewController {
     private var needOnboarding = false
     private let longPressGestureRecognizer = UILongPressGestureRecognizer()
 
-    lazy var currentStepLabel = UILabel().then {
+    private lazy var currentStepLabel = UILabel().then {
         $0.text = stepManager.label.setUpLabelInCurrentStep(currentStep: stepManager.router.currentStep)
         $0.font = .pomodoroFont.heading3()
         $0.textAlignment = .center
@@ -149,10 +149,6 @@ final class MainViewController: UIViewController {
         setupTimeLabelTapGestureRecognizer()
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateTimeLabel()
@@ -276,7 +272,7 @@ extension MainViewController {
         present(timeSettingViewController, animated: true)
     }
 
-    func setupNotification() {
+    private func setupNotification() {
         let content = UNMutableNotificationContent()
         content.title = "시간 종료!"
         content.body = "시간이 종료되었습니다. 휴식을 취해주세요."
@@ -294,7 +290,7 @@ extension MainViewController {
             .add(request)
     }
 
-    func setupUIWhenTimerStart(isStopped: Bool) {
+    private func setupUIWhenTimerStart(isStopped: Bool) {
         if isStopped == false {
             startTimerLabel.isHidden = true
             startTimerButton.isHidden = true
