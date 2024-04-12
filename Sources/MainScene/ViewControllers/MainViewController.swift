@@ -12,14 +12,12 @@ import UIKit
 
 final class MainViewController: UIViewController {
     let pomodoroTimeManager = PomodoroTimeManager.shared
-    let onBoardingManager = OnboardingManager.shared
-
-    private var isOnboarding: Bool = true
     private let notificationId = UUID().uuidString
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
     var stepManager = PomodoroStepManger()
     private var currentPomodoro: Pomodoro?
+    private var needOnboarding = false
 
     private let longPressGestureRecognizer = UILongPressGestureRecognizer()
 
@@ -45,14 +43,6 @@ final class MainViewController: UIViewController {
         $0.textColor = UIColor.pomodoro.blackHigh
         $0.textAlignment = .center
         $0.font = UIFont.pomodoroFont.heading1()
-        if OnboardingManager.shared.checkOnboarding() {
-            $0.attributedText = .init(string: "25:00", attributes: [
-                .font: UIFont.pomodoroFont.heading1(),
-                .foregroundColor: UIColor.clear,
-                .strokeColor: UIColor.pomodoro.blackHigh,
-                .strokeWidth: 1,
-            ])
-        }
     }
 
     private let longPressGuideLabel = UILabel().then {
@@ -72,7 +62,7 @@ final class MainViewController: UIViewController {
     }
 
     private lazy var tagButton = UIButton().then {
-        if isOnboarding == true {
+        if needOnboarding {
             $0.setImage(UIImage(named: "onBoardingTag"), for: .normal)
         } else {
             $0.setTitle("Tag", for: .normal)
@@ -138,11 +128,14 @@ final class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // OnBoarding 체크
-        isOnboarding = onBoardingManager.checkOnboarding()
-
         stepManager.setRouterObservers()
         setUpPomodoroCurrentStepLabel()
+
+        if UserDefaults.standard.object(forKey: "needOnboarding") == nil {
+            UserDefaults.standard.set(true, forKey: "needOnboarding")
+            needOnboarding = true
+        }
+        Log.info("needOnboarding: \(needOnboarding)")
 
         NotificationCenter.default.addObserver(
             self,
@@ -167,9 +160,6 @@ final class MainViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if isOnboarding == true {
-            pomodoroTimeManager.setupMaxTime(time: 25 * 60)
-        }
         updateTimeLabel()
 
         if pomodoroTimeManager.isRestored == true {
@@ -181,12 +171,20 @@ final class MainViewController: UIViewController {
     }
 
     private func updateTimeLabel() {
-        timeLabel.text = String(
-            format: "%02d:%02d",
-            (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60,
-            (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) % 60
-        )
-
+        if needOnboarding {
+            timeLabel.attributedText = .init(string: "25:00", attributes: [
+                .font: UIFont.pomodoroFont.heading1(),
+                .foregroundColor: UIColor.clear,
+                .strokeColor: UIColor.pomodoro.blackHigh,
+                .strokeWidth: 1,
+            ])
+        } else {
+            timeLabel.text = String(
+                format: "%02d:%02d",
+                (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60,
+                (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) % 60
+            )
+        }
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [notificationId])
     }
 }
