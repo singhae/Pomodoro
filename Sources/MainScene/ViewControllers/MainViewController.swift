@@ -11,18 +11,14 @@ import Then
 import UIKit
 
 final class MainViewController: UIViewController {
-    let pomodoroTimeManager = PomodoroTimeManager.shared
+    private let pomodoroTimeManager = PomodoroTimeManager.shared
     private let notificationId = UUID().uuidString
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
-    var stepManager = PomodoroStepManger()
+    private let stepManager = PomodoroStepManger()
     private var currentPomodoro: Pomodoro?
     private var needOnboarding = false
-
     private let longPressGestureRecognizer = UILongPressGestureRecognizer()
-
-    // 시간라벨 누르게 하는 GestureRecognizer
-    private let timeLabelTapGestureRecognizer = UITapGestureRecognizer()
 
     lazy var currentStepLabel = UILabel().then {
         $0.text = stepManager.label.setUpLabelInCurrentStep(currentStep: stepManager.router.currentStep)
@@ -120,10 +116,9 @@ final class MainViewController: UIViewController {
     }
 
     private func setupTimeLabelTapGestureRecognizer() {
+        let timeLabelTapGestureRecognizer = UIGestureRecognizer(target: self, action: #selector(setPomodoroTime))
         timeLabel.addGestureRecognizer(timeLabelTapGestureRecognizer)
         timeLabel.isUserInteractionEnabled = true
-        timeLabelTapGestureRecognizer.addTarget(self, action: #selector(setPomodoroTime))
-        timeLabelTapGestureRecognizer.isEnabled = true
     }
 
     override func viewDidLoad() {
@@ -263,7 +258,6 @@ extension MainViewController {
 
             progressBar.isHidden = true
             longPressGuideLabel.isHidden = true
-            timeLabelTapGestureRecognizer.isEnabled = true
         }
     }
 
@@ -305,13 +299,10 @@ extension MainViewController {
             startTimerLabel.isHidden = true
             startTimerButton.isHidden = true
             pressToSetButton.isHidden = true
-            timeLabelTapGestureRecognizer.isEnabled = true
         } else {
             startTimerLabel.isHidden = false
             startTimerButton.isHidden = false
             pressToSetButton.isHidden = false
-
-            timeLabelTapGestureRecognizer.isEnabled = true
         }
     }
 
