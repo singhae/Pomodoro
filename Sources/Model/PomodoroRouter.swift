@@ -43,7 +43,7 @@ final class PomodoroRouter {
 
     func moveToNextStep(navigationController: UINavigationController) {
         currentStep = checkCurrentStep()
-        print(currentStep)
+        Log.info(currentStep)
         navigatorToCurrentStep(
             currentStep: currentStep,
             navigationController: navigationController
@@ -107,7 +107,6 @@ final class PomodoroStepTimeChange {
     private let pomodoroTimeManager = PomodoroTimeManager.shared
     private var pomodoroCurrentCount = PomodoroRouter.pomodoroCount
     private var currentStep: PomodoroTimerStep?
-    private let database = DatabaseManager.shared
     private var shortBreakTime: Int?
     private var longBreakTime: Int?
 
@@ -128,7 +127,7 @@ final class PomodoroStepTimeChange {
     }
 
     func setUpBreakTime() -> Int {
-        let options = database.read(Option.self).first ?? Option()
+        let options = (try? RealmService.read(Option.self).first) ?? Option()
         if pomodoroCurrentCount < 2 {
             return options.shortBreakTime
         } else {

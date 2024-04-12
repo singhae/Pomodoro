@@ -53,6 +53,7 @@
 		CEDCA1212B67D131005C18EA /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA1202B67D131005C18EA /* Then */; };
 		CEDCA1242B67D18C005C18EA /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA1232B67D18C005C18EA /* SnapKit */; };
 		CEDCA1292B67D1E4005C18EA /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA1282B67D1E4005C18EA /* DGCharts */; };
+		CEE9C35D2BC8D1570084D218 /* OSLog+PrettyPrint.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE9C35C2BC8D1570084D218 /* OSLog+PrettyPrint.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,6 +112,7 @@
 		CEDCA0FB2B67D015005C18EA /* Option.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Option.swift; sourceTree = "<group>"; };
 		CEDCA0FC2B67D015005C18EA /* DashBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashBoard.swift; sourceTree = "<group>"; };
 		CEDCA1332B67E11D005C18EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CEE9C35C2BC8D1570084D218 /* OSLog+PrettyPrint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OSLog+PrettyPrint.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -304,6 +306,7 @@
 			children = (
 				CEDCA0ED2B67D015005C18EA /* UIColor+HexCode.swift */,
 				21DA85792B9DA43300495408 /* UILabelExtension.swift */,
+				CEE9C35C2BC8D1570084D218 /* OSLog+PrettyPrint.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -540,6 +543,7 @@
 				CEDCA10D2B67D015005C18EA /* MainPageViewController.swift in Sources */,
 				4DC3FBA32B846E40002566F9 /* ColorPaletteViewController.swift in Sources */,
 				CEDCA10A2B67D015005C18EA /* TagModalViewController.swift in Sources */,
+				CEE9C35D2BC8D1570084D218 /* OSLog+PrettyPrint.swift in Sources */,
 				CEDCA1092B67D015005C18EA /* TagCollectionView.swift in Sources */,
 				CEDCA10B2B67D015005C18EA /* TagCollectionViewCell.swift in Sources */,
 				0DF629662B691ABA00BFE39F /* TimerCollectionViewCell.swift in Sources */,

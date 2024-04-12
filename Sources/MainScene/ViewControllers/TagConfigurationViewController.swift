@@ -14,7 +14,6 @@ import UIKit
 
 final class TagConfigurationViewController: UIViewController, UITextFieldDelegate {
     // TODO: Realm Tag write
-    private let database = DatabaseManager.shared
 
     private var selectedColorIndex: String?
     private var selectedPosition: Int?
@@ -97,18 +96,30 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
 
     @objc func saveTagButtonTapped() {
-        let tags = database.write(Tag())
-        
+        RealmService.write(Tag())
+
         guard let tagText = textField.text, !tagText.isEmpty,
-              let colorIndex = self.selectedColorIndex else {
-            print("태그를 입력하세요.")
+              let colorIndex = selectedColorIndex
+        else {
+            Log.info("태그를 입력하세요.")
             PomodoroPopupBuilder()
                 .add(body: "태그를 입력해주십시오.")
                 .add(
                     button: .confirm(
                         title: "확인",
-                        action: { /* 확인 동작 */
-                            self.database.write(Tag(tagName: self.textField.text!, colorIndex: self.selectedColorIndex!, position: 1))
+                        action: { [weak self] in /* 확인 동작 */
+                            guard let self,
+                                  let text = textField.text,
+                                  let selectedColorIndex
+                            else {
+                                return
+                            }
+                            RealmService.write(
+                                Tag(
+                                    tagName: text,
+                                    colorIndex: selectedColorIndex
+                                )
+                            )
                         }
                     )
                 )
@@ -116,10 +127,11 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
             return
         }
         delegate?.createTag(tag: tagText, color: colorIndex)
-        print("->>>>> ", tagText, colorIndex)
-        database.write(Tag(tagName: tagText, colorIndex: colorIndex, position: 1))
+        Log.info("->>>>> ", tagText, colorIndex)
+        RealmService.write(Tag(tagName: tagText, colorIndex: colorIndex))
         dismiss(animated: true, completion: nil)
     }
+
     private func setupViews() {
         closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
         let contentView = UIView().then {
@@ -217,7 +229,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
                 }
                 $0.addTarget(self, action: #selector(colorButtonTapped(_:)), for: .touchUpInside)
                 $0.tag = index // 각 버튼에 태그 설정
-                print("tag:/(index)")
+                Log.info("tag:/(index)")
             }
             // 적절한 행에 버튼 추가
             if index < 4 {
@@ -260,7 +272,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     @objc private func colorButtonTapped(_ sender: UIButton) {
         let index = sender.tag
         let colorString = indexToString(index)
-        self.selectedColorIndex = colorString
+        selectedColorIndex = colorString
     }
 }
 

@@ -11,9 +11,8 @@ import Then
 import UIKit
 
 final class BreakTimerViewController: UIViewController {
-    let database = DatabaseManager.shared
     private var timer: Timer?
-    private var notificationId: String?
+    private var notificationId = UUID().uuidString
     private var currentTime = 0
     private lazy var maxTime: Int = stepManager.timeSetting.setUpBreakTime()
     private var timerHeightConstraint: Constraint?
@@ -63,10 +62,10 @@ final class BreakTimerViewController: UIViewController {
     }
 
     override func viewDidLoad() {
-        let realmOption = database.read(Option.self).first
+        let realmOption = try? RealmService.read(Option.self).first
         let isTimer = realmOption?.isTimerEffect
         guard let isTimerEffect = isTimer else {
-            return print("it is optional")
+            return
         }
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
@@ -92,9 +91,7 @@ final class BreakTimerViewController: UIViewController {
         let seconds = (maxTime - currentTime) % 60
         timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
 
-        if let id = notificationId {
-            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id])
-        }
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [notificationId])
     }
 }
 
@@ -213,12 +210,11 @@ extension BreakTimerViewController {
     }
 
     private func configureNotification() {
-        notificationId = UUID().uuidString
         let content = UNMutableNotificationContent()
         content.title = "시간 종료!"
         content.body = "시간이 종료되었습니다. 휴식을 취해주세요."
         let request = UNNotificationRequest(
-            identifier: notificationId!,
+            identifier: notificationId,
             content: content,
             trigger: UNTimeIntervalNotificationTrigger(
                 timeInterval: TimeInterval(maxTime),
@@ -228,7 +224,7 @@ extension BreakTimerViewController {
         UNUserNotificationCenter.current()
             .add(request) { error in
                 guard let error else { return }
-                print(error.localizedDescription)
+                Log.error(error)
             }
     }
 }

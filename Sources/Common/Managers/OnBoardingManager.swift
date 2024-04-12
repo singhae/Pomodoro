@@ -16,10 +16,10 @@ class OnboardingManager {
 
         if userDefaults.object(forKey: "isFirstTime") == nil {
             userDefaults.set("No", forKey: "isFirstTime")
-            print("ONBOARDING 맞음")
+            Log.info("ONBOARDING 맞음")
             return true
         } else {
-            print("ONBOARDING 아님")
+            Log.info("ONBOARDING 아님")
             return false
         }
     }
