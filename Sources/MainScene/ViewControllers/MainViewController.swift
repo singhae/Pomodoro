@@ -27,7 +27,7 @@ final class MainViewController: UIViewController {
         $0.textAlignment = .center
     }
 
-    private let pressToSetButton = UIButton().then {
+    private let timeSettingGuideButton = UIButton().then {
         var config = UIButton.Configuration.plain()
         config.baseForegroundColor = .pomodoro.primary900
         var attributedTitle = AttributedString("터치해서 설정하기")
@@ -50,7 +50,7 @@ final class MainViewController: UIViewController {
         $0.isHidden = true
     }
 
-    private let progressBar = UIProgressView().then {
+    private let stopTimeProgressBar = UIProgressView().then {
         $0.progressViewStyle = .default
         $0.trackTintColor = UIColor.pomodoro.disabled
         $0.progressTintColor = UIColor.pomodoro.primary900
@@ -58,49 +58,34 @@ final class MainViewController: UIViewController {
         $0.isHidden = true
     }
 
-    private lazy var tagButton = UIButton().then {
+    private let tagButton = UIButton().then {
         $0.setTitleColor(.black, for: .normal)
         $0.titleLabel?.font = .pomodoroFont.heading6()
-
-        $0.addTarget(
-            self,
-            action: #selector(openTagModal),
-            for: .touchUpInside
-        )
     }
 
-    private let startTimerLabel = UILabel().then {
+    private let startButtonTitleLabel = UILabel().then {
         $0.text = "집중 시작하기"
         $0.font = UIFont.pomodoroFont.text1()
     }
 
-    private lazy var startTimerButton = UIButton().then {
+    private let startButton = UIButton().then {
         $0.setImage(UIImage(named: "startTimerBtn"), for: .normal)
         $0.titleLabel?.font = .pomodoroFont.text1()
         $0.setTitleColor(UIColor.pomodoro.blackHigh, for: .normal)
-        $0.addTarget(self, action: #selector(startTimer), for: .touchUpInside)
     }
 
-    private let appIconStackView = UIStackView()
-
-    private func setupPomodoroIcon() {
-        let logoIcon = UIImageView().then {
-            $0.image = UIImage(named: "dashboardIcon")
-        }
-        let appName = UILabel().then {
+    private let appIconStackView = UIStackView().then {
+        let logoIcon = UIImageView(image: UIImage(named: "dashboardIcon"))
+        let titleLabel = UILabel().then {
             $0.text = "뽀모도로"
             $0.textColor = .pomodoro.primary900
             $0.font = .pomodoroFont.text1(size: 15.27)
         }
 
-        appIconStackView.addArrangedSubview(logoIcon)
-        appIconStackView.addArrangedSubview(appName)
-        appIconStackView.spacing = 5
-        appIconStackView.axis = .horizontal
-        appIconStackView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            make.leading.equalTo(30)
-        }
+        $0.addArrangedSubview(logoIcon)
+        $0.addArrangedSubview(titleLabel)
+        $0.spacing = 5
+        $0.axis = .horizontal
     }
 
     private func setupLongPressGestureRecognizer() {
@@ -141,8 +126,8 @@ final class MainViewController: UIViewController {
         view.backgroundColor = .pomodoro.background
 
         addSubviews()
-        setupPomodoroIcon()
         setupConstraints()
+        setupActions()
         setupLongPressGestureRecognizer()
         setupTimeLabelTapGestureRecognizer()
         setupTimeAndTag()
@@ -180,6 +165,16 @@ final class MainViewController: UIViewController {
             )
         }
     }
+
+    private func setupActions() {
+        tagButton.addTarget(
+            self,
+            action: #selector(openTagModal),
+            for: .touchUpInside
+        )
+
+        startButton.addTarget(self, action: #selector(startTimer), for: .touchUpInside)
+    }
 }
 
 // MARK: - Action
@@ -204,7 +199,7 @@ extension MainViewController {
     }
 
     @objc private func handleLongPress(gestureRecognizer: UILongPressGestureRecognizer) {
-        progressBar.isHidden = false
+        stopTimeProgressBar.isHidden = false
         longPressGuideLabel.isHidden = true
 
         longPressTimer?.invalidate()
@@ -218,21 +213,21 @@ extension MainViewController {
         longPressTimer?.fire()
 
         if gestureRecognizer.state == .cancelled || gestureRecognizer.state == .ended {
-            progressBar.isHidden = true
+            stopTimeProgressBar.isHidden = true
             longPressGuideLabel.isHidden = false
             longPressTime = 0.0
-            progressBar.progress = 0.0
+            stopTimeProgressBar.progress = 0.0
             longPressTimer?.invalidate()
         }
     }
 
     @objc private func setProgress() {
         longPressTime += 0.01
-        progressBar.setProgress(longPressTime, animated: true)
+        stopTimeProgressBar.setProgress(longPressTime, animated: true)
 
         if longPressTime >= 1 {
             longPressTime = 0.0
-            progressBar.progress = 0.0
+            stopTimeProgressBar.progress = 0.0
 
             longPressTimer?.invalidate()
 
@@ -254,7 +249,7 @@ extension MainViewController {
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
             setupTimeAndTag()
 
-            progressBar.isHidden = true
+            stopTimeProgressBar.isHidden = true
             longPressGuideLabel.isHidden = true
         }
     }
@@ -294,13 +289,13 @@ extension MainViewController {
 
     private func setupUIWhenTimerStart(isStopped: Bool) {
         if isStopped == false {
-            startTimerLabel.isHidden = true
-            startTimerButton.isHidden = true
-            pressToSetButton.isHidden = true
+            startButtonTitleLabel.isHidden = true
+            startButton.isHidden = true
+            timeSettingGuideButton.isHidden = true
         } else {
-            startTimerLabel.isHidden = false
-            startTimerButton.isHidden = false
-            pressToSetButton.isHidden = false
+            startButtonTitleLabel.isHidden = false
+            startButton.isHidden = false
+            timeSettingGuideButton.isHidden = false
         }
     }
 
@@ -310,7 +305,7 @@ extension MainViewController {
         }
 
         longPressTime = 0.0
-        progressBar.progress = 0.0
+        stopTimeProgressBar.progress = 0.0
 
         longPressGuideLabel.isHidden = false
         longPressGestureRecognizer.isEnabled = true
@@ -367,9 +362,9 @@ extension MainViewController {
             currentStep: stepManager.router.currentStep
         )
         if stepManager.router.currentStep != .start {
-            pressToSetButton.isHidden = true
+            timeSettingGuideButton.isHidden = true
         } else {
-            pressToSetButton.isHidden = false
+            timeSettingGuideButton.isHidden = false
         }
     }
 }
@@ -380,16 +375,20 @@ extension MainViewController {
     private func addSubviews() {
         view.addSubview(timeLabel)
         view.addSubview(appIconStackView)
-        view.addSubview(startTimerLabel)
-        view.addSubview(startTimerButton)
-        view.addSubview(pressToSetButton)
+        view.addSubview(startButtonTitleLabel)
+        view.addSubview(startButton)
+        view.addSubview(timeSettingGuideButton)
         view.addSubview(tagButton)
         view.addSubview(longPressGuideLabel)
-        view.addSubview(progressBar)
+        view.addSubview(stopTimeProgressBar)
         view.addSubview(currentStepLabel)
     }
 
     private func setupConstraints() {
+        appIconStackView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.leading.equalTo(30)
+        }
         timeLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().offset(-30)
@@ -405,15 +404,15 @@ extension MainViewController {
             make.right.equalTo(-30)
             make.height.equalTo(50)
         }
-        pressToSetButton.snp.makeConstraints { make in
+        timeSettingGuideButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.centerY.equalTo(timeLabel).offset(-70)
         }
-        startTimerLabel.snp.makeConstraints { make in
+        startButtonTitleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(startTimerButton).offset(-80)
+            make.bottom.equalTo(startButton).offset(-80)
         }
-        startTimerButton.snp.makeConstraints { make in
+        startButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-100)
         }
@@ -421,7 +420,7 @@ extension MainViewController {
             make.centerX.equalToSuperview()
             make.bottom.equalTo(view.snp.bottom).offset(-50)
         }
-        progressBar.snp.makeConstraints { make in
+        stopTimeProgressBar.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.centerY.equalTo(longPressGuideLabel)
             make.width.equalToSuperview().multipliedBy(0.8)
