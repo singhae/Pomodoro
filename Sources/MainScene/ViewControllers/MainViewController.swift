@@ -15,10 +15,11 @@ final class MainViewController: UIViewController {
     private let notificationId = UUID().uuidString
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
-    private let stepManager = PomodoroStepManger()
     private var currentPomodoro: Pomodoro?
     private var needOnboarding = false
     private let longPressGestureRecognizer = UILongPressGestureRecognizer()
+
+    var stepManager = PomodoroStepManger()
 
     private lazy var currentStepLabel = UILabel().then {
         $0.text = stepManager.label.setUpLabelInCurrentStep(currentStep: stepManager.router.currentStep)
@@ -58,13 +59,8 @@ final class MainViewController: UIViewController {
     }
 
     private lazy var tagButton = UIButton().then {
-        if needOnboarding {
-            $0.setImage(UIImage(named: "onBoardingTag"), for: .normal)
-        } else {
-            $0.setTitle("Tag", for: .normal)
-            $0.setTitleColor(.black, for: .normal)
-            $0.titleLabel?.font = .pomodoroFont.heading6()
-        }
+        $0.setTitleColor(.black, for: .normal)
+        $0.titleLabel?.font = .pomodoroFont.heading6()
 
         $0.addTarget(
             self,
@@ -116,7 +112,10 @@ final class MainViewController: UIViewController {
     }
 
     private func setupTimeLabelTapGestureRecognizer() {
-        let timeLabelTapGestureRecognizer = UIGestureRecognizer(target: self, action: #selector(setPomodoroTime))
+        let timeLabelTapGestureRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(presentTimeSettingViewController)
+        )
         timeLabel.addGestureRecognizer(timeLabelTapGestureRecognizer)
         timeLabel.isUserInteractionEnabled = true
     }
@@ -144,15 +143,13 @@ final class MainViewController: UIViewController {
         addSubviews()
         setupPomodoroIcon()
         setupConstraints()
-
         setupLongPressGestureRecognizer()
         setupTimeLabelTapGestureRecognizer()
+        setupTimeAndTag()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        updateTimeLabel()
-
         if pomodoroTimeManager.isRestored == true {
             pomodoroTimeManager.setupIsRestored(bool: false)
             // 다시 정보 불러왔을 때 타이머가 진행 중이라면 가장 마지막 뽀모도로 불러오기
@@ -161,22 +158,27 @@ final class MainViewController: UIViewController {
         }
     }
 
-    private func updateTimeLabel() {
+    private func setupTimeAndTag() {
         if needOnboarding {
+            tagButton.setTitle(nil, for: .normal)
+            tagButton.setImage(UIImage(named: "onBoardingTag"), for: .normal)
             timeLabel.attributedText = .init(string: "25:00", attributes: [
                 .font: UIFont.pomodoroFont.heading1(),
                 .foregroundColor: UIColor.clear,
                 .strokeColor: UIColor.pomodoro.blackHigh,
                 .strokeWidth: 1,
             ])
+            needOnboarding = false
         } else {
+            tagButton.setImage(nil, for: .normal)
+            tagButton.setTitle("Tag", for: .normal)
+            timeLabel.attributedText = nil
             timeLabel.text = String(
                 format: "%02d:%02d",
                 (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60,
                 (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) % 60
             )
         }
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [notificationId])
     }
 }
 
@@ -250,14 +252,14 @@ extension MainViewController {
             currentStepLabel.text = ""
 
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-            updateTimeLabel()
+            setupTimeAndTag()
 
             progressBar.isHidden = true
             longPressGuideLabel.isHidden = true
         }
     }
 
-    @objc private func setPomodoroTime() {
+    @objc private func presentTimeSettingViewController() {
         Log.info("set pomodorotime")
         let timeSettingViewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
         if let sheet = timeSettingViewController.sheetPresentationController {
@@ -430,7 +432,7 @@ extension MainViewController {
 extension MainViewController: TimeSettingViewControllerDelegate {
     func didSelectTime(time: Int) {
         pomodoroTimeManager.setupMaxTime(time: time)
-        updateTimeLabel()
+        setupTimeAndTag()
     }
 }
 
