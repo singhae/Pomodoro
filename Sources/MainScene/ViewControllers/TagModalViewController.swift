@@ -126,7 +126,7 @@ final class TagModalViewController: UIViewController {
             $0.distribution = .fillEqually
         }
     }
-
+// TODO: 1. 렘 미리 읽고, 렘 is empty 이면 default tag realm 에 저장
     private func addTagsToStackView() {
         let tagList = try? RealmService.read(Tag.self)
         Log.info("TAGLIST: \(String(describing: tagList))")
