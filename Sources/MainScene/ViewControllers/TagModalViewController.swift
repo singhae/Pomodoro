@@ -142,7 +142,7 @@ final class TagModalViewController: UIViewController {
             if let tagList, tagList.count > item {
                 let title = tagList[item].tagName
                 let index = tagList[item].colorIndex
-                button = createRoundButton(title: title, colorIndex: index)
+                button = createRoundButton(title: title, colorIndex: index, tagIndex: item)
             } else {
                 button = createEmptyButton(borderColor: .pomodoro.tagBackground1)
             }
@@ -163,7 +163,7 @@ final class TagModalViewController: UIViewController {
         tagsStackView.addArrangedSubview(thirdRow)
     }
 
-    private func createRoundButton(title: String, colorIndex: String) -> UIButton {
+    private func createRoundButton(title: String, colorIndex: String, tagIndex: Int) -> UIButton {
         Log.info(TagCase(rawValue: colorIndex)?.typoColor ?? .black)
 
         let button = UIButton().then {
@@ -171,6 +171,7 @@ final class TagModalViewController: UIViewController {
             $0.titleLabel?.font = .pomodoroFont.heading4()
             $0.backgroundColor = TagCase(rawValue: colorIndex)?.backgroundColor ?? .black
             $0.setTitleColor(TagCase(rawValue: colorIndex)?.typoColor ?? .black, for: .normal)
+            $0.tag = tagIndex  // Set the tagIndex
             $0.layer.cornerRadius = 40
             $0.snp.makeConstraints { make in
                 make.size.equalTo(CGSize(width: 80, height: 80))
@@ -186,7 +187,7 @@ final class TagModalViewController: UIViewController {
             $0.backgroundColor = .white
             $0.layer.cornerRadius = 10
             $0.isHidden = true // 기본적으로 숨김
-            $0.tag = 101 // 태그 설정
+            $0.tag = tagIndex  // Also set the same tag to minusButton
         }
         button.addSubview(minusButton)
 
@@ -237,21 +238,52 @@ final class TagModalViewController: UIViewController {
         dismiss(animated: true)
     }
 
-    // TODO: Tag 삭제 버튼 연결
-    @objc private func deletTag() {
-        tagSettingCompletedButton.isEnabled.toggle()
+    // TODO: Tag 삭제 버튼 연결 - realm 에서 tag값 삭제 (만약 값이 들어있는 index 라면, update, 값이 없다면 delete
+//    @objc private func deletTag(_ sender: UIButton) {
+//        let tagIndex = sender.tag
+//        tagSettingCompletedButton.isEnabled.toggle()
+//        PomodoroPopupBuilder()
+//            .add(title: "태그 삭제")
+//            .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
+//            .add(
+//                button: .confirm(
+//                    title: "확인",
+//                    action: { [weak self] in
+//                        if let tagToDelete = try? RealmService.read(Tag.self).filter("position == %@", tagIndex).first {
+//                            RealmService.delete(tagToDelete) // 데이터베이스에서 해당 태그 삭제
+//                            self.addTagsToStackView() // emptybutton 생성해줘야지
+//                            print("Tag at index \(tagIndex) deleted")
+//                        } else {
+//                            print("No tag found at index \(tagIndex)")
+//                        }
+//                            }
+//                )
+//            )
+//            .show(on: self)
+//    }
+    @objc private func deletTag(_ sender: UIButton) {
+        let tagIndex = sender.tag
+
         PomodoroPopupBuilder()
             .add(title: "태그 삭제")
             .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
-            .add(
-                button: .confirm(
-                    title: "확인",
-                    action: { [weak self] in
-//                        guard let button = sender.superview as? UIButton else { return }
-//                        button.setTitle("+", for: .normal)
+            .add(button: .confirm(title: "확인", action: { [weak self] in
+                guard let self = self else { return }
+                do {
+                    // RealmService를 사용하여 태그 데이터 조회 및 삭제
+                    if let tagToDelete = try? RealmService.read(Tag.self).filter("position == %@", tagIndex).first {
+                        try RealmService.delete(tagToDelete) // 데이터베이스에서 해당 태그 삭제
+                        print("Tag at index \(tagIndex) deleted")
+                        DispatchQueue.main.async {
+                            self.addTagsToStackView() // UI 업데이트
+                        }
+                    } else {
+                        print("No tag found at index \(tagIndex)")
                     }
-                )
-            )
+                } catch {
+                    print("Error deleting tag: \(error)")
+                }
+            }))
             .show(on: self)
     }
 
