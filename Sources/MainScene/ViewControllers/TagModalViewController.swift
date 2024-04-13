@@ -13,7 +13,7 @@ import Then
 import UIKit
 
 protocol TagCreationDelegate: AnyObject {
-    func createTag(tag: String, color: String)
+    func createTag(tag: String, color: String, position: Int)
 }
 
 protocol TagModalViewControllerDelegate: AnyObject {
@@ -187,7 +187,7 @@ final class TagModalViewController: UIViewController {
             $0.backgroundColor = .white
             $0.layer.cornerRadius = 10
             $0.isHidden = true // 기본적으로 숨김
-            $0.tag = tagIndex  // Also set the same tag to minusButton
+            $0.tag = button.tag  // 위에 버튼과 동일한 태그
         }
         button.addSubview(minusButton)
 
@@ -201,7 +201,7 @@ final class TagModalViewController: UIViewController {
 
         // MARK: minusButton에 삭제 액션 추가
 
-        minusButton.addTarget(self, action: #selector(deletTag), for: .touchUpInside)
+        minusButton.addTarget(self, action: #selector(deletTag(_:)), for: .touchUpInside)
 
         return button
     }
@@ -262,8 +262,8 @@ final class TagModalViewController: UIViewController {
 //            .show(on: self)
 //    }
     @objc private func deletTag(_ sender: UIButton) {
-        let tagIndex = sender.tag
-
+//        let tagIndex = sender.tag
+        let tagIndex = sender.superview?.tag  // 상위 버튼의 태그를 사용합니다.
         PomodoroPopupBuilder()
             .add(title: "태그 삭제")
             .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
@@ -271,8 +271,13 @@ final class TagModalViewController: UIViewController {
                 guard let self = self else { return }
                 do {
                     // RealmService를 사용하여 태그 데이터 조회 및 삭제
-                    if let tagToDelete = try? RealmService.read(Tag.self).filter("position == %@", tagIndex).first {
-                        try RealmService.delete(tagToDelete) // 데이터베이스에서 해당 태그 삭제
+//                    if let tagToDelete = try? RealmService.read(Tag.self).filter("position == %@", tagIndex).first {
+//                        try RealmService.delete(tagToDelete) // 데이터베이스에서 해당 태그 삭제
+//                        print("Tag at index \(tagIndex) deleted")
+//                        DispatchQueue.main.async {
+//                            self.addTagsToStackView() // UI 업데이트
+                    if let tagToDelete = try RealmService.read(Tag.self).filter("position == %@", tagIndex).first {
+                        try RealmService.delete(tagToDelete)
                         print("Tag at index \(tagIndex) deleted")
                         DispatchQueue.main.async {
                             self.addTagsToStackView() // UI 업데이트
@@ -288,23 +293,45 @@ final class TagModalViewController: UIViewController {
     }
 
     // TODO: Editbutton 클릭시 - 버튼 활성화 함수
+//    @objc private func createMinusButton() {
+//        tagSettingCompletedButton.isEnabled.toggle()
+//        for case let button as UIButton in tagsStackView.arrangedSubviews.flatMap(\.subviews) {
+//            if let minusButton = button.viewWithTag(101) as? UIButton {
+//                minusButton.isHidden.toggle()
+//                button.bringSubviewToFront(minusButton)
+//            }
+//        }
+//    }
     @objc private func createMinusButton() {
-        tagSettingCompletedButton.isEnabled.toggle()
+        tagSettingCompletedButton.isEnabled.toggle()  // 설정 완료 버튼의 활성화 상태 토글
+        // tagsStackView 내의 모든 버튼을 순회
         for case let button as UIButton in tagsStackView.arrangedSubviews.flatMap(\.subviews) {
-            if let minusButton = button.viewWithTag(101) as? UIButton {
-                minusButton.isHidden.toggle()
-                button.bringSubviewToFront(minusButton)
+            // 각 버튼의 서브뷰 중에서 UIButton 타입을 찾고, "-" 문자를 가진 버튼이면 minusButton으로 간주
+            if let minusButton = button.subviews.first(where: { subview in
+                guard let btn = subview as? UIButton else { return false }
+                return btn.title(for: .normal) == "-"
+            }) as? UIButton {
+                minusButton.isHidden.toggle()  // minusButton의 가시성 토글
+                button.bringSubviewToFront(minusButton)  // minusButton을 전면으로
             }
         }
     }
+
 }
 
 // MARK: - TagCreationDelegate
 
 extension TagModalViewController: TagCreationDelegate {
-    func createTag(tag: String, color: String) {
-        // TODO: 추가된 태그 정보값 전달
-        RealmService.write(Tag(tagName: tag, colorIndex: color))
-        Log.info("=====> ", tag)
+//    func createTag(tag: String, color: String) {
+//        // TODO: 추가된 태그 정보값 전달
+//        RealmService.write(Tag(tagName: tag, colorIndex: color))
+//        Log.info("=====> ", tag)
+//    }
+    func createTag(tag: String, color: String, position: Int) {
+        RealmService.write(Tag(tagName: tag, colorIndex: color, position: position))
+        Log.info("New tag created ==> Name: \(tag), Color Index: \(color), Position: \(position)")
+//        DispatchQueue.main.async {
+//            self.addTagsToStackView()  // Refresh the tag display
+//        }
     }
 }

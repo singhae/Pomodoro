@@ -60,11 +60,13 @@ enum TagCase: String {
 class Tag: Object {
     @Persisted(primaryKey: true) var tagName: String
     @Persisted var colorIndex: String
+    @Persisted var position: Int // MARK: Tag Model - Position
 
-    convenience init(tagName: String, colorIndex: String) {
+    convenience init(tagName: String, colorIndex: String, position: Int) {
         self.init()
         self.tagName = tagName
         self.colorIndex = colorIndex
+        self.position = position // MARK: Tag Model - Position
     }
 
     func setupTagBackgroundColor() -> UIColor {
