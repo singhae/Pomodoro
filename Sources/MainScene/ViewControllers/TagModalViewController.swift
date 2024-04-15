@@ -20,7 +20,7 @@ protocol TagModalViewControllerDelegate: AnyObject {
     func tagSelected(tag: String)
 }
 
-// TODO: 1. 태그 생성 버튼 클릭시 태그모달뷰에서 바로 태그값 보이게 설정 2.태그 모달뷰에서 선택한 태그 값이 메인뷰에서 보이게 값 전달. 3. 태그 설정 뷰에서 텍스트필드입력값이랑 렘의 태그네임이랑 비교 후, 중복확인 로직.
+// TODO: 2.태그 모달뷰에서 선택한 태그 값이 메인뷰에서 보이게 값 전달.
 
 final class TagModalViewController: UIViewController {
     private weak var selectionDelegate: TagModalViewControllerDelegate?
@@ -71,7 +71,7 @@ final class TagModalViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
-        addTagsToStackView()
+//        addTagsToStackView()
         closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
         tagSettingCompletedButton.isEnabled = false // 첫 화면에는 설정완료 비활성화
     }
@@ -137,6 +137,10 @@ final class TagModalViewController: UIViewController {
     }
 // TODO: 1. 렘 미리 읽고, 렘 is empty 이면 default tag realm 에 저장
     private func addTagsToStackView() {
+        tagsStackView.arrangedSubviews.forEach {
+            $0.removeFromSuperview()
+        }
+        
         let tagList = try? RealmService.read(Tag.self)
         Log.info("TAGLIST: \(String(describing: tagList))")
         let maxTags = 7
@@ -212,7 +216,8 @@ final class TagModalViewController: UIViewController {
         // MARK: minusButton에 삭제 액션 추가
 // TODO: 여기서 -버튼 클릭시 딜리트태그 함수가 실행됨. 태그가 딜리트 되려면, 일단 그 값을 정확히 삭제해야하는데. -버튼의 태그 값을 명확히 알게 해줄수있는 방법은 없는지?
 //        minusButton.addTarget(self, action: #selector(deletTag(tagIndex: tagIndex)), for: .touchUpInside)
-        minusButton.addTarget(self, action: #selector(deletTag), for: .touchUpInside)
+//        minusButton.addTarget(self, action: #selector(deletTag), for: .touchUpInside)
+        minusButton.addTarget(self, action: #selector(deletTag(sender:)), for: .touchUpInside)
         
 
         return button
@@ -251,15 +256,36 @@ final class TagModalViewController: UIViewController {
     }
 
     // TODO: Tag 삭제 버튼 연결 - realm 에서 tag값 삭제 (만약 값이 들어있는 index 라면, update, 값이 없다면 delete
-    @objc private func deletTag() {
-     //   let tagIndex = sender.superview?.tag  // 상위 버튼 태그 사용.
+//    @objc private func deletTag() {
+//     //   let tagIndex = sender.superview?.tag  // 상위 버튼 태그 사용.
+//        PomodoroPopupBuilder()
+//            .add(title: "태그 삭제")
+//            .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
+//            .add(button: .confirm(title: "확인", action: { [weak self] in
+//                guard let self = self else { return }
+//                do {
+//                    if let tagToDelete = try RealmService.read(Tag.self).filter(tagIndex).first {
+//                        print("Tag at index \(tagIndex) deleted")
+//                        RealmService.delete(tagToDelete)
+//                    } else {
+//                        print("No tag found at index \(tagIndex)")
+//                    }
+//                } catch {
+//                    print("Error deleting tag: \(error)")
+//                }
+//            }))
+//            .show(on: self)
+//    }
+    // deletTag 함수 수정
+    @objc private func deletTag(sender: UIButton) {
+        let tagIndex = sender.tag
         PomodoroPopupBuilder()
             .add(title: "태그 삭제")
             .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
             .add(button: .confirm(title: "확인", action: { [weak self] in
                 guard let self = self else { return }
                 do {
-                    if let tagToDelete = try RealmService.read(Tag.self).filter(tagIndex).first {
+                    if let tagToDelete = try RealmService.read(Tag.self).filter("position == \(tagIndex)").first {
                         print("Tag at index \(tagIndex) deleted")
                         RealmService.delete(tagToDelete)
                     } else {
@@ -271,9 +297,6 @@ final class TagModalViewController: UIViewController {
             }))
             .show(on: self)
     }
-
-
-
     // TODO: Editbutton 클릭시 - 버튼 활성화 함수
 //    @objc private func createMinusButton() {
 //        tagSettingCompletedButton.isEnabled.toggle()

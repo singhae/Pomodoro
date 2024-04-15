@@ -96,75 +96,50 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     }
 
     @objc func saveTagButtonTapped() {
-        RealmService.write(Tag())
-
-        guard let tagText = textField.text, !tagText.isEmpty,
-              let colorIndex = selectedColorIndex
-        else {
-            Log.info("태그를 입력하세요.")
+        guard let tagText = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !tagText.isEmpty else {
             PomodoroPopupBuilder()
-                .add(body: "태그를 입력해주십시오.")
-                .add(
-                    button: .confirm(
-                        title: "확인",
-                        action: { [weak self] in /* 확인 동작 */
-                            guard let self,
-                                  let text = textField.text,
-                                  let selectedColorIndex
-                            else {
-                                return
-                            }
-                            //                            RealmService.write(
-                            //                                Tag(
-                            //                                    tagName: text,
-                            //                                    colorIndex: selectedColorIndex
-                            //                                )
-                            //                            )
-                            RealmService.write(
-                                Tag(tagName: text,
-                                    colorIndex: self.selectedColorIndex!,
-                                    position: self.calculatePosition())
-                            )
-                        // TODO: if 입력한 tagText 가 realm 에 존재한다면, 태그 중복입니다. 팝업창띄우기.
-                        }
-                    )
-                )
+                .add(body: "태그 이름을 입력해주세요.")
+                .add(button: .confirm(title: "확인", action: { }))
                 .show(on: self)
             return
         }
-        delegate?.createTag(tag: tagText, color: colorIndex, position: calculatePosition())
-        Log.info("->>>>> ", tagText, colorIndex)
-        RealmService.write(Tag(tagName: tagText, 
-                               colorIndex: colorIndex,
-                               position: calculatePosition()))
-        dismiss(animated: true, completion: nil)
-    }
-    
-    // MARK: Calculate the position for a new tag
-//    private func calculatePosition() -> Int {
-//        do {
-//            let existingTags = try RealmService.read(Tag.self)
-//            return existingTags.max(ofProperty: "position") ?? 0
-//        } catch {
-//            Log.error("Failed to fetch tags from Realm: \(error)")
-//            return 0
-//        }
-//    }
-    // MARK: Calculate the position for a new tag
-    private func calculatePosition() -> Int {
+
         do {
-            let existingTags = try RealmService.read(Tag.self)
-            if let maxPosition = existingTags.max(ofProperty: "position") as Int? {
-                return maxPosition + 1
+            let existingTag = try RealmService.read(Tag.self).filter("tagName == %@", tagText).first
+            if existingTag != nil {
+                PomodoroPopupBuilder()
+                    .add(title: "중복 경고")
+                    .add(body: "중복된 태그입니다.")
+                    .add(button: .confirm(title: "확인", action: { }))
+                    .show(on: self)
             } else {
-                return 0 // 태그가 하나도 없는 경우, 첫 번째 태그의 위치는 0
+                let newTag = Tag(
+                    tagName: tagText,
+                    colorIndex: selectedColorIndex ?? "defaultColor",
+                    position: calculateNextPosition()
+                )
+                RealmService.write(newTag)
+                delegate?.createTag(tag: tagText, color: selectedColorIndex ?? "defaultColor", position: newTag.position)
+                dismiss(animated: true, completion: nil)
             }
         } catch {
-            Log.error("Failed to fetch tags from Realm: \(error)")
-            return 0
+            Log.info("태그 조회 실패: \(error)")
+            PomodoroPopupBuilder()
+                .add(body: "태그를 검증하는 과정에서 오류가 발생했습니다.")
+                .add(button: .confirm(title: "확인", action: { }))
+                .show(on: self)
         }
     }
 
+    private func calculateNextPosition() -> Int {
+        do {
+            let tags = try RealmService.read(Tag.self)
+            return (tags.max(ofProperty: "position") as Int? ?? -1) + 1  // 기존 태그 위치의 최대값에서 1을 더함
+        } catch {
+            Log.info("Failed to fetch tags from Realm: \(error)")
+            return 0
+        }
+    }
 
     private func setupViews() {
         closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
