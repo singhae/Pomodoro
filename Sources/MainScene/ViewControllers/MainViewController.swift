@@ -113,6 +113,14 @@ final class MainViewController: UIViewController {
         if UserDefaults.standard.object(forKey: "needOnboarding") == nil {
             UserDefaults.standard.set(true, forKey: "needOnboarding")
             needOnboarding = true
+            RealmService.write(
+                Option(
+                    shortBreakTime: 5,
+                    longBreakTime: 20,
+                    isVibrate: false,
+                    isTimerEffect: true
+                )
+            )
         }
         Log.info("needOnboarding: \(needOnboarding)")
 
@@ -350,9 +358,12 @@ extension MainViewController {
     }
 
     private func setUpPomodoroCurrentStep() {
+        guard let navigationController else {
+            assertionFailure("navigationController should exist")
+            return
+        }
         stepManager.router.moveToNextStep(
-            navigationController:
-            navigationController ?? UINavigationController()
+            navigationController: navigationController
         )
     }
 
