@@ -193,18 +193,6 @@ final class TagModalViewController: UIViewController {
         tagsStackView.addArrangedSubview(thirdRow)
     }
 
-    private func configureButtonAction(button: UIButton, title: String, backgroundColor: UIColor, tagIndex: Int) {
-        if let delegate = selectionDelegate, let _ = try? RealmService.read(Tag.self).filter("position == %@", tagIndex).first {
-            // 값이 존재하는 경우: delegate를 통해 값 전달
-            button.addAction(UIAction { [weak self] _ in
-                selectionDelegate.buttonDidTap(title: title, backgroundColor: backgroundColor)
-            }, for: .touchUpInside)
-        } else {
-            // 값이 존재하지 않는 경우: presentTagEditViewController 호출
-            button.addTarget(self, action: #selector(presentTagEditViewController), for: .touchUpInside)
-        }
-    }
-
     private func createRoundButton(title: String, colorIndex: String, tagIndex: Int) -> UIButton {
         let backgroundColor = TagCase(rawValue: colorIndex)?.backgroundColor ?? .black
         let titleColor = TagCase(rawValue: colorIndex)?.typoColor ?? .black
@@ -218,19 +206,18 @@ final class TagModalViewController: UIViewController {
 //            $0.setTitleColor(TagCase(rawValue: colorIndex)?.typoColor ?? .black, for: .normal)
             $0.backgroundColor = backgroundColor
             $0.setTitleColor(titleColor, for: .normal)
-            $0.tag = tagIndex  // Set the tagIndex
+            $0.tag = 101  // Set the tagIndex
             $0.layer.cornerRadius = 40
             $0.snp.makeConstraints { make in
                 make.size.equalTo(CGSize(width: 80, height: 80))
             }
+
            // $0.addTarget(self, action: #selector(presentTagEditViewController), for: .touchUpInside)
-//            $0.addTarget(self, action: #selector(configureButtonAction), for: .touchUpInside) // TODO: 버튼 클릭시
         }
         // 버튼 액션 설정
         button.addAction(UIAction { [weak self] _ in
-            self?.buttonTapped(tagIndex: tagIndex)
+            self?.buttonTapped(tag: title, color: colorIndex)
         }, for: .touchUpInside)
-        
 
         // MARK: `-` 버튼 추가
 
@@ -280,7 +267,7 @@ final class TagModalViewController: UIViewController {
     // TODO: 태그 값이 메인뷰에 전달하는 함수
       func selectTag(tagName: String, tagColor: String) {
           // 태그 선택 시 delegate를 통해 태그 정보 전달
-          selectionDelegate?.tagSelected(tagName: tagName, tagColor: colorIndex)
+          selectionDelegate?.tagSelected(tagName: tagName, tagColor: tagColor)
           dismiss(animated: true, completion: nil)
       }
 
@@ -288,12 +275,11 @@ final class TagModalViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    @objc func buttonTapped(tagIndex: Int) {
-        if let tag = try? RealmService.read(Tag.self).filter("position == %@", tagIndex).first {
+    @objc func buttonTapped(tag: String, color: String) {
+        if let tag = try? RealmService.read(Tag.self).filter("tagName == %@", tag).first {
             // 태그가 존재하는 경우, delegate로 정보 전달
-            selectionDelegate?.tagSelected(tag: tag.tagName)
+            selectionDelegate?.tagSelected(tagName: tag.tagName, tagColor: tag.colorIndex)
         } else {
-            // 태그가 없는 경우, 태그 설정 뷰 표시
             presentTagEditViewController()
         }
     }
@@ -381,16 +367,8 @@ final class TagModalViewController: UIViewController {
 // MARK: - TagCreationDelegate
 
 extension TagModalViewController: TagCreationDelegate {
-//    func createTag(tag: String, color: String) {
-//        // TODO: 추가된 태그 정보값 전달
-//        RealmService.write(Tag(tagName: tag, colorIndex: color))
-//        Log.info("=====> ", tag)
-//    }
     func createTag(tag: String, color: String, position: Int) {
         RealmService.write(Tag(tagName: tag, colorIndex: color, position: position))
         Log.info("New tag created ==> Name: \(tag), Color Index: \(color), Position: \(position)")
-//        DispatchQueue.main.async {
-//            self.addTagsToStackView()  // Refresh the tag display
-//        }
     }
 }
