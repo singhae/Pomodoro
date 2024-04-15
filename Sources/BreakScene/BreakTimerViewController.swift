@@ -62,20 +62,18 @@ final class BreakTimerViewController: UIViewController {
     }
 
     override func viewDidLoad() {
-        let realmOption = try? RealmService.read(Option.self).first
-        let isTimer = realmOption?.isTimerEffect
-        guard let isTimerEffect = isTimer else {
-            return
-        }
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
         navigationController?.isNavigationBarHidden = true
         addSubviews()
         setupConstraints()
         startTimer()
-        if isTimerEffect {
+
+        if let realmOption = try? RealmService.read(Option.self).first,
+           realmOption.isTimerEffect {
             startAnimationTimer()
         }
+
         setupLongPressGestureRecognizer()
     }
 
