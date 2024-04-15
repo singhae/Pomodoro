@@ -114,17 +114,18 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
                             else {
                                 return
                             }
-//                            RealmService.write(
-//                                Tag(
-//                                    tagName: text,
-//                                    colorIndex: selectedColorIndex
-//                                )
-//                            )
+                            //                            RealmService.write(
+                            //                                Tag(
+                            //                                    tagName: text,
+                            //                                    colorIndex: selectedColorIndex
+                            //                                )
+                            //                            )
                             RealmService.write(
-                                Tag(tagName: text, 
+                                Tag(tagName: text,
                                     colorIndex: self.selectedColorIndex!,
                                     position: self.calculatePosition())
                             )
+                        // TODO: if 입력한 tagText 가 realm 에 존재한다면, 태그 중복입니다. 팝업창띄우기.
                         }
                     )
                 )
