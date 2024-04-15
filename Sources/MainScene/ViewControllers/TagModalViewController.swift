@@ -279,6 +279,7 @@ final class TagModalViewController: UIViewController {
         if let tag = try? RealmService.read(Tag.self).filter("tagName == %@", tag).first {
             // 태그가 존재하는 경우, delegate로 정보 전달
             selectionDelegate?.tagSelected(tagName: tag.tagName, tagColor: tag.colorIndex)
+            tagSettingCompletedButton.isEnabled.toggle()
         } else {
             presentTagEditViewController()
         }

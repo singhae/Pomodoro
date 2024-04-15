@@ -197,6 +197,7 @@ extension MainViewController {
     @objc private func openTagModal() {
         let modalViewController = TagModalViewController()
         modalViewController.modalPresentationStyle = .fullScreen
+        modalViewController.selectionDelegate = self // TODO: Delegate 설정
         present(modalViewController, animated: true)
     }
 
@@ -438,14 +439,10 @@ extension MainViewController: TimeSettingViewControllerDelegate {
 }
 
 extension MainViewController: TagModalViewControllerDelegate {
-    func setupTagModalViewController() {
-        let tagModalVC = TagModalViewController()
-        tagModalVC.selectionDelegate = self  // Set the delegate
-        present(tagModalVC, animated: true, completion: nil)
-    }
     func tagSelected(tagName: String, tagColor: String) {
         // TODO: 선택된 태그 정보 전달
         print("Selected Tag: \(tagName), Color: \(tagColor)")
+        //
     }
 }
 
