@@ -357,6 +357,7 @@ extension MainViewController {
                     }
                 }
 
+                HapticService.hapticNotification(type: .warning)
                 setUpPomodoroCurrentStep()
 
                 longPressGestureRecognizer.isEnabled = false

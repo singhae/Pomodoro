@@ -5,6 +5,7 @@
 //  Created by 김하람 on 2/19/24.
 //
 
+import OSLog
 import RealmSwift
 import SnapKit
 import Then
@@ -179,6 +180,9 @@ extension BreakTimerViewController {
             currentTime += 1
 
             if currentTime > maxTime {
+                Log.debug("Break Finish")
+                HapticService.hapticNotification(type: .success)
+
                 timer.invalidate()
                 stepManager.router.moveToNextStep(
                     navigationController: self.navigationController ?? UINavigationController()
