@@ -153,6 +153,7 @@ final class MainViewController: UIViewController {
                 .strokeColor: UIColor.pomodoro.blackHigh,
                 .strokeWidth: 1,
             ])
+            pomodoroTimeManager.setupMaxTime(time: 25 * 60)
             needOnboarding = false
         } else {
             tagButton.setImage(nil, for: .normal)
@@ -256,6 +257,11 @@ extension MainViewController {
 
     @objc private func presentTimeSettingViewController() {
         Log.info("set pomodorotime")
+
+        if timeLabel.attributedText != nil {
+            timeLabel.attributedText = nil
+        }
+
         let timeSettingViewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
         if let sheet = timeSettingViewController.sheetPresentationController {
             sheet.detents = [
@@ -300,8 +306,13 @@ extension MainViewController {
     }
 
     @objc private func startTimer() {
+        Log.debug("maxTime: \(pomodoroTimeManager.maxTime)")
         guard pomodoroTimeManager.maxTime != 0 else {
             return
+        }
+
+        if timeLabel.attributedText != nil {
+            timeLabel.attributedText = nil
         }
 
         longPressTime = 0.0
