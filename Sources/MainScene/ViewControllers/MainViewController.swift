@@ -10,7 +10,9 @@ import SnapKit
 import Then
 import UIKit
 
-final class MainViewController: UIViewController {
+// TODO: TagModalViewController 에서 선택된 값들 메인뷰컨트롤러에 표시
+
+final class MainViewController: UIViewController{
     private let pomodoroTimeManager = PomodoroTimeManager.shared
     private let notificationId = UUID().uuidString
     private var longPressTimer: Timer?
@@ -436,7 +438,14 @@ extension MainViewController: TimeSettingViewControllerDelegate {
 }
 
 extension MainViewController: TagModalViewControllerDelegate {
-    func tagSelected(tag _: String) {
+    func setupTagModalViewController() {
+        let tagModalVC = TagModalViewController()
+        tagModalVC.selectionDelegate = self  // Set the delegate
+        present(tagModalVC, animated: true, completion: nil)
+    }
+    func tagSelected(tagName: String, tagColor: String) {
         // TODO: 선택된 태그 정보 전달
+        print("Selected Tag: \(tagName), Color: \(tagColor)")
     }
 }
+
