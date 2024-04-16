@@ -357,7 +357,10 @@ extension MainViewController {
                     }
                 }
 
-                HapticService.hapticNotification(type: .warning)
+                let isVibrate = try? RealmService.read(Option.self).first?.isVibrate
+                if isVibrate ?? false {
+                    HapticService.hapticNotification(type: .warning)
+                }
                 setUpPomodoroCurrentStep()
 
                 longPressGestureRecognizer.isEnabled = false

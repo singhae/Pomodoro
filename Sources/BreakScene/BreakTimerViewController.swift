@@ -181,7 +181,10 @@ extension BreakTimerViewController {
 
             if currentTime > maxTime {
                 Log.debug("Break Finish")
-                HapticService.hapticNotification(type: .success)
+                let isVibrate = try? RealmService.read(Option.self).first?.isVibrate
+                if isVibrate ?? false {
+                    HapticService.hapticNotification(type: .success)
+                }
 
                 timer.invalidate()
                 stepManager.router.moveToNextStep(
