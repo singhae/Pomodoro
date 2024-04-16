@@ -168,7 +168,6 @@ final class PomodoroStepTimeChange {
     }
 }
 
-extension PomodoroStepTimeChage: PomodoroStepObserver {
 extension PomodoroStepTimeChange: PomodoroStepObserver {
     func didPomodoroStepChange(to step: PomodoroTimerStep) {
         currentStep = step
