@@ -22,7 +22,9 @@ final class MainViewController: UIViewController {
     var stepManager = PomodoroStepManger()
 
     private lazy var currentStepLabel = UILabel().then {
-        $0.text = stepManager.label.setUpLabelInCurrentStep(currentStep: stepManager.router.currentStep)
+        $0.text = stepManager.label.setUpLabelInCurrentStep(
+            currentStep: stepManager.router.currentStep
+        )
         $0.font = .pomodoroFont.heading3()
         $0.textAlignment = .center
     }
@@ -109,12 +111,11 @@ final class MainViewController: UIViewController {
         super.viewDidLoad()
         stepManager.setRouterObservers()
         setUpPomodoroCurrentStepLabel()
-        
+
         let documentsDirectory = NSSearchPathForDirectoriesInDomains(
-            .documentDirectory, .userDomainMask, 
+            .documentDirectory, .userDomainMask,
             true
         )[0]
-        print(documentsDirectory)
 
         if UserDefaults.standard.object(forKey: "needOnboarding") == nil {
             UserDefaults.standard.set(true, forKey: "needOnboarding")
@@ -245,23 +246,13 @@ extension MainViewController {
 
             longPressTimer?.invalidate()
 
-            if let currentPomodoro {
-                RealmService.update(currentPomodoro) { pomodoro in
-                    pomodoro.phase = 0
-                    pomodoro.isSuccess = false
-                }
-            }
-
             pomodoroTimeManager.stopTimer {
                 setupUIWhenTimerStart(isStopped: true)
                 self.longPressGestureRecognizer.isEnabled = false
             }
 
-            stepManager.timeSetting.stopPomodoroStep(
-                currentTime: pomodoroTimeManager.currentTime
-            )
+            stepManager.timeSetting.initPomodoroStep()
             currentStepLabel.text = ""
-
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
             setupTimeAndTag()
 
@@ -346,14 +337,6 @@ extension MainViewController {
             if minutes == 0, seconds == 0 {
                 timer.invalidate()
                 setupUIWhenTimerStart(isStopped: true)
-                RealmService.update(currentPomodoro!) { updatedPomodoro in
-                    updatedPomodoro.phase += 1
-                    if updatedPomodoro.phase == 5 {
-                        updatedPomodoro.isSuccess = true
-                        updatedPomodoro.phase = 0
-                    }
-                }
-
                 setUpPomodoroCurrentStep()
 
                 longPressGestureRecognizer.isEnabled = false
