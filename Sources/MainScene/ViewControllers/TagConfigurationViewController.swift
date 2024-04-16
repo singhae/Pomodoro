@@ -6,111 +6,278 @@
 //
 
 import PomodoroDesignSystem
+import Realm
+import RealmSwift
 import SnapKit
 import Then
 import UIKit
 
 final class TagConfigurationViewController: UIViewController, UITextFieldDelegate {
-    private let textField = UITextField().then {
-        $0.borderStyle = .roundedRect
-        $0.placeholder = "태그를 입력하세요"
-        $0.autocorrectionType = .no
-        $0.spellCheckingType = .no
-        // FIXME: 배경색 기본 배경 색이랑 동일하게
-        // FIXME: 텍스트 글자 색 : 흰색
-        $0.backgroundColor = .clear
-        $0.textColor = .white
+    // TODO: Realm Tag write
+
+    private var selectedColorIndex: String?
+    private var selectedPosition: Int?
+
+    // MARK: 태그명 레이블
+
+    private lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "태그명"
+        label.font = .pomodoroFont.heading5()
+        label.textAlignment = .left
+        return label
+    }()
+
+    private let paletteTitleLabel = UILabel().then { label in
+        label.text = "태그 색상"
+        label.font = .pomodoroFont.heading5()
+        label.textAlignment = .left
     }
 
-    private let saveTagButton = UIButton().then {
-        $0.backgroundColor = .pomodoro.background
-        $0.setTitleColor(.white, for: .normal)
-        $0.layer.cornerRadius = 10
+    private lazy var textField: UITextField = {
+        let textField = UITextField()
+        textField.borderStyle = .none
+        textField.returnKeyType = .done
+        textField.placeholder = "ex. 공부"
+        textField.font = .pomodoroFont.heading6()
+        textField.delegate = self
+        textField.textAlignment = .left
+        let bottomLine = UIView()
+        bottomLine.backgroundColor = .black
+        textField.addSubview(bottomLine)
+        bottomLine.snp.makeConstraints { make in
+            make.bottom.equalTo(textField.snp.bottom).offset(10)
+            make.left.right.equalTo(textField)
+            make.height.equalTo(2)
+        }
+        return textField
+    }()
+
+    private lazy var createTagConfirmButton = PomodoroConfirmButton(title: "태그 생성",
+                                                                    didTapHandler: saveTagButtonTapped)
+
+    private let colorPaletteStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.distribution = .equalSpacing
+        $0.spacing = 8
+    }
+
+    private let dimmedView = UIView().then {
+        $0.backgroundColor = .pomodoro.blackHigh.withAlphaComponent(0.2)
+    }
+
+    private let titleView = UILabel().then {
+        $0.text = "태그 설정"
+        $0.font = .pomodoroFont.heading4()
+    }
+
+    private let closeButton = UIButton().then {
+        $0.setImage(UIImage(named: "closeButton"), for: .normal)
     }
 
     weak var delegate: TagCreationDelegate?
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .pomodoro.background
+        navigationController?.isNavigationBarHidden = false
+        setupViews()
+        setupConstraints()
+        setupColorPalette()
+    }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         textField.becomeFirstResponder()
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .pomodoro.background
-        textField.delegate = self
-        setupViews()
-        setupConstraints()
-        saveTagButton.addTarget(self, action: #selector(saveTagButtonTapped), for: .touchUpInside)
-        configureColorPickerTextField()
+    @objc private func dismissModal() {
+        dismiss(animated: true, completion: nil)
     }
 
     @objc func saveTagButtonTapped() {
-        guard let tagText = textField.text, !tagText.isEmpty else {
-            print("태그를 입력하세요.")
-//            let alert = UIAlertController(title: "경고", message: "태그를 입력하세요.", preferredStyle: .alert)
-//            alert.addAction(UIAlertAction(title: "확인", style: .default))
-//            present(alert, animated: true)
+        RealmService.write(Tag())
+
+        guard let tagText = textField.text, !tagText.isEmpty,
+              let colorIndex = selectedColorIndex
+        else {
+            Log.info("태그를 입력하세요.")
             PomodoroPopupBuilder()
                 .add(body: "태그를 입력해주십시오.")
                 .add(
                     button: .confirm(
                         title: "확인",
-                        action: { /* 확인 동작 */ }
+                        action: { [weak self] in /* 확인 동작 */
+                            guard let self,
+                                  let text = textField.text,
+                                  let selectedColorIndex
+                            else {
+                                return
+                            }
+                            RealmService.write(
+                                Tag(
+                                    tagName: text,
+                                    colorIndex: selectedColorIndex
+                                )
+                            )
+                        }
                     )
                 )
                 .show(on: self)
             return
         }
-        delegate?.createTag(tag: tagText)
+        delegate?.createTag(tag: tagText, color: colorIndex)
+        Log.info("->>>>> ", tagText, colorIndex)
+        RealmService.write(Tag(tagName: tagText, colorIndex: colorIndex))
         dismiss(animated: true, completion: nil)
-    }
-
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        // FIXME: 디버깅
-        print("textField의 현재 값: \(textField.text ?? "nil")")
-        self.textField.resignFirstResponder()
-        dismiss(animated: true, completion: nil)
-        print("text 필드 비활성화")
-        return true
     }
 
     private func setupViews() {
-        view.addSubview(textField)
-        view.addSubview(saveTagButton)
-    }
-
-    private func configureColorPickerTextField() {
-        let colorPaletteButton = UIButton(type: .custom)
-        colorPaletteButton.backgroundColor = .systemGray
-        colorPaletteButton.frame = CGRect(x: 0, y: 0, width: 15, height: 15)
-        colorPaletteButton.layer.cornerRadius = 7.5
-        colorPaletteButton.layer.masksToBounds = true
-        colorPaletteButton.addTarget(self, action: #selector(colorPaletteButtonTapped), for: .touchUpInside)
-
-        textField.rightView = colorPaletteButton
-        textField.rightViewMode = .always
-    }
-
-    @objc private func colorPaletteButtonTapped() {
-        let colorPaletteVC = ColorPaletteViewController()
-        colorPaletteVC.modalPresentationStyle = .popover // FIXME: 하프 모달로 구현
-        present(colorPaletteVC, animated: true, completion: nil)
+        closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
+        let contentView = UIView().then {
+            $0.backgroundColor = .pomodoro.background
+            $0.layer.cornerRadius = 20
+            $0.addSubview(titleView)
+            $0.addSubview(closeButton)
+            $0.addSubview(titleLabel)
+            $0.addSubview(textField)
+            $0.addSubview(paletteTitleLabel)
+            $0.addSubview(createTagConfirmButton)
+            $0.addSubview(colorPaletteStackView)
+        }
+        dimmedView.addSubview(contentView)
+        view.addSubview(dimmedView)
+        contentView.snp.makeConstraints {
+            $0.leading.trailing.bottom.equalToSuperview()
+            $0.height.equalTo(view.frame.height * 0.8)
+        }
     }
 
     private func setupConstraints() {
-        textField.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
-            make.left.equalToSuperview().inset(20)
-            make.right.equalToSuperview().inset(70)
-            make.height.equalTo(44)
+        closeButton.snp.makeConstraints {
+            $0.top.trailing.equalToSuperview().inset(20)
         }
 
-        saveTagButton.snp.makeConstraints { make in
-            make.centerY.equalTo(textField.snp.centerY)
-            make.left.equalTo(textField.snp.right).offset(10)
-            make.right.equalToSuperview().inset(20)
-            make.height.equalTo(44)
+        titleView.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.centerY.equalTo(closeButton.snp.centerY)
         }
+
+        dimmedView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(titleView.snp.bottom).offset(59)
+            make.left.equalToSuperview().inset(40)
+        }
+
+        textField.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(20)
+            make.left.right.equalToSuperview().inset(40)
+        }
+
+        paletteTitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(textField.snp.bottom).offset(52)
+            make.leading.trailing.equalToSuperview().inset(40)
+        }
+
+        colorPaletteStackView.snp.makeConstraints { make in
+            make.top.equalTo(paletteTitleLabel.snp.bottom).offset(34)
+            make.left.right.equalToSuperview().inset(40)
+            make.height.equalTo(150)
+        }
+
+        createTagConfirmButton.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(110)
+            make.top.equalTo(colorPaletteStackView.snp.bottom).offset(66)
+            make.height.equalTo(60)
+        }
+    }
+
+    private func setupColorPalette() {
+        let colors: [UIColor] = [
+            .pomodoro.tagBackground1,
+            .pomodoro.tagBackground2,
+            .pomodoro.tagBackground3,
+            .pomodoro.tagBackground4,
+            .pomodoro.tagBackground5,
+            .pomodoro.tagBackground6,
+            .pomodoro.tagBackground7,
+            .pomodoro.blackMedium,
+        ]
+        // colorPaletteStackView 설정
+        colorPaletteStackView.axis = .vertical
+        colorPaletteStackView.distribution = .fillEqually
+        colorPaletteStackView.spacing = 20
+        // 2행 4열
+        let rows = [UIStackView(), UIStackView()]
+        for row in rows {
+            row.axis = .horizontal
+            row.distribution = .fillEqually
+            row.spacing = 15
+            colorPaletteStackView.addArrangedSubview(row)
+        }
+
+        // 각 행에 색상 버튼 추가
+        for (index, color) in colors.enumerated() {
+            let colorButton = UIButton().then {
+                $0.backgroundColor = color
+                $0.layer.cornerRadius = 33
+                $0.snp.makeConstraints { make in
+                    make.size.equalTo(CGSize(width: 55, height: 55))
+                }
+                $0.addTarget(self, action: #selector(colorButtonTapped(_:)), for: .touchUpInside)
+                $0.tag = index // 각 버튼에 태그 설정
+                Log.info("tag:/(index)")
+            }
+            // 적절한 행에 버튼 추가
+            if index < 4 {
+                rows[0].addArrangedSubview(colorButton)
+            } else {
+                rows[1].addArrangedSubview(colorButton)
+            }
+        }
+    }
+
+    // TODO: color 버튼 클릭시 정보 전달 로직, 화면상 나타나는 표시(컬러 변경이 더 쉬울 것 같음)
+//    @objc private func colorButtonTapped(_ sender: UIButton) {
+//        self.selectedColorIndex = sender.tag
+//    }
+
+    // 인덱스를 string으로 변환
+    func indexToString(_ index: Int) -> String {
+        switch index {
+        case 0:
+            return "one"
+        case 1:
+            return "two"
+        case 2:
+            return "three"
+        case 3:
+            return "four"
+        case 4:
+            return "five"
+        case 5:
+            return "six"
+        case 6:
+            return "seven"
+        case 7:
+            return "eight"
+        default:
+            return "unknown"
+        }
+    }
+
+    @objc private func colorButtonTapped(_ sender: UIButton) {
+        let index = sender.tag
+        let colorString = indexToString(index)
+        selectedColorIndex = colorString
+    }
+}
+
+extension TagConfigurationViewController {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
     }
 }

@@ -25,6 +25,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             completionHandler: { _, _ in }
         )
 
+        if let defaultFont = UIFont(name: "BMHANNA11yrsoldOTF", size: 17) {
+            let attributes = [NSAttributedString.Key.font: defaultFont]
+            UINavigationBar.appearance().titleTextAttributes = attributes
+        }
+
         pomodoroTimeManager.restoreTimerInfo()
         return true
     }
@@ -48,11 +53,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
-    func userNotificationCenter(
-        _: UNUserNotificationCenter,
-        didReceive _: UNNotificationResponse,
-        withCompletionHandler _: @escaping () -> Void
-    ) {}
+//    private func userNotificationCenter(
+//        _: UNUserNotificationCenter,
+//        didReceive _: UNNotificationResponse,
+//        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+//    ) {
+//        completionHandler([.badge, .banner, .list])
+//    }
 
     func userNotificationCenter(
         _: UNUserNotificationCenter,

@@ -6,83 +6,72 @@
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
 
+import PomodoroDesignSystem
 import Realm
 import RealmSwift
 import UIKit
 
-enum TagCase: CaseIterable {
+enum TagCase: String {
     case one, two, three, four, five, six, seven, eight
 
     var backgroundColor: UIColor {
         switch self {
         case .one:
-            return UIColor.red
+            return .pomodoro.tagBackground1
         case .two:
-            return UIColor.green
+            return .pomodoro.tagBackground2
         case .three:
-            return UIColor.purple
+            return .pomodoro.tagBackground3
         case .four:
-            return UIColor.blue
+            return .pomodoro.tagBackground4
         case .five:
-            return UIColor.yellow
+            return .pomodoro.tagBackground5
         case .six:
-            return UIColor.cyan
+            return .pomodoro.tagBackground6
         case .seven:
-            return UIColor.orange
+            return .pomodoro.tagBackground7
         case .eight:
-            return UIColor.lightGray
+            return .pomodoro.blackMedium
         }
     }
 
-    var tagColor: UIColor {
+    var typoColor: UIColor {
         switch self {
         case .one:
-            return UIColor.white
+            return .pomodoro.tagTypo1
         case .two:
-            return UIColor.white
+            return .pomodoro.tagTypo2
         case .three:
-            return UIColor.white
+            return .pomodoro.tagTypo3
         case .four:
-            return UIColor.white
+            return .pomodoro.tagTypo4
         case .five:
-            return UIColor.white
+            return .pomodoro.tagTypo5
         case .six:
-            return UIColor.white
+            return .pomodoro.tagTypo6
         case .seven:
-            return UIColor.white
+            return .pomodoro.tagTypo7
         case .eight:
-            return UIColor.white
+            return .white
         }
     }
 }
 
-// class TagList: Object {
-//    @Persisted var tagList: List<Tag>
-//
-//    convenience init(tagList: List<Tag>) {
-//        self.init()
-//        self.tagList = tagList
-//    }
-//
-//    func addTag(name: String, color: String) {
-//        tagList.append(Tag(tagName: name, tagColor: color, position: ))
-//    }
-//
-//    func removeTag(name: String) {
-//        guard let tagIndex = tagList.firstIndex(where: { $0.tagName == name }) else { return }
-//        tagList.remove(at: tagIndex)
-//    }
-// }
-
 class Tag: Object {
     @Persisted(primaryKey: true) var tagName: String
-    @Persisted var tagColor: String
-    @Persisted var position: Int
+    @Persisted var colorIndex: String
 
-    convenience init(tagName: String, tagColor: String, position: Int) {
+    convenience init(tagName: String, colorIndex: String) {
         self.init()
         self.tagName = tagName
-        self.tagColor = tagColor
-        self.position = position
+        self.colorIndex = colorIndex
+    }
+
+    func setupTagBackgroundColor() -> UIColor {
+        TagCase(rawValue: colorIndex)?.backgroundColor ?? UIColor.white
+    }
+
+    func setupTagTypoColor() -> UIColor {
+        TagCase(rawValue: colorIndex)?.typoColor ?? UIColor.black
     }
 }

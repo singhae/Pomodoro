@@ -5,15 +5,16 @@
 //  Created by 김하람 on 2/19/24.
 //
 
+import RealmSwift
 import SnapKit
 import Then
 import UIKit
 
 final class BreakTimerViewController: UIViewController {
     private var timer: Timer?
-    private var notificationId: String?
+    private var notificationId = UUID().uuidString
     private var currentTime = 0
-    private var maxTime = 1 * 60
+    private lazy var maxTime: Int = stepManager.timeSetting.setUpBreakTime()
     private var timerHeightConstraint: Constraint?
     var stepManager = PomodoroStepManger()
     private let timeLabel = UILabel().then {
@@ -67,7 +68,11 @@ final class BreakTimerViewController: UIViewController {
         addSubviews()
         setupConstraints()
         startTimer()
-        startAnimationTimer()
+
+        if let realmOption = try? RealmService.read(Option.self).first,
+           realmOption.isTimerEffect {
+            startAnimationTimer()
+        }
 
         setupLongPressGestureRecognizer()
     }
@@ -84,9 +89,7 @@ final class BreakTimerViewController: UIViewController {
         let seconds = (maxTime - currentTime) % 60
         timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
 
-        if let id = notificationId {
-            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id])
-        }
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [notificationId])
     }
 }
 
@@ -188,6 +191,9 @@ extension BreakTimerViewController {
             self.timeLabel.textColor = self.breakLabel.frame.minY < timerBackgroundMinY ?? .infinity
                 ? .black
                 : .white
+            self.breakLabel.textColor = self.breakLabel.frame.minY < timerBackgroundMinY ?? .infinity
+                ? .black
+                : .white
         }
         timer?.fire()
     }
@@ -202,12 +208,11 @@ extension BreakTimerViewController {
     }
 
     private func configureNotification() {
-        notificationId = UUID().uuidString
         let content = UNMutableNotificationContent()
         content.title = "시간 종료!"
         content.body = "시간이 종료되었습니다. 휴식을 취해주세요."
         let request = UNNotificationRequest(
-            identifier: notificationId!,
+            identifier: notificationId,
             content: content,
             trigger: UNTimeIntervalNotificationTrigger(
                 timeInterval: TimeInterval(maxTime),
@@ -217,7 +222,7 @@ extension BreakTimerViewController {
         UNUserNotificationCenter.current()
             .add(request) { error in
                 guard let error else { return }
-                print(error.localizedDescription)
+                Log.error(error)
             }
     }
 }

@@ -15,9 +15,15 @@ protocol BreakTimeDelegate: AnyObject {
     func updateTableViewRows()
 }
 
-final class SettingViewController: UIViewController, BreakTimeDelegate {
-    let database = DatabaseManager.shared
+protocol PomodoroBreakLongSelectionDelegate: AnyObject {
+    func didSelectLongBreak(time: Int)
+}
 
+protocol PomodoroBreakShortSelectionDelegate: AnyObject {
+    func didSelectShortBreak(time: Int)
+}
+
+final class SettingViewController: UIViewController, BreakTimeDelegate {
     private enum SettingOption: CaseIterable {
         case shortBreak, longBreak, completionVibrate, dataReset, timerEffect, serviceReview, OSLicense
 
@@ -85,9 +91,9 @@ final class SettingViewController: UIViewController, BreakTimeDelegate {
         super.viewDidLoad()
         view.backgroundColor = .pomodoro.background
 
-        let options = database.read(Option.self)
-        if options.isEmpty {
-            database.write(
+        let options = try? RealmService.read(Option.self)
+        if let options, options.isEmpty {
+            RealmService.write(
                 Option(
                     shortBreakTime: 5,
                     longBreakTime: 20,
@@ -111,7 +117,7 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let realmOption = database.read(Option.self).first
+        let realmOption = try? RealmService.read(Option.self).first
 
         let cell = UITableViewCell(
             style: .value1,
@@ -169,7 +175,6 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedOption = SettingOption.allCases[indexPath.row]
-
         switch selectedOption {
         case .shortBreak:
             let shortBreakModal = ShortBreakModalViewController()
@@ -185,11 +190,9 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
             showCancellablePopup(
                 title: "데이터 초기화 하기",
                 body: "데이터를 초기화 하시겠습니까?\n태그, 뽀모도로 기록 등\n모든 데이터와 설정이 초기화됩니다."
-            ) { [weak self] in
-                guard let self else { return }
-
-                database.deleteAll()
-                database.write(
+            ) { [weak self] in guard let self else { return }
+                RealmService.deleteAll()
+                RealmService.write(
                     Option(
                         shortBreakTime: 5,
                         longBreakTime: 20,
@@ -197,6 +200,8 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
                         isTimerEffect: true
                     )
                 )
+//                database.write(Tag(tagName: "집중", colorIndex: "one", position: 0))
+//                database.write(Tag(tagName: "업무", colorIndex: "two", position: 1))
                 updateTableViewRows()
             }
         case .timerEffect:
@@ -253,26 +258,26 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
     // MARK: realm manage
 
     @objc func setupIsVibrate(toggle: UISwitch) {
-        let options = database.read(Option.self).first ?? Option()
+        let options = (try? RealmService.read(Option.self).first) ?? Option()
         if toggle.isOn {
-            database.update(options) { option in
+            RealmService.update(options) { option in
                 option.isVibrate = true
             }
         } else {
-            database.update(options) { option in
+            RealmService.update(options) { option in
                 option.isVibrate = false
             }
         }
     }
 
     @objc func setupIsTimerEffect(toggle: UISwitch) {
-        let options = database.read(Option.self).first ?? Option()
+        let options = (try? RealmService.read(Option.self).first) ?? Option()
         if toggle.isOn {
-            database.update(options) { option in
+            RealmService.update(options) { option in
                 option.isTimerEffect = true
             }
         } else {
-            database.update(options) { option in
+            RealmService.update(options) { option in
                 option.isTimerEffect = false
             }
         }

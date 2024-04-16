@@ -11,13 +11,13 @@ import UIKit
 
 final class ShortBreakModalViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     weak var delegate: BreakTimeDelegate?
-
-    let database = DatabaseManager.shared
-
+    weak var setShortDelegate: PomodoroBreakShortSelectionDelegate?
     private let label = UILabel().then {
         $0.text = "짧은 휴식"
         $0.font = .pomodoroFont.heading3()
     }
+
+    private let pomodoroStep = PomodoroStepManger()
 
     private lazy var confirmButton = PomodoroConfirmButton(title: "확인", didTapHandler: confirmShortBreakInfo)
 
@@ -26,8 +26,8 @@ final class ShortBreakModalViewController: UIViewController, UIPickerViewDelegat
     private var minutePicker: UIPickerView = .init()
 
     func confirmShortBreakInfo() {
-        let options = database.read(Option.self).first ?? Option()
-        database.update(options) { option in
+        let options = (try? RealmService.read(Option.self).first) ?? Option()
+        RealmService.update(options) { option in
             option.shortBreakTime = self.tempShortBreakTime + 1
         }
         delegate?.updateTableViewRows()
@@ -41,12 +41,11 @@ final class ShortBreakModalViewController: UIViewController, UIPickerViewDelegat
         view.addSubview(label)
         view.addSubview(minutePicker)
         view.addSubview(confirmButton)
-
         minutePicker.sizeToFit()
         minutePicker.delegate = self
         minutePicker.dataSource = self
         minutePicker.selectRow(
-            (database.read(Option.self).first?.shortBreakTime ?? 0) - 1,
+            ((try? RealmService.read(Option.self).first?.shortBreakTime) ?? 0) - 1,
             inComponent: 0,
             animated: true
         )
@@ -79,7 +78,7 @@ final class ShortBreakModalViewController: UIViewController, UIPickerViewDelegat
     }
 
     func pickerView(_: UIPickerView, numberOfRowsInComponent _: Int) -> Int {
-        20
+        10
     }
 
     func pickerView(_: UIPickerView, rowHeightForComponent _: Int) -> CGFloat {
@@ -108,5 +107,6 @@ final class ShortBreakModalViewController: UIViewController, UIPickerViewDelegat
 
     func pickerView(_: UIPickerView, didSelectRow row: Int, inComponent _: Int) {
         tempShortBreakTime = row
+        setShortDelegate?.didSelectShortBreak(time: row + 1)
     }
 }

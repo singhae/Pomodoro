@@ -11,9 +11,8 @@ import UIKit
 
 final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     weak var delegate: BreakTimeDelegate?
-
-    let database = DatabaseManager.shared
-
+    weak var setLongDelegate: PomodoroBreakLongSelectionDelegate?
+    private let pomodoroStep = PomodoroStepManger()
     private let label = UILabel().then {
         $0.text = "긴 휴식"
         $0.font = .pomodoroFont.heading3()
@@ -26,9 +25,9 @@ final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate
     private var minutePicker: UIPickerView = .init()
 
     func confirmLongBreakInfo() {
-        let options = database.read(Option.self).first ?? Option()
-        database.update(options) { option in
-            option.longBreakTime = self.tempLongBreakTime + 1
+        let options = (try? RealmService.read(Option.self).first) ?? Option()
+        RealmService.update(options) { option in
+            option.longBreakTime = self.tempLongBreakTime + 5
         }
         delegate?.updateTableViewRows()
         dismiss(animated: true)
@@ -41,13 +40,12 @@ final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate
         view.addSubview(label)
         view.addSubview(minutePicker)
         view.addSubview(confirmButton)
-
         minutePicker.sizeToFit()
         minutePicker.delegate = self
         minutePicker.dataSource = self
 
         minutePicker.selectRow(
-            (database.read(Option.self).first?.longBreakTime ?? 0) - 1,
+            ((try? RealmService.read(Option.self).first?.longBreakTime) ?? 0) - 5,
             inComponent: 0,
             animated: true
         )
@@ -80,7 +78,7 @@ final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate
     }
 
     func pickerView(_: UIPickerView, numberOfRowsInComponent _: Int) -> Int {
-        40
+        26
     }
 
     func pickerView(_: UIPickerView, rowHeightForComponent _: Int) -> CGFloat {
@@ -100,7 +98,7 @@ final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate
             label = UILabel()
         }
 
-        label.text = "\(row + 1) m"
+        label.text = "\(row + 5) m"
         label.textAlignment = .center
         label.font = .pomodoroFont.heading3()
 
@@ -109,5 +107,6 @@ final class LongBreakModalViewController: UIViewController, UIPickerViewDelegate
 
     func pickerView(_: UIPickerView, didSelectRow row: Int, inComponent _: Int) {
         tempLongBreakTime = row
+        setLongDelegate?.didSelectLongBreak(time: row + 5)
     }
 }
