@@ -109,9 +109,9 @@ final class MainViewController: UIViewController {
         super.viewDidLoad()
         stepManager.setRouterObservers()
         setUpPomodoroCurrentStepLabel()
-        
+
         let documentsDirectory = NSSearchPathForDirectoriesInDomains(
-            .documentDirectory, .userDomainMask, 
+            .documentDirectory, .userDomainMask,
             true
         )[0]
         print(documentsDirectory)
@@ -123,6 +123,7 @@ final class MainViewController: UIViewController {
                 Option(
                     shortBreakTime: 5,
                     longBreakTime: 20,
+                    focusTime: 25,
                     isVibrate: false,
                     isTimerEffect: true
                 )
@@ -138,6 +139,10 @@ final class MainViewController: UIViewController {
         )
 
         view.backgroundColor = .pomodoro.background
+
+        let focusTime = try? RealmService.read(Option.self).first?.focusTime
+//        pomodoroTimeManager.setupMaxTime(time: (focusTime ?? 25) * 60)
+        pomodoroTimeManager.setupMaxTime(time: focusTime ?? 25)
 
         addSubviews()
         setupConstraints()
@@ -465,6 +470,10 @@ extension MainViewController {
 extension MainViewController: TimeSettingViewControllerDelegate {
     func didSelectTime(time: Int) {
         pomodoroTimeManager.setupMaxTime(time: time)
+        guard let option = try? RealmService.read(Option.self).first else { return }
+        RealmService.update(option) { opt in
+            opt.focusTime = time
+        }
         setupTimeAndTag()
     }
 }

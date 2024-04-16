@@ -29,7 +29,6 @@ final class PomodoroRouter {
         }
     }
 
-    private let pomodoroData = DatabaseManager.shared
     var observers: [PomodoroStepObserver] = []
     var currentStep: PomodoroTimerStep = .start {
         didSet {
@@ -58,11 +57,11 @@ final class PomodoroRouter {
     }
 
     func savePomodoroStepCounter() {
-        let data = pomodoroData.read(Pomodoro.self)
-        guard let currentData = data.last else {
+        let data = try? RealmService.read(Pomodoro.self)
+        guard let currentData = data?.last else {
             return
         }
-        pomodoroData.update(currentData) { data in
+        RealmService.update(currentData) { data in
             data.phase = self.pomodoroCount
         }
     }
@@ -83,7 +82,7 @@ final class PomodoroRouter {
             pomodoroMainViewController.stepManager.router = self
             navigationController.pushViewController(pomodoroMainPageViewController, animated: true)
         case .rest:
-            if maxStep < PomodoroRouter.pomodoroCount {
+            if maxStep < pomodoroCount {
                 breakTimerViewController.stepManager.router = self
                 navigationController.popToRootViewController(animated: true)
             } else {
@@ -105,8 +104,8 @@ final class PomodoroRouter {
         case var .rest(count):
             count = pomodoroCount
             if count < maxStep {
-                PomodoroRouter.pomodoroCount += 1
-                currentStep = .focus(count: PomodoroRouter.pomodoroCount)
+                pomodoroCount += 1
+                currentStep = .focus(count: pomodoroCount)
             } else {
                 currentStep = .end
                 currentStep = .start
@@ -122,7 +121,7 @@ final class PomodoroRouter {
 
 final class PomodoroStepTimeChange {
     private let pomodoroTimeManager = PomodoroTimeManager.shared
-    private var pomodoroCurrentCount = PomodoroRouter.pomodoroCount
+    private var pomodoroCurrentCount = PomodoroRouter().pomodoroCount
     private var currentStep: PomodoroTimerStep?
     private var shortBreakTime: Int?
     private var longBreakTime: Int?
@@ -166,15 +165,15 @@ final class PomodoroStepTimeChange {
     }
 
     private func stopPomodoroStep(time: Int) {
-        let data = pomodoroData.read(Pomodoro.self)
-        guard let currentData = data.last else {
+        let data = try? RealmService.read(Pomodoro.self)
+        guard let currentData = data?.last else {
             return
         }
-        if currentData.phase == 1 && time <= 60 {
+        if currentData.phase == 1, time <= 60 {
             // 실패에 대한 카운팅 없애기
-            pomodoroData.delete(currentData)
+            RealmService.delete(currentData)
         } else {
-            pomodoroData.update(currentData) { data in
+            RealmService.update(currentData) { data in
                 data.phase = 0
                 data.isSuccess = false
             }
@@ -182,11 +181,11 @@ final class PomodoroStepTimeChange {
     }
 }
 
-extension PomodoroStepTimeChage: PomodoroStepObserver {
+extension PomodoroStepTimeChange: PomodoroStepObserver {
     func didPomodoroStepCounterChange(stepCounter counter: Int) {
         pomodoroCurrentCount = counter
     }
-extension PomodoroStepTimeChange: PomodoroStepObserver {
+
     func didPomodoroStepChange(to step: PomodoroTimerStep) {
         currentStep = step
     }

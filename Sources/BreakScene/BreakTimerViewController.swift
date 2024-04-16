@@ -11,7 +11,9 @@ import SnapKit
 import Then
 import UIKit
 
-final class BreakTimerViewController: UIViewController {
+final class BreakTimerViewController: UIViewController, TimeSettingViewControllerDelegate {
+    func didSelectTime(time: Int) {}
+
     private var timer: Timer?
     private var notificationId = UUID().uuidString
     private var currentTime = 0
@@ -71,7 +73,8 @@ final class BreakTimerViewController: UIViewController {
         startTimer()
 
         if let realmOption = try? RealmService.read(Option.self).first,
-           realmOption.isTimerEffect {
+           realmOption.isTimerEffect
+        {
             startAnimationTimer()
         }
 
@@ -213,25 +216,6 @@ extension BreakTimerViewController {
             }
         }
     }
-
-    private func configureNotification() {
-        let content = UNMutableNotificationContent()
-        content.title = "시간 종료!"
-        content.body = "시간이 종료되었습니다. 휴식을 취해주세요."
-        let request = UNNotificationRequest(
-            identifier: notificationId,
-            content: content,
-            trigger: UNTimeIntervalNotificationTrigger(
-                timeInterval: TimeInterval(maxTime),
-                repeats: false
-            )
-        )
-        UNUserNotificationCenter.current()
-            .add(request) { error in
-                guard let error else { return }
-                Log.error(error)
-            }
-    }
 }
 
 // MARK: - UI
@@ -269,11 +253,5 @@ extension BreakTimerViewController {
             make.left.right.equalToSuperview()
             self.timerHeightConstraint = make.height.equalTo(0).constraint
         }
-    }
-}
-
-extension BreakTimerViewController: TimeSettingViewControllerDelegate {
-    func didSelectTime(time: Int) {
-        maxTime = time * 60
     }
 }
