@@ -141,10 +141,6 @@ final class MainViewController: UIViewController {
 
         view.backgroundColor = .pomodoro.background
 
-        let focusTime = try? RealmService.read(Option.self).first?.focusTime
-//        pomodoroTimeManager.setupMaxTime(time: (focusTime ?? 25) * 60)
-        pomodoroTimeManager.setupMaxTime(time: focusTime ?? 25)
-
         addSubviews()
         setupConstraints()
         setupActions()
@@ -179,6 +175,13 @@ final class MainViewController: UIViewController {
             tagButton.setImage(nil, for: .normal)
             tagButton.setTitle("Tag", for: .normal)
             timeLabel.attributedText = nil
+
+            let option = try? RealmService.read(Option.self).first
+            // 배포용
+//            pomodoroTimeManager.setupMaxTime(time: (option?.focusTime ?? 25) * 60)
+            // 디버깅용
+            pomodoroTimeManager.setupMaxTime(time: (option?.focusTime ?? 25))
+
             timeLabel.text = String(
                 format: "%02d:%02d",
                 (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60,
