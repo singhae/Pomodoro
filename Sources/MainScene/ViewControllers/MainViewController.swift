@@ -109,6 +109,12 @@ final class MainViewController: UIViewController {
         super.viewDidLoad()
         stepManager.setRouterObservers()
         setUpPomodoroCurrentStepLabel()
+        
+        let documentsDirectory = NSSearchPathForDirectoriesInDomains(
+            .documentDirectory, .userDomainMask, 
+            true
+        )[0]
+        print(documentsDirectory)
 
         if UserDefaults.standard.object(forKey: "needOnboarding") == nil {
             UserDefaults.standard.set(true, forKey: "needOnboarding")
@@ -252,7 +258,9 @@ extension MainViewController {
                 self.longPressGestureRecognizer.isEnabled = false
             }
 
-            stepManager.timeSetting.initPomodoroStep()
+            stepManager.timeSetting.stopPomodoroStep(
+                currentTime: pomodoroTimeManager.currentTime
+            )
             currentStepLabel.text = ""
 
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
