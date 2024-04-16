@@ -20,7 +20,6 @@ protocol PomodoroStepObserver: AnyObject {
 // - MARK: PomodoroStepTimeChage - pomodoroStep의 변화에 따른 스텝단계의 변화와 navigator 관리
 final class PomodoroRouter {
     static let shared = PomodoroRouter()
-    private let stepDataBase = DatabaseManager.shared
     private let pomodoroTimeManager = PomodoroTimeManager.shared
     let maxStep = 3
     static var pomodoroCount: Int = 0
@@ -103,7 +102,6 @@ final class PomodoroRouter {
 }
 
 // - MARK: PomodoroStepTimeChage - pomodoroStep 변화에 따른 시간의 변화를 관리하는 클래스
-
 final class PomodoroStepTimeChange {
     private let pomodoroTimeManager = PomodoroTimeManager.shared
     private let maxStep = PomodoroRouter.shared.maxStep
@@ -114,28 +112,27 @@ final class PomodoroStepTimeChange {
     private var longBreakTime: Int?
 
     func setUptimeInCurrentStep() {
+        updateCurrentPomodoroStepData()
         switch currentStep {
         case .start:
             pomodoroTimeManager.setupCurrentTime(curr: 0)
             pomodoroTimeManager.setupMaxTime(time: 0)
-            updateCurrentPomodoroStepData()
-        case .focus, .rest:
+        case .focus:
             pomodoroTimeManager.setupCurrentTime(curr: 0)
-            updateCurrentPomodoroStepData()
+        case .rest:
+            pomodoroTimeManager.setupCurrentTime(curr: 0)
         case .end:
             pomodoroTimeManager.setupCurrentTime(curr: 0)
             pomodoroTimeManager.setupMaxTime(time: 0)
-            updateCurrentPomodoroStepData()
         case .none:
             pomodoroTimeManager.setupCurrentTime(curr: 0)
             pomodoroTimeManager.setupMaxTime(time: 0)
-            updateCurrentPomodoroStepData()
         }
     }
 
     func setUpBreakTime() -> Int {
         let options = (try? RealmService.read(Option.self).first) ?? Option()
-        if pomodoroCurrentCount < 2 {
+        if pomodoroCurrentCount < 3 {
             return options.shortBreakTime
         } else {
             return options.longBreakTime
@@ -151,12 +148,10 @@ final class PomodoroStepTimeChange {
     }
 
     func updateCurrentPomodoroStepData() {
-        guard let data = stepDataBase.read(Pomodoro.self).last else {
-            return
-        }
+        let data = (try? RealmService.read(Pomodoro.self).last) ?? Pomodoro()
         stepDataBase.update(data) { data in
             data.phase += 1
-            if data.phase < self.maxStep {
+            if data.phase == self.maxStep {
                 data.isSuccess = true
             }
         }
@@ -165,9 +160,7 @@ final class PomodoroStepTimeChange {
 
     func isFailedPomodoroStep() {
         let currenttime = pomodoroTimeManager.currentTime
-        guard let data = stepDataBase.read(Pomodoro.self).last else {
-            return
-        }
+        let data = (try? RealmService.read(Pomodoro.self).last) ?? Pomodoro()
         if currenttime < 60, data.phase == 1 {
             stepDataBase.delete(data)
         } else {

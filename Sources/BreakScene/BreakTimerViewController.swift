@@ -88,7 +88,6 @@ final class BreakTimerViewController: UIViewController {
         let minutes = (maxTime - currentTime) / 60
         let seconds = (maxTime - currentTime) % 60
         timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
-
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [notificationId])
     }
 }
@@ -154,7 +153,6 @@ extension BreakTimerViewController {
         )
         // - TODO: do pomodoroStep initialize
         stepManager.timeSetting.initPomodoroStep()
-        // stepManager.realmSetting.stopPomodoroStep(time: pomodoroTime.currentTime)
         stepManager.router.currentStep = .start
         longPressGuideLabel.isHidden = true
     }

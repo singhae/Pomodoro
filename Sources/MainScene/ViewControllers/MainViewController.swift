@@ -22,7 +22,9 @@ final class MainViewController: UIViewController {
     var stepManager = PomodoroStepManger()
 
     private lazy var currentStepLabel = UILabel().then {
-        $0.text = stepManager.label.setUpLabelInCurrentStep(currentStep: stepManager.router.currentStep)
+        $0.text = stepManager.label.setUpLabelInCurrentStep(
+            currentStep: stepManager.router.currentStep
+        )
         $0.font = .pomodoroFont.heading3()
         $0.textAlignment = .center
     }
@@ -110,9 +112,9 @@ final class MainViewController: UIViewController {
         stepManager.setRouterObservers()
         print(stepManager.router.currentStep)
         setUpPomodoroCurrentStepLabel()
-        
+
         let documentsDirectory = NSSearchPathForDirectoriesInDomains(
-            .documentDirectory, .userDomainMask, 
+            .documentDirectory, .userDomainMask,
             true
         )[0]
         print(documentsDirectory)
@@ -258,8 +260,7 @@ extension MainViewController {
                 self.longPressGestureRecognizer.isEnabled = false
             }
 
-            stepManager.timeSetting.setUptimeInCurrentStep()
-//            stepManager.timeSetting.setUpBreakTime()
+            stepManager.timeSetting.initPomodoroStep()
             currentStepLabel.text = ""
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
             setupTimeAndTag()
@@ -345,7 +346,8 @@ extension MainViewController {
             if minutes == 0, seconds == 0 {
                 timer.invalidate()
                 setupUIWhenTimerStart(isStopped: true)
-                RealmService.update(currentPomodoro!) { updatedPomodoro in
+                guard let currentPomodoro else { return }
+                RealmService.update(currentPomodoro) { updatedPomodoro in
                     updatedPomodoro.phase += 1
                     if updatedPomodoro.phase == 5 {
                         updatedPomodoro.isSuccess = true
@@ -380,6 +382,7 @@ extension MainViewController {
         currentStepLabel.text = stepManager.label.setUpLabelInCurrentStep(
             currentStep: stepManager.router.currentStep
         )
+
         if stepManager.router.currentStep != .start {
             timeSettingGuideButton.isHidden = true
         } else {
