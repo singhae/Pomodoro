@@ -153,7 +153,7 @@ extension BreakTimerViewController {
             navigationController: navigationController ?? UINavigationController()
         )
         // - TODO: do pomodoroStep initialize
-        stepManager.timeSetting.initPomodoroStep()
+        stepManager.timeSetting.initPomodoroStepInRestTime()
         stepManager.router.currentStep = .start
         longPressGuideLabel.isHidden = true
     }
