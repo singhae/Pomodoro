@@ -110,14 +110,12 @@ final class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         stepManager.setRouterObservers()
-        print(stepManager.router.currentStep)
         setUpPomodoroCurrentStepLabel()
 
         let documentsDirectory = NSSearchPathForDirectoriesInDomains(
             .documentDirectory, .userDomainMask,
             true
         )[0]
-        print(documentsDirectory)
 
         if UserDefaults.standard.object(forKey: "needOnboarding") == nil {
             UserDefaults.standard.set(true, forKey: "needOnboarding")
@@ -248,13 +246,6 @@ extension MainViewController {
 
             longPressTimer?.invalidate()
 
-            if let currentPomodoro {
-                RealmService.update(currentPomodoro) { pomodoro in
-                    pomodoro.phase = 0
-                    pomodoro.isSuccess = false
-                }
-            }
-
             pomodoroTimeManager.stopTimer {
                 setupUIWhenTimerStart(isStopped: true)
                 self.longPressGestureRecognizer.isEnabled = false
@@ -346,15 +337,6 @@ extension MainViewController {
             if minutes == 0, seconds == 0 {
                 timer.invalidate()
                 setupUIWhenTimerStart(isStopped: true)
-                guard let currentPomodoro else { return }
-                RealmService.update(currentPomodoro) { updatedPomodoro in
-                    updatedPomodoro.phase += 1
-                    if updatedPomodoro.phase == 5 {
-                        updatedPomodoro.isSuccess = true
-                        updatedPomodoro.phase = 0
-                    }
-                }
-
                 setUpPomodoroCurrentStep()
 
                 longPressGestureRecognizer.isEnabled = false
@@ -378,11 +360,9 @@ extension MainViewController {
 
     private func setUpPomodoroCurrentStepLabel() {
         stepManager.timeSetting.setUptimeInCurrentStep()
-        // stepManager.realmSetting.setUpRealmInCurrentStep()
         currentStepLabel.text = stepManager.label.setUpLabelInCurrentStep(
             currentStep: stepManager.router.currentStep
         )
-
         if stepManager.router.currentStep != .start {
             timeSettingGuideButton.isHidden = true
         } else {
