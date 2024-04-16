@@ -12,7 +12,7 @@ import Then
 import UIKit
 
 final class BreakTimerViewController: UIViewController, TimeSettingViewControllerDelegate {
-    func didSelectTime(time: Int) {}
+    func didSelectTime(time _: Int) {}
 
     private var timer: Timer?
     private var notificationId = UUID().uuidString
@@ -73,8 +73,7 @@ final class BreakTimerViewController: UIViewController, TimeSettingViewControlle
         startTimer()
 
         if let realmOption = try? RealmService.read(Option.self).first,
-           realmOption.isTimerEffect
-        {
+           realmOption.isTimerEffect {
             startAnimationTimer()
         }
 
