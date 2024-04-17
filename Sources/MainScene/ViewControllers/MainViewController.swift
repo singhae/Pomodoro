@@ -157,8 +157,8 @@ final class MainViewController: UIViewController{
             ])
             needOnboarding = false
         } else {
-            tagButton.setImage(nil, for: .normal)
             tagButton.setTitle("Tag", for: .normal)
+            tagButton.setImage(nil, for: .normal)
             timeLabel.attributedText = nil
             timeLabel.text = String(
                 format: "%02d:%02d",
@@ -440,9 +440,16 @@ extension MainViewController: TimeSettingViewControllerDelegate {
 
 extension MainViewController: TagModalViewControllerDelegate {
     func tagSelected(tagName: String, tagColor: String) {
-        // TODO: 선택된 태그 정보 전달
+        let backgroundColor = TagCase(rawValue: tagColor)?.backgroundColor ?? .gray
+        let titleColor = TagCase(rawValue: tagColor)?.typoColor ?? .gray
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.tagButton.setTitle(tagName, for: .normal)
+            self.tagButton.backgroundColor = titleColor
+            self.tagButton.setTitleColor(.white, for: .normal)
+        }
         print("Selected Tag: \(tagName), Color: \(tagColor)")
-        //
     }
 }
 
