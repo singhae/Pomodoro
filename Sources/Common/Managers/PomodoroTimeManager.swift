@@ -48,28 +48,14 @@ final class PomodoroTimeManager {
             self.currentTime += 1
         }
         pomodoroTimer?.fire()
-
-        let content = UNMutableNotificationContent()
-        content.title = "시간 종료!"
-        content.body = "시간이 종료되었습니다. 휴식을 취해주세요."
-
-        let request = UNNotificationRequest(
-            identifier: notificationId,
-            content: content,
-            trigger: UNTimeIntervalNotificationTrigger(
-                timeInterval: TimeInterval(maxTime),
-                repeats: false
-            )
-        )
-
-        UNUserNotificationCenter.current()
-            .add(request)
     }
 
     func stopTimer(completion: () -> Void) {
         pomodoroTimer?.invalidate()
         currentTime = 0
-        maxTime = 0
+
+        let option = try? RealmService.read(Option.self).first
+        maxTime = (option?.focusTime ?? 25) * 60
 
         completion()
     }
@@ -100,7 +86,8 @@ final class PomodoroTimeManager {
             isRestored = true
             currentTime = updatedCurrTime
         } else {
-            maxTime = 0
+            let option = try? RealmService.read(Option.self).first
+            maxTime = (option?.focusTime ?? 25) * 60
             currentTime = 0
         }
     }

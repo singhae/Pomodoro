@@ -50,6 +50,16 @@ final class PomodoroRouter {
         )
     }
 
+    func savePomodoroStepCounter() {
+        let data = try? RealmService.read(Pomodoro.self)
+        guard let currentData = data?.last else {
+            return
+        }
+        RealmService.update(currentData) { data in
+            data.phase = self.pomodoroCount
+        }
+    }
+
     func navigatorToCurrentStep(
         currentStep: PomodoroTimerStep,
         navigationController: UINavigationController
@@ -104,9 +114,11 @@ final class PomodoroRouter {
 // - MARK: PomodoroStepTimeChage - pomodoroStep 변화에 따른 시간의 변화를 관리하는 클래스
 final class PomodoroStepTimeChange {
     private let pomodoroTimeManager = PomodoroTimeManager.shared
+
     private let maxStep = PomodoroRouter.shared.maxStep
     private let stepDataBase = RealmService.self
     private var pomodoroCurrentCount = PomodoroRouter.shared.pomodoroCount
+
     private var currentStep: PomodoroTimerStep?
     private var shortBreakTime: Int?
     private var longBreakTime: Int?
@@ -169,6 +181,10 @@ final class PomodoroStepTimeChange {
 }
 
 extension PomodoroStepTimeChange: PomodoroStepObserver {
+    func didPomodoroStepCounterChange(stepCounter counter: Int) {
+        pomodoroCurrentCount = counter
+    }
+
     func didPomodoroStepChange(to step: PomodoroTimerStep) {
         currentStep = step
     }

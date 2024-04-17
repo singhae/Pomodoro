@@ -10,6 +10,7 @@
 		0DC41B452B8C9AB7002FB140 /* PomodoroRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC41B442B8C9AB7002FB140 /* PomodoroRouter.swift */; };
 		0DC5CE062B9EDFAC007A21E4 /* PomodoroStepStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC5CE052B9EDFAC007A21E4 /* PomodoroStepStateManager.swift */; };
 		0DF629662B691ABA00BFE39F /* TimerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */; };
+		146CD3F22BCD75F200F5A197 /* HapticService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146CD3F12BCD75F200F5A197 /* HapticService.swift */; };
 		14DB05DB2B8D0629007AA0A3 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 14DB05DA2B8D0629007AA0A3 /* Realm */; };
 		14DB05DD2B8D0629007AA0A3 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 14DB05DC2B8D0629007AA0A3 /* RealmSwift */; };
 		14FE3C2A2B8DD380006D8C78 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DB05DE2B8D06AC007AA0A3 /* DatabaseManager.swift */; };
@@ -70,6 +71,7 @@
 		0DC41B442B8C9AB7002FB140 /* PomodoroRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroRouter.swift; sourceTree = "<group>"; };
 		0DC5CE052B9EDFAC007A21E4 /* PomodoroStepStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroStepStateManager.swift; sourceTree = "<group>"; };
 		0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerCollectionViewCell.swift; sourceTree = "<group>"; };
+		146CD3F12BCD75F200F5A197 /* HapticService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticService.swift; sourceTree = "<group>"; };
 		14DB05DE2B8D06AC007AA0A3 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		2123A9802BA9803C009C60BF /* BMHANNA_11yrs.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = BMHANNA_11yrs.otf; sourceTree = "<group>"; };
 		2123A9812BA9803C009C60BF /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
@@ -180,6 +182,7 @@
 				0DC41B422B82667A002FB140 /* PomodoroTimeManager.swift */,
 				14DB05DE2B8D06AC007AA0A3 /* DatabaseManager.swift */,
 				0DC5CE052B9EDFAC007A21E4 /* PomodoroStepStateManager.swift */,
+				146CD3F12BCD75F200F5A197 /* HapticService.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -520,6 +523,7 @@
 				4DC3FBA82B8DDE3D002566F9 /* PomodoroTimeManager.swift in Sources */,
 				CEDCA1192B67D015005C18EA /* DashBoard.swift in Sources */,
 				14FE3C2A2B8DD380006D8C78 /* DatabaseManager.swift in Sources */,
+				146CD3F22BCD75F200F5A197 /* HapticService.swift in Sources */,
 				21D85CCD2B831E5B00E2FAA8 /* BreakViewController.swift in Sources */,
 				21B21B842B73E050008FFDCB /* DashboardBaseViewController.swift in Sources */,
 				CEDCA1172B67D015005C18EA /* Tag.swift in Sources */,
@@ -569,7 +573,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = CH6R3C4FBD;
+				DEVELOPMENT_TEAM = 3XQ8HFGAQN;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MARKETING_VERSION = 1.0;
@@ -592,7 +596,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = CH6R3C4FBD;
+				DEVELOPMENT_TEAM = 3XQ8HFGAQN;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MARKETING_VERSION = 1.0;

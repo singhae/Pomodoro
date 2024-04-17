@@ -124,6 +124,7 @@ final class MainViewController: UIViewController {
                 Option(
                     shortBreakTime: 5,
                     longBreakTime: 20,
+                    focusTime: 25,
                     isVibrate: false,
                     isTimerEffect: true
                 )
@@ -168,11 +169,19 @@ final class MainViewController: UIViewController {
                 .strokeColor: UIColor.pomodoro.blackHigh,
                 .strokeWidth: 1,
             ])
+            pomodoroTimeManager.setupMaxTime(time: 25 * 60)
             needOnboarding = false
         } else {
             tagButton.setImage(nil, for: .normal)
             tagButton.setTitle("Tag", for: .normal)
             timeLabel.attributedText = nil
+
+            let option = try? RealmService.read(Option.self).first
+            // 배포용
+//            pomodoroTimeManager.setupMaxTime(time: (option?.focusTime ?? 25) * 60)
+            // 디버깅용
+            pomodoroTimeManager.setupMaxTime(time: (option?.focusTime ?? 25))
+
             timeLabel.text = String(
                 format: "%02d:%02d",
                 (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60,
@@ -263,6 +272,11 @@ extension MainViewController {
 
     @objc private func presentTimeSettingViewController() {
         Log.info("set pomodorotime")
+
+        if timeLabel.attributedText != nil {
+            timeLabel.attributedText = nil
+        }
+
         let timeSettingViewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
         if let sheet = timeSettingViewController.sheetPresentationController {
             sheet.detents = [
@@ -307,8 +321,13 @@ extension MainViewController {
     }
 
     @objc private func startTimer() {
+        Log.debug("maxTime: \(pomodoroTimeManager.maxTime)")
         guard pomodoroTimeManager.maxTime != 0 else {
             return
+        }
+
+        if timeLabel.attributedText != nil {
+            timeLabel.attributedText = nil
         }
 
         longPressTime = 0.0
@@ -337,6 +356,20 @@ extension MainViewController {
             if minutes == 0, seconds == 0 {
                 timer.invalidate()
                 setupUIWhenTimerStart(isStopped: true)
+
+                RealmService.update(currentPomodoro!) { updatedPomodoro in
+                    updatedPomodoro.phase += 1
+                    if updatedPomodoro.phase == 5 {
+                        updatedPomodoro.isSuccess = true
+                        updatedPomodoro.phase = 0
+                    }
+                }
+
+                let isVibrate = try? RealmService.read(Option.self).first?.isVibrate
+                if isVibrate ?? false {
+                    HapticService.hapticNotification(type: .warning)
+                }
+
                 setUpPomodoroCurrentStep()
 
                 longPressGestureRecognizer.isEnabled = false
@@ -433,6 +466,10 @@ extension MainViewController {
 extension MainViewController: TimeSettingViewControllerDelegate {
     func didSelectTime(time: Int) {
         pomodoroTimeManager.setupMaxTime(time: time)
+        guard let option = try? RealmService.read(Option.self).first else { return }
+        RealmService.update(option) { opt in
+            opt.focusTime = time
+        }
         setupTimeAndTag()
     }
 }
