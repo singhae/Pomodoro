@@ -243,8 +243,8 @@ final class TagModalViewController: UIViewController {
         // MARK: minusButton에 삭제 액션 추가
 // TODO: 여기서 -버튼 클릭시 딜리트태그 함수가 실행됨. 태그가 딜리트 되려면, 일단 그 값을 정확히 삭제해야하는데. -버튼의 태그 값을 명확히 알게 해줄수있는 방법은 없는지?
 //        minusButton.addTarget(self, action: #selector(deletTag(tagIndex: tagIndex)), for: .touchUpInside)
-//        minusButton.addTarget(self, action: #selector(deletTag), for: .touchUpInside)
-        minusButton.addTarget(self, action: #selector(deletTag(sender:)), for: .touchUpInside)
+        minusButton.addTarget(self, action: #selector(deletTag), for: .touchUpInside)
+//        minusButton.addTarget(self, action: #selector(deletTag(sender:)), for: .touchUpInside)
         
 
         return button
@@ -319,26 +319,45 @@ final class TagModalViewController: UIViewController {
 //            .show(on: self)
 //    }
     // deletTag 함수 수정
-    @objc private func deletTag(sender: UIButton) {
-        let tagIndex = sender.tag
+//    @objc private func deletTag(sender: UIButton) {
+//        let tagIndex = sender.tag
+//        PomodoroPopupBuilder()
+//            .add(title: "태그 삭제")
+//            .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
+//            .add(button: .confirm(title: "확인", action: { [weak self] in
+//                guard let self = self else { return }
+//                do {
+//                    if let tagToDelete = try RealmService.read(Tag.self).filter("position == \(tagIndex)").first {
+//                        print("Tag at index \(tagIndex) deleted")
+//                        RealmService.delete(tagToDelete)
+//                    } else {
+//                        print("No tag found at index \(tagIndex)")
+//                    }
+//                } catch {
+//                    print("Error deleting tag: \(error)")
+//                }
+//            }))
+//            .show(on: self)
+//    }
+    
+    // TODO: Tag 삭제 버튼 연결
+    @objc func deletTag() {
+        tagSettingCompletedButton.isEnabled.toggle()
         PomodoroPopupBuilder()
             .add(title: "태그 삭제")
             .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
-            .add(button: .confirm(title: "확인", action: { [weak self] in
-                guard let self = self else { return }
-                do {
-                    if let tagToDelete = try RealmService.read(Tag.self).filter("position == \(tagIndex)").first {
-                        print("Tag at index \(tagIndex) deleted")
-                        RealmService.delete(tagToDelete)
-                    } else {
-                        print("No tag found at index \(tagIndex)")
+            .add(
+                button: .confirm(
+                    title: "확인",
+                    action: { [weak self] in
+                        guard let button = sender.superview as? UIButton else { return }
+                        button.setTitle("+", for: .normal)
                     }
-                } catch {
-                    print("Error deleting tag: \(error)")
-                }
-            }))
+                )
+            )
             .show(on: self)
     }
+
     // TODO: Editbutton 클릭시 - 버튼 활성화 함수
 //    @objc private func createMinusButton() {
 //        tagSettingCompletedButton.isEnabled.toggle()
