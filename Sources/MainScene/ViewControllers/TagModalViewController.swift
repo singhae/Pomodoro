@@ -23,8 +23,6 @@ protocol TagModalViewControllerDelegate: AnyObject {
 final class TagModalViewController: UIViewController {
     weak var selectionDelegate: TagModalViewControllerDelegate? // TODO: mainviewcontroller 에 태그 값들 전달
 
- //   private var tagButtons: [UIButton: Tag] = [:]
-
     private lazy var editTagButton = UIButton().then {
         $0.setTitle("Edit", for: .normal)
         $0.titleLabel?.font = .pomodoroFont.heading5()
@@ -33,7 +31,7 @@ final class TagModalViewController: UIViewController {
         $0.backgroundColor = .pomodoro.background
         $0.layer.cornerRadius = 15
         $0.clipsToBounds = true
-        $0.addTarget(self, action: #selector(createMinusButton), for: .touchUpInside) // 마이너스버튼 생성되는 액션 추가
+        $0.addTarget(self, action: #selector(createMinusButton), for: .touchUpInside)
     }
 
     private let tagsStackView = UIStackView().then {
@@ -60,7 +58,7 @@ final class TagModalViewController: UIViewController {
         title: "설정 완료",
         didTapHandler: didTapSettingCompleteButton
     )
-// MARK: 태그 생성 버튼 클릭 후, 태그값 태그모달뷰에서 바로 보여주기.
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         addTagsToStackView()
@@ -161,7 +159,6 @@ final class TagModalViewController: UIViewController {
         let tagList = try? RealmService.read(Tag.self)
         Log.info("TAGLIST: \(String(describing: tagList))")
         let maxTags = 7
-//        var currentIndex = 0
         let firstRow = makeRowStackView()
         let secondRow = makeRowStackView()
         let thirdRow = makeRowStackView()
@@ -172,7 +169,8 @@ final class TagModalViewController: UIViewController {
             if let tagList, tagList.count > item {
                 let title = tagList[item].tagName
                 let index = tagList[item].colorIndex
-                button = createRoundButton(title: title, colorIndex: index, tagIndex: item)
+                let position = tagList[item].position
+                button = createRoundButton(title: title, colorIndex: index, tagIndex: position)
             } else {
                 button = createEmptyButton(borderColor: .pomodoro.tagBackground1)
             }
@@ -198,21 +196,17 @@ final class TagModalViewController: UIViewController {
         let titleColor = TagCase(rawValue: colorIndex)?.typoColor ?? .black
 
         Log.info(TagCase(rawValue: colorIndex)?.typoColor ?? .black)
-        print("태그 인덱스: \(tagIndex)")
+        Log.info("태그 인덱스: \(tagIndex)")
         let button = UIButton().then {
             $0.setTitle(title, for: .normal)
             $0.titleLabel?.font = .pomodoroFont.heading4()
-//            $0.backgroundColor = TagCase(rawValue: colorIndex)?.backgroundColor ?? .black
-//            $0.setTitleColor(TagCase(rawValue: colorIndex)?.typoColor ?? .black, for: .normal)
             $0.backgroundColor = backgroundColor
             $0.setTitleColor(titleColor, for: .normal)
-            $0.tag = 101  // Set the tagIndex
+            $0.tag = tagIndex
             $0.layer.cornerRadius = 40
             $0.snp.makeConstraints { make in
                 make.size.equalTo(CGSize(width: 80, height: 80))
             }
-
-           // $0.addTarget(self, action: #selector(presentTagEditViewController), for: .touchUpInside)
         }
         // 버튼 액션 설정
         button.addAction(UIAction { [weak self] _ in
@@ -227,8 +221,8 @@ final class TagModalViewController: UIViewController {
             $0.backgroundColor = .white
             $0.layer.cornerRadius = 10
             $0.isHidden = true // 기본적으로 숨김
-            print("마이너스 버튼의 태그 인덱스: \(tagIndex)")
-           // $0.tag = button.tag  // 위에 버튼과 동일한 태그
+            $0.tag = tagIndex
+            Log.info("마이너스 버튼의 태그 인덱스: \(tagIndex)")
         }
         button.addSubview(minusButton)
 
@@ -241,10 +235,7 @@ final class TagModalViewController: UIViewController {
         }
 
         // MARK: minusButton에 삭제 액션 추가
-// TODO: 여기서 -버튼 클릭시 딜리트태그 함수가 실행됨. 태그가 딜리트 되려면, 일단 그 값을 정확히 삭제해야하는데. -버튼의 태그 값을 명확히 알게 해줄수있는 방법은 없는지?
-//        minusButton.addTarget(self, action: #selector(deletTag(tagIndex: tagIndex)), for: .touchUpInside)
-        minusButton.addTarget(self, action: #selector(deletTag), for: .touchUpInside)
-//        minusButton.addTarget(self, action: #selector(deletTag(sender:)), for: .touchUpInside)
+        minusButton.addTarget(self, action: #selector(deletTag(sender:)), for: .touchUpInside)
         
 
         return button
@@ -266,7 +257,6 @@ final class TagModalViewController: UIViewController {
     }
     // TODO: 태그 값이 메인뷰에 전달하는 함수
       func selectTag(tagName: String, tagColor: String) {
-          // 태그 선택 시 delegate를 통해 태그 정보 전달
           selectionDelegate?.tagSelected(tagName: tagName, tagColor: tagColor)
           dismiss(animated: true, completion: nil)
       }
@@ -277,7 +267,6 @@ final class TagModalViewController: UIViewController {
     
     @objc func buttonTapped(tag: String, color: String) {
         if let tag = try? RealmService.read(Tag.self).filter("tagName == %@", tag).first {
-            // 태그가 존재하는 경우, delegate로 정보 전달
             selectionDelegate?.tagSelected(tagName: tag.tagName, tagColor: tag.colorIndex)
             tagSettingCompletedButton.isEnabled.toggle()
         } else {
@@ -297,77 +286,29 @@ final class TagModalViewController: UIViewController {
         dismiss(animated: true)
     }
 
-    // TODO: Tag 삭제 버튼 연결 - realm 에서 tag값 삭제 (만약 값이 들어있는 index 라면, update, 값이 없다면 delete
-//    @objc private func deletTag() {
-//     //   let tagIndex = sender.superview?.tag  // 상위 버튼 태그 사용.
-//        PomodoroPopupBuilder()
-//            .add(title: "태그 삭제")
-//            .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
-//            .add(button: .confirm(title: "확인", action: { [weak self] in
-//                guard let self = self else { return }
-//                do {
-//                    if let tagToDelete = try RealmService.read(Tag.self).filter(tagIndex).first {
-//                        print("Tag at index \(tagIndex) deleted")
-//                        RealmService.delete(tagToDelete)
-//                    } else {
-//                        print("No tag found at index \(tagIndex)")
-//                    }
-//                } catch {
-//                    print("Error deleting tag: \(error)")
-//                }
-//            }))
-//            .show(on: self)
-//    }
-    // deletTag 함수 수정
-//    @objc private func deletTag(sender: UIButton) {
-//        let tagIndex = sender.tag
-//        PomodoroPopupBuilder()
-//            .add(title: "태그 삭제")
-//            .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
-//            .add(button: .confirm(title: "확인", action: { [weak self] in
-//                guard let self = self else { return }
-//                do {
-//                    if let tagToDelete = try RealmService.read(Tag.self).filter("position == \(tagIndex)").first {
-//                        print("Tag at index \(tagIndex) deleted")
-//                        RealmService.delete(tagToDelete)
-//                    } else {
-//                        print("No tag found at index \(tagIndex)")
-//                    }
-//                } catch {
-//                    print("Error deleting tag: \(error)")
-//                }
-//            }))
-//            .show(on: self)
-//    }
-    
-    // TODO: Tag 삭제 버튼 연결
-    @objc func deletTag() {
-        tagSettingCompletedButton.isEnabled.toggle()
+    @objc private func deletTag(sender: UIButton) {
+        let tagIndex = sender.tag
+        print("Button with tag \(sender.tag) was clicked")
         PomodoroPopupBuilder()
             .add(title: "태그 삭제")
             .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
-            .add(
-                button: .confirm(
-                    title: "확인",
-                    action: { [weak self] in
-                        guard let button = sender.superview as? UIButton else { return }
-                        button.setTitle("+", for: .normal)
+            .add(button: .confirm(title: "확인", action: { [weak self] in
+                guard let self = self else { return }
+                do {
+                    if let tagToDelete = try RealmService.read(Tag.self).filter("position == \(tagIndex)").first {
+                        print("Tag at index \(tagIndex) deleted")
+                        RealmService.delete(tagToDelete)
+                    } else {
+                        print("No tag found at index \(tagIndex)")
                     }
-                )
-            )
+                } catch {
+                    print("Error deleting tag: \(error)")
+                }
+            }))
             .show(on: self)
     }
 
     // TODO: Editbutton 클릭시 - 버튼 활성화 함수
-//    @objc private func createMinusButton() {
-//        tagSettingCompletedButton.isEnabled.toggle()
-//        for case let button as UIButton in tagsStackView.arrangedSubviews.flatMap(\.subviews) {
-//            if let minusButton = button.viewWithTag(101) as? UIButton {
-//                minusButton.isHidden.toggle()
-//                button.bringSubviewToFront(minusButton)
-//            }
-//        }
-//    }
     @objc private func createMinusButton() {
         tagSettingCompletedButton.isEnabled.toggle()  // 설정 완료 버튼의 활성화 상태 토글
         for case let button as UIButton in tagsStackView.arrangedSubviews.flatMap(\.subviews) {
@@ -381,7 +322,6 @@ final class TagModalViewController: UIViewController {
             }
         }
     }
-
 }
 
 // MARK: - TagCreationDelegate
