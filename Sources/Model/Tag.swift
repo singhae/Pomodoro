@@ -52,7 +52,7 @@ enum TagCase: String {
         case .seven:
             return .pomodoro.tagTypo7
         case .eight:
-            return .white
+            return .lightGray
         }
     }
 }

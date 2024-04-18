@@ -405,7 +405,7 @@ extension MainViewController {
         tagButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(timeLabel.snp.bottom).offset(20)
-            make.size.equalTo(CGSize(width: 60, height: 25))
+            make.size.equalTo(CGSize(width: 70, height: 25))
         }
         timeSettingGuideButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
