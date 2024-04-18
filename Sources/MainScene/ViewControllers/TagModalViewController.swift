@@ -213,12 +213,15 @@ final class TagModalViewController: UIViewController {
             self?.buttonTapped(tag: title, color: colorIndex)
         }, for: .touchUpInside)
 
-        // MARK: `-` 버튼 추가
+        // MARK: `-` 버튼 추가 -> 이미지로 넣는 게 더 괜찮아보임.
 
         let minusButton = UIButton().then {
             $0.setTitle("-", for: .normal)
-            $0.setTitleColor(.black, for: .normal)
+            $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20) // 볼드
+            $0.setTitleColor(.gray, for: .normal)
             $0.backgroundColor = .white
+            $0.layer.borderColor = UIColor.gray.cgColor
+            $0.layer.borderWidth = 1
             $0.layer.cornerRadius = 10
             $0.isHidden = true // 기본적으로 숨김
             $0.tag = tagIndex

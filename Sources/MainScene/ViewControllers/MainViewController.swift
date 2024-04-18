@@ -63,6 +63,8 @@ final class MainViewController: UIViewController{
     private let tagButton = UIButton().then {
         $0.setTitleColor(.black, for: .normal)
         $0.titleLabel?.font = .pomodoroFont.heading6()
+        $0.layer.cornerRadius = 12
+        $0.clipsToBounds = true
     }
 
     private let startButtonTitleLabel = UILabel().then {
@@ -403,9 +405,7 @@ extension MainViewController {
         tagButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(timeLabel.snp.bottom).offset(20)
-            make.left.equalTo(30)
-            make.right.equalTo(-30)
-            make.height.equalTo(50)
+            make.size.equalTo(CGSize(width: 60, height: 25))  // 버튼의 크기를 20x20 픽셀로 설정
         }
         timeSettingGuideButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()

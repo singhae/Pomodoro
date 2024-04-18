@@ -108,8 +108,8 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
             let existingTag = try RealmService.read(Tag.self).filter("tagName == %@", tagText).first
             if existingTag != nil {
                 PomodoroPopupBuilder()
-                    .add(title: "중복 경고")
-                    .add(body: "중복된 태그입니다.")
+                    .add(title: "태그 중복")
+                    .add(body: "똑같은 태그명이 있어요. \n 다시 작성해주세요.")
                     .add(button: .confirm(title: "확인", action: { }))
                     .show(on: self)
             } else {
