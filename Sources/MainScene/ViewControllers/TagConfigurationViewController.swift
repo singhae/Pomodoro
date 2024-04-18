@@ -206,16 +206,16 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
 
     private func setupColorPalette() {
         let colors: [UIColor] = [
-            .pomodoro.tagBackground1,
-            .pomodoro.tagBackground2,
-            .pomodoro.tagBackground3,
-            .pomodoro.tagBackground4,
-            .pomodoro.tagBackground5,
-            .pomodoro.tagBackground6,
-            .pomodoro.tagBackground7,
-            .pomodoro.blackMedium,
+            .pomodoro.tagTypo1,
+            .pomodoro.tagTypo2,
+            .pomodoro.tagTypo3,
+            .pomodoro.tagTypo4,
+            .pomodoro.tagTypo5,
+            .pomodoro.tagTypo6,
+            .pomodoro.tagTypo7,
+            .white,
         ]
-        // colorPaletteStackView 설정
+
         colorPaletteStackView.axis = .vertical
         colorPaletteStackView.distribution = .fillEqually
         colorPaletteStackView.spacing = 20
@@ -228,7 +228,6 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
             colorPaletteStackView.addArrangedSubview(row)
         }
 
-        // 각 행에 색상 버튼 추가
         for (index, color) in colors.enumerated() {
             let colorButton = UIButton().then {
                 $0.backgroundColor = color
@@ -237,10 +236,9 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
                     make.size.equalTo(CGSize(width: 55, height: 55))
                 }
                 $0.addTarget(self, action: #selector(colorButtonTapped(_:)), for: .touchUpInside)
-                $0.tag = index // 각 버튼에 태그 설정
+                $0.tag = index
                 Log.info("tag:/(index)")
             }
-            // 적절한 행에 버튼 추가
             if index < 4 {
                 rows[0].addArrangedSubview(colorButton)
             } else {
@@ -249,10 +247,35 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         }
     }
 
-    // TODO: color 버튼 클릭시 정보 전달 로직, 화면상 나타나는 표시(컬러 변경이 더 쉬울 것 같음)
-//    @objc private func colorButtonTapped(_ sender: UIButton) {
-//        self.selectedColorIndex = sender.tag
-//    }
+    @objc private func colorButtonTapped(_ sender: UIButton) {
+        showRingEffect(around: sender, color: sender.backgroundColor ?? .gray)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.removeRingEffect(from: sender)
+        }
+        let index = sender.tag
+        let colorString = indexToString(index)
+        selectedColorIndex = colorString
+    }
+
+    func showRingEffect(around button: UIButton, color: UIColor) {
+        let ringLayer = CAShapeLayer().then {
+            let ringPath = UIBezierPath(ovalIn: button.bounds.insetBy(dx: -10, dy: -10))
+            $0.path = ringPath.cgPath
+            $0.fillColor = UIColor.clear.cgColor
+            $0.strokeColor = color.cgColor
+            $0.lineWidth = 3
+        }
+
+        button.layer.addSublayer(ringLayer)
+        button.layer.setValue(ringLayer, forKey: "ring")
+    }
+
+    func removeRingEffect(from button: UIButton) {
+        if let ringLayer = button.layer.value(forKey: "ring") as? CAShapeLayer {
+            ringLayer.removeFromSuperlayer()
+        }
+    }
 
     // 인덱스를 string으로 변환
     func indexToString(_ index: Int) -> String {
@@ -276,12 +299,6 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         default:
             return "unknown"
         }
-    }
-
-    @objc private func colorButtonTapped(_ sender: UIButton) {
-        let index = sender.tag
-        let colorString = indexToString(index)
-        selectedColorIndex = colorString
     }
 }
 
