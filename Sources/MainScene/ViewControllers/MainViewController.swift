@@ -10,7 +10,9 @@ import SnapKit
 import Then
 import UIKit
 
-final class MainViewController: UIViewController {
+// TODO: TagModalViewController 에서 선택된 값들 메인뷰컨트롤러에 표시
+
+final class MainViewController: UIViewController{
     private let pomodoroTimeManager = PomodoroTimeManager.shared
     private let notificationId = UUID().uuidString
     private var longPressTimer: Timer?
@@ -63,6 +65,8 @@ final class MainViewController: UIViewController {
     private let tagButton = UIButton().then {
         $0.setTitleColor(.black, for: .normal)
         $0.titleLabel?.font = .pomodoroFont.heading6()
+        $0.layer.cornerRadius = 12
+        $0.clipsToBounds = true
     }
 
     private let startButtonTitleLabel = UILabel().then {
@@ -172,8 +176,8 @@ final class MainViewController: UIViewController {
             pomodoroTimeManager.setupMaxTime(time: 25 * 60)
             needOnboarding = false
         } else {
-            tagButton.setImage(nil, for: .normal)
             tagButton.setTitle("Tag", for: .normal)
+            tagButton.setImage(nil, for: .normal)
             timeLabel.attributedText = nil
 
             let option = try? RealmService.read(Option.self).first
@@ -219,6 +223,7 @@ extension MainViewController {
     @objc private func openTagModal() {
         let modalViewController = TagModalViewController()
         modalViewController.modalPresentationStyle = .fullScreen
+        modalViewController.selectionDelegate = self // TODO: Delegate 설정
         present(modalViewController, animated: true)
     }
 
@@ -435,9 +440,7 @@ extension MainViewController {
         tagButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(timeLabel.snp.bottom).offset(20)
-            make.left.equalTo(30)
-            make.right.equalTo(-30)
-            make.height.equalTo(50)
+            make.size.equalTo(CGSize(width: 70, height: 25))
         }
         timeSettingGuideButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -475,7 +478,17 @@ extension MainViewController: TimeSettingViewControllerDelegate {
 }
 
 extension MainViewController: TagModalViewControllerDelegate {
-    func tagSelected(tag _: String) {
-        // TODO: 선택된 태그 정보 전달
+    func tagSelected(tagName: String, tagColor: String) {
+        let backgroundColor = TagCase(rawValue: tagColor)?.backgroundColor ?? .gray
+        let titleColor = TagCase(rawValue: tagColor)?.typoColor ?? .gray
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.tagButton.setTitle(tagName, for: .normal)
+            self.tagButton.backgroundColor = titleColor
+            self.tagButton.setTitleColor(.white, for: .normal)
+        }
+        print("Selected Tag: \(tagName), Color: \(tagColor)")
     }
 }
+
