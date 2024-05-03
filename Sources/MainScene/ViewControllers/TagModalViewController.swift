@@ -15,6 +15,7 @@ import UIKit
 protocol TagCreationDelegate: AnyObject {
     func createTag(tag: String, color: String, position: Int)
 }
+
 // TODO: 2.태그 모달뷰에서 선택한 태그 값이 메인뷰에서 보이게 값 전달.
 protocol TagModalViewControllerDelegate: AnyObject {
     func tagSelected(tagName: String, tagColor: String)
@@ -138,7 +139,7 @@ final class TagModalViewController: UIViewController {
         let defaultTags = [
             Tag(tagName: "공부", colorIndex: "one", position: 0),
             Tag(tagName: "수영", colorIndex: "two", position: 1),
-            Tag(tagName: "독서", colorIndex: "three", position: 2)
+            Tag(tagName: "독서", colorIndex: "three", position: 2),
         ]
 
         for tag in defaultTags {
@@ -152,10 +153,10 @@ final class TagModalViewController: UIViewController {
     }
 
     private func addTagsToStackView() {
-        tagsStackView.arrangedSubviews.forEach {
-            $0.removeFromSuperview()
+        for arrangedSubview in tagsStackView.arrangedSubviews {
+            arrangedSubview.removeFromSuperview()
         }
-        
+
         let tagList = try? RealmService.read(Tag.self)
         Log.info("TAGLIST: \(String(describing: tagList))")
         let maxTags = 7
@@ -238,8 +239,8 @@ final class TagModalViewController: UIViewController {
         }
 
         // MARK: minusButton에 삭제 액션 추가
+
         minusButton.addTarget(self, action: #selector(deletTag(sender:)), for: .touchUpInside)
-        
 
         return button
     }
@@ -258,17 +259,18 @@ final class TagModalViewController: UIViewController {
             $0.addTarget(self, action: #selector(presentTagEditViewController), for: .touchUpInside)
         }
     }
+
     // TODO: 태그 값이 메인뷰에 전달하는 함수
-      func selectTag(tagName: String, tagColor: String) {
-          selectionDelegate?.tagSelected(tagName: tagName, tagColor: tagColor)
-          dismiss(animated: true, completion: nil)
-      }
+    func selectTag(tagName: String, tagColor: String) {
+        selectionDelegate?.tagSelected(tagName: tagName, tagColor: tagColor)
+        dismiss(animated: true, completion: nil)
+    }
 
     @objc private func dismissModal() {
         dismiss(animated: true, completion: nil)
     }
-    
-    @objc func buttonTapped(tag: String, color: String) {
+
+    @objc func buttonTapped(tag: String, color _: String) {
         if let tag = try? RealmService.read(Tag.self).filter("tagName == %@", tag).first {
             selectionDelegate?.tagSelected(tagName: tag.tagName, tagColor: tag.colorIndex)
             tagSettingCompletedButton.isEnabled.toggle()
@@ -276,6 +278,7 @@ final class TagModalViewController: UIViewController {
             presentTagEditViewController()
         }
     }
+
     @objc func presentTagEditViewController() {
         let configureTagViewController = TagConfigurationViewController()
         configureTagViewController.modalPresentationStyle = .fullScreen
@@ -296,7 +299,7 @@ final class TagModalViewController: UIViewController {
             .add(title: "태그 삭제")
             .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
             .add(button: .confirm(title: "확인", action: { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 do {
                     if let tagToDelete = try RealmService.read(Tag.self).filter("position == \(tagIndex)").first {
                         print("Tag at index \(tagIndex) deleted")
@@ -313,7 +316,7 @@ final class TagModalViewController: UIViewController {
 
     // TODO: Editbutton 클릭시 - 버튼 활성화 함수
     @objc private func createMinusButton() {
-        tagSettingCompletedButton.isEnabled.toggle()  // 설정 완료 버튼의 활성화 상태 토글
+        tagSettingCompletedButton.isEnabled.toggle() // 설정 완료 버튼의 활성화 상태 토글
         for case let button as UIButton in tagsStackView.arrangedSubviews.flatMap(\.subviews) {
             // 각 버튼의 서브뷰 중에서 UIButton 타입을 찾고, "-" 문자를 가진 버튼이면 minusButton
             if let minusButton = button.subviews.first(where: { subview in
