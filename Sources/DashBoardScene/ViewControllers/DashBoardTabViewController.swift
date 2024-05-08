@@ -32,6 +32,10 @@ final class DashBoardTabViewController: UIViewController {
         segmentChanged()
     }
 
+    override func viewWillAppear(_: Bool) {
+        segmentChanged()
+    }
+
     private func caculateTotalParticipate() -> Int {
         if let data = try? RealmService.read(Pomodoro.self) {
             let filteredData = data.filter { $0.participateDate < Date() }
