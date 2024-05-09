@@ -278,10 +278,6 @@ extension MainViewController {
     @objc private func presentTimeSettingViewController() {
         Log.info("set pomodorotime")
 
-        if timeLabel.attributedText != nil {
-            timeLabel.attributedText = nil
-        }
-
         let timeSettingViewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
         if let sheet = timeSettingViewController.sheetPresentationController {
             sheet.detents = [
