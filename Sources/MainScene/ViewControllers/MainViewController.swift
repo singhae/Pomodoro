@@ -272,6 +272,7 @@ extension MainViewController {
 
             stopTimeProgressBar.isHidden = true
             longPressGuideLabel.isHidden = true
+            timeLabel.isUserInteractionEnabled = true
         }
     }
 
