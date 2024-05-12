@@ -377,8 +377,8 @@ extension MainViewController {
                 }
 
                 setUpPomodoroCurrentStep()
-
                 longPressGestureRecognizer.isEnabled = false
+                timeLabel.isUserInteractionEnabled = true
             }
 
             timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
