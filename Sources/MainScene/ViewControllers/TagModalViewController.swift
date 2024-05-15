@@ -295,19 +295,26 @@ final class TagModalViewController: UIViewController {
         PomodoroPopupBuilder()
             .add(title: "태그 삭제")
             .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
-            .add(button: .confirm(title: "확인", action: { [weak self] in
-                guard let self = self else { return }
-                do {
-                    if let tagToDelete = try RealmService.read(Tag.self).filter("position == \(tagIndex)").first {
-                        print("Tag at index \(tagIndex) deleted")
-                        RealmService.delete(tagToDelete)
-                    } else {
-                        print("No tag found at index \(tagIndex)")
+            .add(
+                button: .cancellable(
+                    cancelButtonTitle: "취소",
+                    confirmButtonTitle: "확인",
+                    cancelButtonAction: nil,
+                    confirmButtonAction: { [weak self] in
+                        guard let self else { return }
+                        do {
+                            if let tagToDelete = try RealmService.read(Tag.self).filter("position == \(tagIndex)").first {
+                                print("Tag at index \(tagIndex) deleted")
+                                RealmService.delete(tagToDelete)
+                            } else {
+                                print("No tag found at index \(tagIndex)")
+                            }
+                        } catch {
+                            print("Error deleting tag: \(error)")
+                        }
                     }
-                } catch {
-                    print("Error deleting tag: \(error)")
-                }
-            }))
+                )
+            )
             .show(on: self)
     }
 
