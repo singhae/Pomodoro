@@ -491,4 +491,14 @@ extension MainViewController: TagModalViewControllerDelegate {
         }
         print("Selected Tag: \(tagName), Color: \(tagColor)")
     }
+    
+    func tagDidRemoved(tagName: String) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            if self.tagButton.titleLabel?.text == tagName {
+                tagButton.setTitle("Tag", for: .normal)
+                tagButton.setImage(nil, for: .normal)
+            }
+        }
+    }
 }
