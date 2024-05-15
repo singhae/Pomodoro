@@ -95,6 +95,7 @@ final class PomodoroRouter {
             currentStep = .rest(count: pomodoroCount)
         case let .focus(count):
             currentStep = .rest(count: count)
+            updateCurrentPomodoroStepData(count: count)
         case var .rest(count):
             count = pomodoroCount
             if count < maxStep {
@@ -109,6 +110,18 @@ final class PomodoroRouter {
         }
         return currentStep
     }
+
+    func updateCurrentPomodoroStepData(count: Int) {
+        let data = (try? RealmService.read(Pomodoro.self).last) ?? Pomodoro()
+        RealmService.update(data) { data in
+            data.phase = count
+        }
+        RealmService.update(data) { data in
+            if count == self.maxStep {
+                data.isSuccess = true
+            }
+        }
+    }
 }
 
 // - MARK: PomodoroStepTimeChage - pomodoroStep 변화에 따른 시간의 변화를 관리하는 클래스
@@ -118,14 +131,11 @@ final class PomodoroStepTimeChange {
     private let maxStep = PomodoroRouter.shared.maxStep
     private let stepDataBase = RealmService.self
     private var pomodoroCurrentCount = PomodoroRouter.shared.pomodoroCount
-
-    private var currentStep: PomodoroTimerStep?
+    private var currentStep = PomodoroRouter.shared.currentStep
     private var shortBreakTime: Int?
     private var longBreakTime: Int?
 
     func setUptimeInCurrentStep() {
-        updateCurrentPomodoroStepData()
-        guard let currentStep else { return }
         switch currentStep {
         case .start:
             pomodoroTimeManager.setupCurrentTime(curr: 0)
@@ -150,21 +160,14 @@ final class PomodoroStepTimeChange {
     }
 
     func initPomodoroStep() {
-        pomodoroCurrentCount = 0
+        PomodoroRouter.shared.pomodoroCount = 0
         pomodoroTimeManager.setupMaxTime(time: 0)
         pomodoroTimeManager.setupCurrentTime(curr: 0)
         currentStep = .start
         isFailedPomodoroStep()
-    }
 
-    func updateCurrentPomodoroStepData() {
-        let data = (try? RealmService.read(Pomodoro.self).last) ?? Pomodoro()
-        stepDataBase.update(data) { data in
-            data.phase += 1
-            if data.phase == 5 {
-                data.isSuccess = true
-            }
-        }
+        Log.info(pomodoroTimeManager.maxTime, pomodoroTimeManager.currentTime)
+        Log.info(currentStep)
     }
 
     func isFailedPomodoroStep() {

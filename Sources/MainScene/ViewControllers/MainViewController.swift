@@ -11,7 +11,6 @@ import Then
 import UIKit
 
 // TODO: TagModalViewController 에서 선택된 값들 메인뷰컨트롤러에 표시
-
 final class MainViewController: UIViewController {
     private let pomodoroTimeManager = PomodoroTimeManager.shared
     private let notificationId = UUID().uuidString
@@ -185,8 +184,9 @@ final class MainViewController: UIViewController {
             // 배포용
 //            pomodoroTimeManager.setupMaxTime(time: (option?.focusTime ?? 25) * 60)
             // 디버깅용
-            pomodoroTimeManager.setupMaxTime(time: (option?.focusTime ?? 25))
-
+            // pomodoroTimeManager.setupMaxTime(time: (option?.focusTime ?? 25))
+            Log.info("Max time : \(pomodoroTimeManager.maxTime)")
+            Log.info("Current time : \(pomodoroTimeManager.currentTime)")
             timeLabel.text = String(
                 format: "%02d:%02d",
                 (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60,
@@ -329,14 +329,11 @@ extension MainViewController {
         guard pomodoroTimeManager.maxTime != 0 else {
             return
         }
-
         if timeLabel.attributedText != nil {
             timeLabel.attributedText = nil
         }
-
         longPressTime = 0.0
         stopTimeProgressBar.progress = 0.0
-
         longPressGuideLabel.isHidden = false
         longPressGestureRecognizer.isEnabled = true
         timeLabel.isUserInteractionEnabled = false
@@ -345,7 +342,6 @@ extension MainViewController {
         // 강제종료 이후 정보 불러온 상황이 아닐때 (클릭 상황)
         if pomodoroTimeManager.isRestored == false {
             let prevPomodoro = try? RealmService.read(Pomodoro.self).last
-
             // 이전 뽀모도로 끝난 경우
             if prevPomodoro?.phase == 0 || prevPomodoro == nil {
                 RealmService.createPomodoro(tag: "임시")

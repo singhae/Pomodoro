@@ -103,6 +103,10 @@ final class TimeSettingViewController: UIViewController {
         setupConstraints()
     }
 
+    override func viewDidDisappear(_: Bool) {
+        delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
+    }
+
     private func setUpLayout() {
         view.addSubview(timeSettingTitleLabel)
         view.addSubview(closeButton)
@@ -173,11 +177,13 @@ final class TimeSettingViewController: UIViewController {
         Log.debug("Selected Time: \(Int(centerIndexPath?.item ?? 0))")
         delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
         RealmService.createPomodoro(tag: "DEFUALT")
-        let data = (try? RealmService.read(Pomodoro.self).last) ?? Pomodoro()
+//        let data = (try? RealmService.read(Pomodoro.self).last) ?? Pomodoro()
         dismiss(animated: true)
     }
 
     @objc private func didTapCloseButton() {
+        Log.debug("Selected Time: \(Int(centerIndexPath?.item ?? 0))")
+        delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
         dismiss(animated: true)
     }
 }

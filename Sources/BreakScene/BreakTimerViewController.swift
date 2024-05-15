@@ -156,7 +156,6 @@ extension BreakTimerViewController {
         )
         // - TODO: do pomodoroStep initialize
         stepManager.timeSetting.initPomodoroStep()
-        stepManager.router.currentStep = .start
         longPressGuideLabel.isHidden = true
     }
 
