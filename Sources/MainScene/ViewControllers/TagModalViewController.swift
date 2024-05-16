@@ -309,8 +309,8 @@ final class TagModalViewController: UIViewController {
                         do {
                             if let tagToDelete = try RealmService.read(Tag.self).filter("position == \(tagIndex)").first {
                                 print("Tag at index \(tagIndex) deleted")
+                                selectionDelegate?.tagDidRemoved(tagName: tagToDelete.tagName)
                                 RealmService.delete(tagToDelete)
-                                selectionDelegate?.tagDidRemoved(tagName: sender.titleLabel?.text ?? "")
                             } else {
                                 print("No tag found at index \(tagIndex)")
                             }
