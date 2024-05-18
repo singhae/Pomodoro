@@ -53,14 +53,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
-//    private func userNotificationCenter(
-//        _: UNUserNotificationCenter,
-//        didReceive _: UNNotificationResponse,
-//        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
-//    ) {
-//        completionHandler([.badge, .banner, .list])
-//    }
-
     func userNotificationCenter(
         _: UNUserNotificationCenter,
         willPresent _: UNNotification,
