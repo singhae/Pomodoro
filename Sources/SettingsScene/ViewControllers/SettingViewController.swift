@@ -283,7 +283,8 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
         }
     }
 }
-l(p)// MARK: UI
+
+// MARK: UI
 
 extension SettingViewController {
     private func addSubViews() {
