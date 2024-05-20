@@ -18,6 +18,8 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     private var selectedColorIndex: String?
     private var selectedPosition: Int?
 
+    private var allButtons: [UIButton] = []
+
     // MARK: 태그명 레이블
 
     private lazy var titleLabel: UILabel = {
@@ -235,10 +237,12 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
                 $0.snp.makeConstraints { make in
                     make.size.equalTo(CGSize(width: 55, height: 55))
                 }
-                $0.addTarget(self, action: #selector(colorButtonTapped(_:)), for: .touchUpInside)
+                $0.addTarget(self, action: #selector(colorButtonTapped), for: .touchUpInside)
                 $0.tag = index
                 Log.info("tag:/(index)")
             }
+            allButtons.append(colorButton)
+
             if index < 4 {
                 rows[0].addArrangedSubview(colorButton)
             } else {
@@ -247,12 +251,10 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         }
     }
 
-    @objc private func colorButtonTapped(_ sender: UIButton) {
+    @objc private func colorButtonTapped(from sender: UIButton) {
+        removeAllRingEffect()
         showRingEffect(around: sender, color: sender.backgroundColor ?? .gray)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            self.removeRingEffect(from: sender)
-        }
         let index = sender.tag
         let colorString = indexToString(index)
         selectedColorIndex = colorString
@@ -271,9 +273,11 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         button.layer.setValue(ringLayer, forKey: "ring")
     }
 
-    func removeRingEffect(from button: UIButton) {
-        if let ringLayer = button.layer.value(forKey: "ring") as? CAShapeLayer {
-            ringLayer.removeFromSuperlayer()
+    func removeAllRingEffect() {
+        for button in allButtons {
+            if let ringLayer = button.layer.value(forKey: "ring") as? CAShapeLayer {
+                ringLayer.removeFromSuperlayer()
+            }
         }
     }
 
