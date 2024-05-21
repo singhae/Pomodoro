@@ -18,6 +18,8 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     private var selectedColorIndex: String?
     private var selectedPosition: Int?
 
+    private var allButtons: [UIButton] = []
+
     // MARK: 태그명 레이블
 
     private lazy var titleLabel: UILabel = {
@@ -99,7 +101,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         guard let tagText = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !tagText.isEmpty else {
             PomodoroPopupBuilder()
                 .add(body: "태그 이름을 입력해주세요.")
-                .add(button: .confirm(title: "확인", action: { }))
+                .add(button: .confirm(title: "확인", action: {}))
                 .show(on: self)
             return
         }
@@ -110,7 +112,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
                 PomodoroPopupBuilder()
                     .add(title: "태그 중복")
                     .add(body: "똑같은 태그명이 있어요. \n 다시 작성해주세요.")
-                    .add(button: .confirm(title: "확인", action: { }))
+                    .add(button: .confirm(title: "확인", action: {}))
                     .show(on: self)
             } else {
                 let newTag = Tag(
@@ -126,7 +128,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
             Log.info("태그 조회 실패: \(error)")
             PomodoroPopupBuilder()
                 .add(body: "태그를 검증하는 과정에서 오류가 발생했습니다.")
-                .add(button: .confirm(title: "확인", action: { }))
+                .add(button: .confirm(title: "확인", action: {}))
                 .show(on: self)
         }
     }
@@ -134,7 +136,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     private func calculateNextPosition() -> Int {
         do {
             let tags = try RealmService.read(Tag.self)
-            return (tags.max(ofProperty: "position") as Int? ?? -1) + 1  // 기존 태그 위치의 최대값에서 1을 더함
+            return (tags.max(ofProperty: "position") as Int? ?? -1) + 1 // 기존 태그 위치의 최대값에서 1을 더함
         } catch {
             Log.info("Failed to fetch tags from Realm: \(error)")
             return 0
@@ -235,10 +237,12 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
                 $0.snp.makeConstraints { make in
                     make.size.equalTo(CGSize(width: 55, height: 55))
                 }
-                $0.addTarget(self, action: #selector(colorButtonTapped(_:)), for: .touchUpInside)
+                $0.addTarget(self, action: #selector(colorButtonTapped), for: .touchUpInside)
                 $0.tag = index
                 Log.info("tag:/(index)")
             }
+            allButtons.append(colorButton)
+
             if index < 4 {
                 rows[0].addArrangedSubview(colorButton)
             } else {
@@ -247,12 +251,10 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         }
     }
 
-    @objc private func colorButtonTapped(_ sender: UIButton) {
+    @objc private func colorButtonTapped(from sender: UIButton) {
+        removeAllRingEffect()
         showRingEffect(around: sender, color: sender.backgroundColor ?? .gray)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            self.removeRingEffect(from: sender)
-        }
         let index = sender.tag
         let colorString = indexToString(index)
         selectedColorIndex = colorString
@@ -271,9 +273,11 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
         button.layer.setValue(ringLayer, forKey: "ring")
     }
 
-    func removeRingEffect(from button: UIButton) {
-        if let ringLayer = button.layer.value(forKey: "ring") as? CAShapeLayer {
-            ringLayer.removeFromSuperlayer()
+    func removeAllRingEffect() {
+        for button in allButtons {
+            if let ringLayer = button.layer.value(forKey: "ring") as? CAShapeLayer {
+                ringLayer.removeFromSuperlayer()
+            }
         }
     }
 

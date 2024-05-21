@@ -14,6 +14,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let unNotificationCenter = UNUserNotificationCenter.current()
     let pomodoroTimeManager = PomodoroTimeManager.shared
 
+    // MARK: Notification 함수
+
     func application(
         _: UIApplication,
         didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?
@@ -34,6 +36,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
+    // MARK: 앱이 종료될 때 함수
+
     func applicationWillTerminate(_: UIApplication) {
         pomodoroTimeManager.saveTimerInfo()
     }
@@ -53,14 +57,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
-//    private func userNotificationCenter(
-//        _: UNUserNotificationCenter,
-//        didReceive _: UNNotificationResponse,
-//        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
-//    ) {
-//        completionHandler([.badge, .banner, .list])
-//    }
-
     func userNotificationCenter(
         _: UNUserNotificationCenter,
         willPresent _: UNNotification,

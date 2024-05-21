@@ -481,6 +481,7 @@ extension MainViewController: TagModalViewControllerDelegate {
 
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
+
             self.tagButton.setImage(nil, for: .normal)
             self.tagButton.setTitle(tagName, for: .normal)
             self.tagButton.backgroundColor = titleColor

@@ -5,6 +5,7 @@
 //  Created by SonSinghae on 2023/11/17.
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
+import OSLog
 import PomodoroDesignSystem
 import Realm
 import RealmSwift

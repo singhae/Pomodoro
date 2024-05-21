@@ -6,6 +6,7 @@
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
 
+import PomodoroDesignSystem
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -21,6 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         window?.rootViewController = UINavigationController(rootViewController: MainPageViewController())
         window?.makeKeyAndVisible()
+        window?.backgroundColor = .pomodoro.background
     }
 
     func sceneDidDisconnect(_: UIScene) {}
@@ -28,7 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_: UIScene) {}
 
     func sceneWillResignActive(_: UIScene) {}
-
+    
     func sceneWillEnterForeground(_: UIScene) {}
 
     func sceneDidEnterBackground(_: UIScene) {}
