@@ -73,7 +73,8 @@ final class BreakTimerViewController: UIViewController, TimeSettingViewControlle
         startTimer()
 
         if let realmOption = try? RealmService.read(Option.self).first,
-           realmOption.isTimerEffect {
+           realmOption.isTimerEffect
+        {
             startAnimationTimer()
         }
 
