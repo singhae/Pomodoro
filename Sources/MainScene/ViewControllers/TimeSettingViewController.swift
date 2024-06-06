@@ -180,7 +180,7 @@ final class TimeSettingViewController: UIViewController {
     private func didTapConfirmButton() {
         Log.debug("Selected Time: \(Int(centerIndexPath?.item ?? 0))")
         delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
-        RealmService.createPomodoro(tag: "DEFAULT")
+//        RealmService.createPomodoro(tag: "DEFAULT")
         dismiss(animated: true)
     }
 
