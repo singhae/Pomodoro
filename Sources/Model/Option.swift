@@ -13,21 +13,18 @@ class Option: Object {
     @Persisted(primaryKey: true) var id = UUID().uuidString
     @Persisted var shortBreakTime: Int
     @Persisted var longBreakTime: Int
-    @Persisted var focusTime: Int
     @Persisted var isVibrate: Bool
     @Persisted var isTimerEffect: Bool
 
     convenience init(
         shortBreakTime: Int = 5,
         longBreakTime: Int = 20,
-        focusTime: Int = 25,
         isVibrate: Bool = false,
         isTimerEffect: Bool = true
     ) {
         self.init()
         self.shortBreakTime = shortBreakTime
         self.longBreakTime = longBreakTime
-        self.focusTime = focusTime
         self.isVibrate = isVibrate
         self.isTimerEffect = isTimerEffect
     }

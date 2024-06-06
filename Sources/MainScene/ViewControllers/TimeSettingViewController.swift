@@ -29,9 +29,13 @@ final class TimeSettingViewController: UIViewController {
         isSelectedTime: Bool,
         delegate: TimeSettingViewControllerDelegate
     ) {
+        super.init(nibName: nil, bundle: nil)
+
+        let recent = try? RealmService.read(Pomodoro.self).last
+        selectedTime = recent?.phaseTime ?? 25
+
         self.isSelectedTime = isSelectedTime
         self.delegate = delegate
-        super.init(nibName: nil, bundle: nil)
     }
 
     @available(*, unavailable)
@@ -181,8 +185,8 @@ final class TimeSettingViewController: UIViewController {
     }
 
     @objc private func didTapCloseButton() {
-        Log.debug("Selected Time: \(Int(centerIndexPath?.item ?? 0))")
-        delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
+//        Log.debug("Selected Time: \(Int(centerIndexPath?.item ?? 0))")
+//        delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
         dismiss(animated: true)
     }
 }

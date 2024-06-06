@@ -54,8 +54,8 @@ final class PomodoroTimeManager {
         pomodoroTimer?.invalidate()
         currentTime = 0
 
-        let option = try? RealmService.read(Option.self).first
-        maxTime = (option?.focusTime ?? 25) * 60
+        let recent = try? RealmService.read(Pomodoro.self).last
+        maxTime = (recent?.phaseTime ?? 25) * 60
 
         completion()
     }
@@ -86,8 +86,8 @@ final class PomodoroTimeManager {
             isRestored = true
             currentTime = updatedCurrTime
         } else {
-            let option = try? RealmService.read(Option.self).first
-            maxTime = (option?.focusTime ?? 25) * 60
+            let recent = try? RealmService.read(Pomodoro.self).last
+            maxTime = (recent?.phaseTime ?? 25) * 60
             currentTime = 0
         }
     }

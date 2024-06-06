@@ -127,7 +127,6 @@ final class MainViewController: UIViewController {
                 Option(
                     shortBreakTime: 5,
                     longBreakTime: 20,
-                    focusTime: 25,
                     isVibrate: false,
                     isTimerEffect: true
                 )
@@ -149,7 +148,9 @@ final class MainViewController: UIViewController {
         setupActions()
         setupLongPressGestureRecognizer()
         setupTimeLabelTapGestureRecognizer()
-        setupTimeAndTag()
+
+        // TODO: 가장 최근 뽀모도로 시간이 나타나야함.
+        setupRecentPomodoroData()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -162,7 +163,12 @@ final class MainViewController: UIViewController {
         }
     }
 
-    private func setupTimeAndTag() {
+    private func setupRecentPomodoroData() {
+        let recent = try? RealmService.read(Pomodoro.self).last
+        if recent == nil {
+            needOnboarding = true
+        }
+
         if needOnboarding {
             tagButton.setTitle(nil, for: .normal)
             tagButton.setImage(UIImage(named: "onBoardingTag"), for: .normal)
@@ -173,26 +179,83 @@ final class MainViewController: UIViewController {
                 .strokeWidth: 1,
             ])
             pomodoroTimeManager.setupMaxTime(time: 25 * 60)
-            needOnboarding = false
         } else {
-            tagButton.setTitle("Tag", for: .normal)
+            Log.debug(recent)
+            tagButton.setTitle(recent?.currentTag, for: .normal)
             tagButton.setImage(nil, for: .normal)
             timeLabel.attributedText = nil
 
-            let option = try? RealmService.read(Option.self).first
             // 배포용
-//            pomodoroTimeManager.setupMaxTime(time: (option?.focusTime ?? 25) * 60)
+//            pomodoroTimeManager.setupMaxTime(
+//                time: (recent?.phaseTime ?? 25) * 60
+//            )
             // 디버깅용
-            // pomodoroTimeManager.setupMaxTime(time: (option?.focusTime ?? 25))
-            Log.info("Max time : \(pomodoroTimeManager.maxTime)")
-            Log.info("Current time : \(pomodoroTimeManager.currentTime)")
+            pomodoroTimeManager.setupMaxTime(
+                time: (recent?.phaseTime ?? 25)
+            )
+
             timeLabel.text = String(
                 format: "%02d:%02d",
-                (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60,
-                (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) % 60
+                (pomodoroTimeManager.maxTime -
+                    pomodoroTimeManager.currentTime) / 60,
+                (pomodoroTimeManager.maxTime -
+                    pomodoroTimeManager.currentTime) % 60
             )
         }
     }
+
+    private func setupTimeUI() {
+        let recent = try? RealmService.read(Pomodoro.self).last
+
+        if recent == nil {
+            tagButton.setTitle(nil, for: .normal)
+            tagButton.setImage(UIImage(named: "onBoardingTag"), for: .normal)
+        } else {
+            tagButton.setTitle(recent?.currentTag, for: .normal)
+            tagButton.setImage(nil, for: .normal)
+        }
+
+        timeLabel.attributedText = nil
+        timeLabel.text = String(
+            format: "%02d:%02d",
+            (pomodoroTimeManager.maxTime -
+                pomodoroTimeManager.currentTime) / 60,
+            (pomodoroTimeManager.maxTime -
+                pomodoroTimeManager.currentTime) % 60
+        )
+    }
+
+//    private func setupTimeAndTag(with currentPomodoro: Pomodoro) {
+//        if needOnboarding {
+//            tagButton.setTitle(nil, for: .normal)
+//            tagButton.setImage(UIImage(named: "onBoardingTag"), for: .normal)
+//            timeLabel.attributedText = .init(string: "25:00", attributes: [
+//                .font: UIFont.pomodoroFont.heading1(),
+//                .foregroundColor: UIColor.clear,
+//                .strokeColor: UIColor.pomodoro.blackHigh,
+//                .strokeWidth: 1,
+//            ])
+//            pomodoroTimeManager.setupMaxTime(time: 25 * 60)
+//            needOnboarding = false
+//        } else {
+//            tagButton.setTitle(currentPomodoro.currentTag, for: .normal)
+//            tagButton.setImage(nil, for: .normal)
+//            timeLabel.attributedText = nil
+//
+//            // FIXME: 삭제될 부분입니다..
+    ////            let option = try? RealmService.read(Option.self).first
+//            // 배포용
+    ////            pomodoroTimeManager.setupMaxTime(time: (option?.focusTime ?? 25) * 60)
+//            // 디버깅용
+//            // pomodoroTimeManager.setupMaxTime(time: (option?.focusTime ?? 25))
+//
+//            timeLabel.text = String(
+//                format: "%02d:%02d",
+//                (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60,
+//                (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) % 60
+//            )
+//        }
+//    }
 
     private func setupActions() {
         tagButton.addTarget(
@@ -243,11 +306,18 @@ extension MainViewController {
         longPressTimer?.fire()
 
         if gestureRecognizer.state == .cancelled || gestureRecognizer.state == .ended {
+            Log.debug("뽀모도로 진행 취소!!")
+
             stopTimeProgressBar.isHidden = true
             longPressGuideLabel.isHidden = false
             longPressTime = 0.0
             stopTimeProgressBar.progress = 0.0
             longPressTimer?.invalidate()
+
+            guard let current = try? RealmService.read(Pomodoro.self).last else { return }
+            RealmService.update(current) { pomodoro in
+                pomodoro.phase = -1
+            }
         }
     }
 
@@ -269,7 +339,9 @@ extension MainViewController {
             stepManager.timeSetting.initPomodoroStep()
             currentStepLabel.text = ""
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-            setupTimeAndTag()
+
+//            setupTimeAndTag()
+            setupRecentPomodoroData()
 
             stopTimeProgressBar.isHidden = true
             longPressGuideLabel.isHidden = true
@@ -282,6 +354,7 @@ extension MainViewController {
         Log.info("set pomodorotime")
 
         let timeSettingViewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
+
         if let sheet = timeSettingViewController.sheetPresentationController {
             sheet.detents = [
                 .custom { context in
@@ -329,6 +402,7 @@ extension MainViewController {
         guard pomodoroTimeManager.maxTime != 0 else {
             return
         }
+        needOnboarding = false
         if timeLabel.attributedText != nil {
             timeLabel.attributedText = nil
         }
@@ -342,9 +416,10 @@ extension MainViewController {
         // 강제종료 이후 정보 불러온 상황이 아닐때 (클릭 상황)
         if pomodoroTimeManager.isRestored == false {
             let prevPomodoro = try? RealmService.read(Pomodoro.self).last
+
             // 이전 뽀모도로 끝난 경우
-            if prevPomodoro?.phase == 0 || prevPomodoro == nil {
-                RealmService.createPomodoro(tag: "임시")
+            if prevPomodoro?.phase == -1 || prevPomodoro?.isSuccess == true || prevPomodoro == nil {
+                RealmService.createPomodoro(tag: "임시", phaseTime: pomodoroTimeManager.maxTime)
             }
             currentPomodoro = try? RealmService.read(Pomodoro.self).last
         }
@@ -361,6 +436,7 @@ extension MainViewController {
 
                 RealmService.update(currentPomodoro!) { updatedPomodoro in
                     updatedPomodoro.phase += 1
+
                     if updatedPomodoro.phase == 5 {
                         updatedPomodoro.isSuccess = true
                         updatedPomodoro.phase = 0
@@ -466,11 +542,14 @@ extension MainViewController {
 extension MainViewController: TimeSettingViewControllerDelegate {
     func didSelectTime(time: Int) {
         pomodoroTimeManager.setupMaxTime(time: time)
-        guard let option = try? RealmService.read(Option.self).first else { return }
-        RealmService.update(option) { opt in
-            opt.focusTime = time
-        }
-        setupTimeAndTag()
+
+        setupTimeUI()
+
+        // FIXME: 삭제될 녀석들입니다..
+//        guard let option = try? RealmService.read(Option.self).first else { return }
+//        RealmService.update(option) { opt in
+//            opt.focusTime = time
+//        }
     }
 }
 
