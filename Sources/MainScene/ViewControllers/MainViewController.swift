@@ -17,6 +17,7 @@ final class MainViewController: UIViewController {
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
     private var currentPomodoro: Pomodoro?
+    private var currentTagName: String = ""
     private var needOnboarding = false
     private let longPressGestureRecognizer = UILongPressGestureRecognizer()
 
@@ -419,7 +420,7 @@ extension MainViewController {
 
             // 이전 뽀모도로 끝난 경우
             if prevPomodoro?.phase == -1 || prevPomodoro?.isSuccess == true || prevPomodoro == nil {
-                RealmService.createPomodoro(tag: "임시", phaseTime: pomodoroTimeManager.maxTime)
+                RealmService.createPomodoro(tag: currentTagName, phaseTime: pomodoroTimeManager.maxTime)
             }
             currentPomodoro = try? RealmService.read(Pomodoro.self).last
         }
@@ -558,18 +559,20 @@ extension MainViewController: TagModalViewControllerDelegate {
         let backgroundColor = TagCase(rawValue: tagColor)?.backgroundColor ?? .gray
         let titleColor = TagCase(rawValue: tagColor)?.typoColor ?? .gray
 
-        let data = (try? RealmService.read(Pomodoro.self).last) ?? Pomodoro()
-        RealmService.update(data) { data in
-            data.currentTag = tagName
-        }
+//        let data = (try? RealmService.read(Pomodoro.self).last) ?? Pomodoro()
+//        RealmService.update(data) { data in
+//            data.currentTag = tagName
+//        }
 
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             self.tagButton.setImage(nil, for: .normal)
-            self.tagButton.setTitle(data.currentTag, for: .normal)
+            self.tagButton.setTitle(tagName, for: .normal)
             self.tagButton.backgroundColor = titleColor
             self.tagButton.setTitleColor(.white, for: .normal)
         }
+
+        currentTagName = tagName
         Log.info("Selected Tag: \(tagName), Color: \(tagColor)")
     }
 
