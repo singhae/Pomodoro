@@ -265,6 +265,10 @@ final class TagModalViewController: UIViewController {
     // TODO: 태그 값이 메인뷰에 전달하는 함수
     func selectTag(tagName: String, tagColor: String) {
         selectionDelegate?.tagSelected(tagName: tagName, tagColor: tagColor)
+        let data = (try? RealmService.read(Pomodoro.self).last) ?? Pomodoro()
+        RealmService.update(data) { data in
+            data.currentTag = tagName
+        }
         dismiss(animated: true, completion: nil)
     }
 

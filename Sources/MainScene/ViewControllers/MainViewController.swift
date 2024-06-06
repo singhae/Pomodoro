@@ -115,7 +115,6 @@ final class MainViewController: UIViewController {
         super.viewDidLoad()
         stepManager.setRouterObservers()
         setUpPomodoroCurrentStepLabel()
-
         let documentsDirectory = NSSearchPathForDirectoriesInDomains(
             .documentDirectory, .userDomainMask,
             true
@@ -240,6 +239,7 @@ extension MainViewController {
             userInfo: nil,
             repeats: true
         )
+
         longPressTimer?.fire()
 
         if gestureRecognizer.state == .cancelled || gestureRecognizer.state == .ended {
@@ -479,15 +479,19 @@ extension MainViewController: TagModalViewControllerDelegate {
         let backgroundColor = TagCase(rawValue: tagColor)?.backgroundColor ?? .gray
         let titleColor = TagCase(rawValue: tagColor)?.typoColor ?? .gray
 
+        let data = (try? RealmService.read(Pomodoro.self).last) ?? Pomodoro()
+        RealmService.update(data) { data in
+            data.currentTag = tagName
+        }
+
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
-
             self.tagButton.setImage(nil, for: .normal)
-            self.tagButton.setTitle(tagName, for: .normal)
+            self.tagButton.setTitle(data.currentTag, for: .normal)
             self.tagButton.backgroundColor = titleColor
             self.tagButton.setTitleColor(.white, for: .normal)
         }
-        print("Selected Tag: \(tagName), Color: \(tagColor)")
+        Log.info("Selected Tag: \(tagName), Color: \(tagColor)")
     }
 
     func tagDidRemoved(tagName: String) {
