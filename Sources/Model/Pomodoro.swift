@@ -11,13 +11,16 @@ import UIKit
 
 class Pomodoro: Object {
     @Persisted(primaryKey: true) var id: Int
-    @Persisted var phase: Int // 1 -> 2 -> 3 -> 4 순으로 가되, 뽀모도로가 모두 완료되면 (성공이든, 실패이든 0으로 변경)
+    @Persisted var phaseTime: Int
+    @Persisted var phase: Int
+    // 1 -> 2 -> 3 -> 4 순으로 가되, 뽀모도로가 모두 완료되면 (성공이든, 실패이든 0으로 변경)
     @Persisted var currentTag: String
     @Persisted var participateDate: Date
     @Persisted var isSuccess: Bool
 
     convenience init(
         id: Int,
+        phaseTime: Int,
         phase: Int = 1,
         currentTag: String = "DEFAULT",
         participateDate: Date = Date.now,
@@ -25,6 +28,7 @@ class Pomodoro: Object {
     ) {
         self.init()
         self.id = id
+        self.phaseTime = phaseTime
         self.phase = phase
         self.currentTag = currentTag
         self.participateDate = participateDate

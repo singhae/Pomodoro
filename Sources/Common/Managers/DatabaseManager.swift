@@ -21,7 +21,7 @@ enum RealmService {
         }
     }
 
-    static func createPomodoro(tag: String) {
+    static func createPomodoro(tag: String, phaseTime: Int) {
         do {
             let database = try Realm()
             Log.info("Realm is located at: \(String(describing: database.configuration.fileURL))")
@@ -29,7 +29,13 @@ enum RealmService {
             if let lastPomodoro = database.objects(Pomodoro.self).last {
                 id = lastPomodoro.id + 1
             }
-            let pomodoro = Pomodoro(id: id, phase: 1, currentTag: tag, participateDate: Date.now)
+            let pomodoro = Pomodoro(
+                id: id,
+                phaseTime: phaseTime,
+                phase: 1,
+                currentTag: tag,
+                participateDate: Date.now
+            )
             write(pomodoro)
         } catch {
             Log.error(error)
