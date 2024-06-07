@@ -205,7 +205,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         var timeText = ""
         if days > 0 { timeText += "\(days)일 " }
         if hours > 0 || days > 0 { timeText += "\(hours)시간 " }
-        timeText += "\(minutes)분"
+        timeText += "\(minutes * 4)분"
         return timeText
     }
 
@@ -263,7 +263,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         if hours > 0 || days > 0 {
             totalTimeText += "\(hours)시간"
         }
-        totalTimeText += "\(minutes)분"
+        totalTimeText += "\(minutes * 4)분"
 
         chartCenterText.text = totalTimeText
         chartCenterText.then {
