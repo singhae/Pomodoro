@@ -75,7 +75,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         ) else { return [:] }
 
         let sessions = (try? RealmService.read(Pomodoro.self).filter {
-            $0.participateDate >= startOfDay && $0.participateDate < endOfDay
+            $0.participateDate >= startOfDay && $0.participateDate < endOfDay && $0.isSuccess == true
         }) ?? []
 
         var focusTimePerTag = [String: Int]()
@@ -112,10 +112,10 @@ final class DashboardPieChartCell: UICollectionViewCell {
     private func calculateFocusTimePerTag(from startDate: Date, to endDate: Date) -> [String: Int] {
         var focusTimePerTag = [String: Int]()
         let filteredSessions = (try? RealmService.read(Pomodoro.self).filter {
-            $0.participateDate >= startDate && $0.participateDate < endDate
+            $0.participateDate >= startDate && $0.participateDate < endDate && $0.isSuccess == true
         }) ?? []
         for session in filteredSessions {
-            focusTimePerTag[session.currentTag, default: 0] += session.phase
+            focusTimePerTag[session.currentTag, default: 0] += session.phaseTime
         }
         return focusTimePerTag
     }
@@ -205,7 +205,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         var timeText = ""
         if days > 0 { timeText += "\(days)일 " }
         if hours > 0 || days > 0 { timeText += "\(hours)시간 " }
-        timeText += "\(minutes)분"
+        timeText += "\(minutes * 4)분"
         return timeText
     }
 
@@ -263,7 +263,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         if hours > 0 || days > 0 {
             totalTimeText += "\(hours)시간"
         }
-        totalTimeText += "\(minutes)분"
+        totalTimeText += "\(minutes * 4)분"
 
         chartCenterText.text = totalTimeText
         chartCenterText.then {
