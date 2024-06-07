@@ -75,7 +75,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
         ) else { return [:] }
 
         let sessions = (try? RealmService.read(Pomodoro.self).filter {
-            $0.participateDate >= startOfDay && $0.participateDate < endOfDay
+            $0.participateDate >= startOfDay && $0.participateDate < endOfDay && $0.isSuccess == true
         }) ?? []
 
         var focusTimePerTag = [String: Int]()
@@ -112,10 +112,10 @@ final class DashboardPieChartCell: UICollectionViewCell {
     private func calculateFocusTimePerTag(from startDate: Date, to endDate: Date) -> [String: Int] {
         var focusTimePerTag = [String: Int]()
         let filteredSessions = (try? RealmService.read(Pomodoro.self).filter {
-            $0.participateDate >= startDate && $0.participateDate < endDate
+            $0.participateDate >= startDate && $0.participateDate < endDate && $0.isSuccess == true
         }) ?? []
         for session in filteredSessions {
-            focusTimePerTag[session.currentTag, default: 0] += session.phase
+            focusTimePerTag[session.currentTag, default: 0] += session.phaseTime
         }
         return focusTimePerTag
     }
