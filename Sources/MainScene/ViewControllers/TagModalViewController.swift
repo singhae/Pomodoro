@@ -19,7 +19,7 @@ protocol TagCreationDelegate: AnyObject {
 
 // TODO: 2.태그 모달뷰에서 선택한 태그 값이 메인뷰에서 보이게 값 전달.
 protocol TagModalViewControllerDelegate: AnyObject {
-    func tagSelected(tagName: String, tagColor: String)
+    func tagSelected(with tag: Tag)
     func tagDidRemoved(tagName: String)
 }
 
@@ -263,8 +263,8 @@ final class TagModalViewController: UIViewController {
     }
 
     // TODO: 태그 값이 메인뷰에 전달하는 함수
-    func selectTag(tagName: String, tagColor: String) {
-        selectionDelegate?.tagSelected(tagName: tagName, tagColor: tagColor)
+    func selectTag(with tag: Tag) {
+        selectionDelegate?.tagSelected(with: tag)
 //        let data = (try? RealmService.read(Pomodoro.self).last) ?? Pomodoro()
 //        RealmService.update(data) { data in
 //            data.currentTag = tagName
@@ -278,7 +278,7 @@ final class TagModalViewController: UIViewController {
 
     @objc func buttonTapped(tag: String, color _: String) {
         if let tag = try? RealmService.read(Tag.self).filter("tagName == %@", tag).first {
-            selectionDelegate?.tagSelected(tagName: tag.tagName, tagColor: tag.colorIndex)
+            selectionDelegate?.tagSelected(with: tag)
             tagSettingCompletedButton.isEnabled.toggle()
         } else {
             presentTagEditViewController()

@@ -80,7 +80,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
 
         var focusTimePerTag = [String: Int]()
         for session in sessions {
-            focusTimePerTag[session.currentTag, default: 0] += 1
+            focusTimePerTag[session.currentTag?.tagName ?? "집중", default: 0] += 1
         }
 
         return focusTimePerTag
@@ -115,7 +115,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
             $0.participateDate >= startDate && $0.participateDate < endDate && $0.isSuccess == true
         }) ?? []
         for session in filteredSessions {
-            focusTimePerTag[session.currentTag, default: 0] += session.phaseTime
+            focusTimePerTag[session.currentTag?.tagName ?? "집중", default: 0] += session.phaseTime
         }
         return focusTimePerTag
     }
