@@ -158,7 +158,6 @@ final class TagModalViewController: UIViewController {
         }
     }
 
-
     private func addTagsToStackView() {
         for arrangedSubview in tagsStackView.arrangedSubviews {
             arrangedSubview.removeFromSuperview()
