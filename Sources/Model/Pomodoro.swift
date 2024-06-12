@@ -14,7 +14,7 @@ class Pomodoro: Object {
     @Persisted var phaseTime: Int
     @Persisted var phase: Int
     // 1 -> 2 -> 3 -> 4 순으로 가되, 뽀모도로가 모두 완료되면 (성공이든, 실패이든 0으로 변경)
-    @Persisted var currentTag: String
+    @Persisted var currentTag: Tag? = Tag(tagName: "집중", colorIndex: "one", position: 0)
     @Persisted var participateDate: Date
     @Persisted var isSuccess: Bool
 
@@ -22,7 +22,7 @@ class Pomodoro: Object {
         id: Int,
         phaseTime: Int,
         phase: Int = 1,
-        currentTag: String = "DEFAULT",
+        currentTag: Tag,
         participateDate: Date = Date.now,
         isSuccess: Bool = false
     ) {

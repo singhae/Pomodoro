@@ -21,7 +21,7 @@ enum RealmService {
         }
     }
 
-    static func createPomodoro(tag: String, phaseTime: Int) {
+    static func createPomodoro(tag: Tag, phaseTime: Int) {
         do {
             let database = try Realm()
             Log.info("Realm is located at: \(String(describing: database.configuration.fileURL))")
