@@ -136,7 +136,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
     private func calculateNextPosition() -> Int {
         do {
             let tags = try RealmService.read(Tag.self)
-            return (tags.max(ofProperty: "position") as Int? ?? -1) + 1 // 기존 태그 위치의 최대값에서 1을 더함
+            return (tags.max(ofProperty: "position") as Int? ?? -1) + 1
         } catch {
             Log.info("Failed to fetch tags from Realm: \(error)")
             return 0
