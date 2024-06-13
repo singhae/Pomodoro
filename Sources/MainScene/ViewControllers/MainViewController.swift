@@ -212,9 +212,9 @@ final class MainViewController: UIViewController {
             tagButton.setTitle(nil, for: .normal)
             tagButton.setImage(UIImage(named: "onBoardingTag"), for: .normal)
         } else {
-            tagButton.setTitle(recent?.currentTag?.tagName, for: .normal)
-            tagButton.setTitleColor(recent?.currentTag?.setupTagTypoColor(), for: .normal)
-            tagButton.backgroundColor = recent?.currentTag?.setupTagBackgroundColor()
+            tagButton.setTitle(currentTag.tagName, for: .normal)
+            tagButton.setTitleColor(currentTag.setupTagTypoColor(), for: .normal)
+            tagButton.backgroundColor = currentTag.setupTagBackgroundColor()
             tagButton.setImage(nil, for: .normal)
         }
 
