@@ -5,7 +5,6 @@
 //  Created by SonSinghae on 2023/11/17.
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
-import OSLog
 import PomodoroDesignSystem
 import Realm
 import RealmSwift
@@ -17,7 +16,6 @@ protocol TagCreationDelegate: AnyObject {
     func createTag(tag: String, color: String, position: Int)
 }
 
-// TODO: 2.태그 모달뷰에서 선택한 태그 값이 메인뷰에서 보이게 값 전달.
 protocol TagModalViewControllerDelegate: AnyObject {
     func tagSelected(tagName: String, tagColor: String)
     func tagDidRemoved(tagName: String)
@@ -61,6 +59,8 @@ final class TagModalViewController: UIViewController {
         title: "설정 완료",
         didTapHandler: didTapSettingCompleteButton
     )
+    
+    private var selectedTag: UIButton?
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -217,7 +217,7 @@ final class TagModalViewController: UIViewController {
         }
         // 버튼 액션 설정
         button.addAction(UIAction { [weak self] _ in
-            self?.buttonTapped(tag: title, color: colorIndex)
+            self?.buttonTapped(tag: title, color: colorIndex, sender: button)
         }, for: .touchUpInside)
 
         // MARK: `-` 버튼 추가 -> 이미지로 넣는 게 더 괜찮아보임.
@@ -269,10 +269,6 @@ final class TagModalViewController: UIViewController {
     // TODO: 태그 값이 메인뷰에 전달하는 함수
     func selectTag(tagName: String, tagColor: String) {
         selectionDelegate?.tagSelected(tagName: tagName, tagColor: tagColor)
-//        let data = (try? RealmService.read(Pomodoro.self).last) ?? Pomodoro()
-//        RealmService.update(data) { data in
-//            data.currentTag = tagName
-//        }
         dismiss(animated: true, completion: nil)
     }
 
@@ -280,12 +276,39 @@ final class TagModalViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
 
-    @objc func buttonTapped(tag: String, color _: String) {
+    @objc func buttonTapped(tag: String, color _: String, sender: UIButton) {
         if let tag = try? RealmService.read(Tag.self).filter("tagName == %@", tag).first {
             selectionDelegate?.tagSelected(tagName: tag.tagName, tagColor: tag.colorIndex)
             tagSettingCompletedButton.isEnabled.toggle()
         } else {
             presentTagEditViewController()
+        }
+        
+        if let previousTag = selectedTag, previousTag != sender {
+            animateButtonFade(previousTag, fadeIn: false)
+        }
+        animateButtonFade(sender, fadeIn: true)
+
+        selectedTag = sender
+
+        updateSettingCompleteButtonState()
+    }
+    
+    private func animateButtonFade(_ button: UIButton, fadeIn: Bool) {
+        UIView.animate(withDuration: 0.3) {
+            if fadeIn {
+                button.alpha = 0.5
+            } else {
+                button.alpha = 1.0
+            }
+        }
+    }
+
+    private func updateSettingCompleteButtonState() {
+        if selectedTag != nil {
+            tagSettingCompletedButton.isEnabled = true
+        } else {
+            tagSettingCompletedButton.isEnabled = false
         }
     }
 
@@ -320,6 +343,7 @@ final class TagModalViewController: UIViewController {
                                 print("Tag at index \(tagIndex) deleted")
                                 selectionDelegate?.tagDidRemoved(tagName: tagToDelete.tagName)
                                 RealmService.delete(tagToDelete)
+                                self.tagSettingCompletedButton.isEnabled = true // 설정완료버튼 활성화
                             } else {
                                 print("No tag found at index \(tagIndex)")
                             }
