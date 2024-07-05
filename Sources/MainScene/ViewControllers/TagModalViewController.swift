@@ -60,7 +60,7 @@ final class TagModalViewController: UIViewController {
         title: "설정 완료",
         didTapHandler: didTapSettingCompleteButton
     )
-    
+
     private var selectedTagButton: UIButton?
 
     override func viewWillAppear(_ animated: Bool) {
