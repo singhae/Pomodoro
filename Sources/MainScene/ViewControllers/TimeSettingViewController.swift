@@ -128,7 +128,7 @@ final class TimeSettingViewController: UIViewController {
             make.top.equalToSuperview().offset(24)
         }
         closeButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(24)
+            make.centerY.equalTo(timeSettingTitleLabel)
             make.trailing.equalToSuperview().offset(-26)
             make.width.equalTo(15)
             make.height.equalTo(15)
