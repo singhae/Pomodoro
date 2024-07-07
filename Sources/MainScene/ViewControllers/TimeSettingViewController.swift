@@ -53,7 +53,7 @@ final class TimeSettingViewController: UIViewController {
     }
 
     private lazy var closeButton = UIButton().then {
-        $0.setImage(UIImage(systemName: "xmark"), for: .normal)
+        $0.setImage(UIImage(named: "closeButton"), for: .normal)
         $0.tintColor = .pomodoro.blackMedium
         $0.addTarget(self, action: #selector(didTapCloseButton), for: .touchUpInside)
     }

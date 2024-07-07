@@ -208,7 +208,7 @@ final class MainViewController: UIViewController {
     private func setupTimeUI(isSettingTime: Bool) {
         let recent = try? RealmService.read(Pomodoro.self).last
 
-        if recent == nil && isSettingTime != true {
+        if recent == nil, isSettingTime != true {
             tagButton.setTitle(nil, for: .normal)
             tagButton.setImage(UIImage(named: "onBoardingTag"), for: .normal)
         } else {
@@ -255,10 +255,15 @@ extension MainViewController {
     }
 
     @objc private func openTagModal() {
-        let modalViewController = TagModalViewController()
-        modalViewController.modalPresentationStyle = .fullScreen
-        modalViewController.selectionDelegate = self // TODO: Delegate 설정
-        present(modalViewController, animated: true)
+        let tagViewController = TagModalViewController()
+        tagViewController.selectionDelegate = self
+
+        if let sheet = tagViewController.sheetPresentationController {
+            sheet.detents = [.custom { $0.maximumDetentValue * 0.95 }]
+            sheet.preferredCornerRadius = 35
+            sheet.prefersScrollingExpandsWhenScrolledToEdge = true
+        }
+        present(tagViewController, animated: true)
     }
 
     @objc private func handleLongPress(gestureRecognizer: UILongPressGestureRecognizer) {
@@ -503,7 +508,7 @@ extension MainViewController {
         }
         longPressGuideLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(view.snp.bottom).offset(-50)
+            make.bottom.equalTo(view.snp.bottom).offset(-112)
         }
         stopTimeProgressBar.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
