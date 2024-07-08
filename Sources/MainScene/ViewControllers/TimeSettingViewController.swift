@@ -25,16 +25,12 @@ final class TimeSettingViewController: UIViewController {
 
     private weak var delegate: TimeSettingViewControllerDelegate?
 
-    init(
-        isSelectedTime: Bool,
-        delegate: TimeSettingViewControllerDelegate
-    ) {
+    init(delegate: TimeSettingViewControllerDelegate) {
         super.init(nibName: nil, bundle: nil)
 
         let recent = try? RealmService.read(Pomodoro.self).last
         selectedTime = recent?.phaseTime ?? 25
 
-        self.isSelectedTime = isSelectedTime
         self.delegate = delegate
     }
 

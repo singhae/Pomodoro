@@ -333,7 +333,7 @@ extension MainViewController {
     @objc private func presentTimeSettingViewController() {
         Log.info("set pomodorotime")
 
-        let timeSettingViewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
+        let timeSettingViewController = TimeSettingViewController(delegate: self)
 
         if let sheet = timeSettingViewController.sheetPresentationController {
             sheet.detents = [

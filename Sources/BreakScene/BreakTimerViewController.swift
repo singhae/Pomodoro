@@ -154,7 +154,7 @@ extension BreakTimerViewController {
     }
 
     @objc private func timeSetting() {
-        let timeSettingviewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
+        let timeSettingviewController = TimeSettingViewController(delegate: self)
         navigationController?.pushViewController(timeSettingviewController, animated: true)
     }
 
