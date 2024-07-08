@@ -107,10 +107,6 @@ final class TimeSettingViewController: UIViewController {
         setupConstraints()
     }
 
-    override func viewDidDisappear(_: Bool) {
-        delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
-    }
-
     private func setUpLayout() {
         view.addSubview(timeSettingTitleLabel)
         view.addSubview(closeButton)
