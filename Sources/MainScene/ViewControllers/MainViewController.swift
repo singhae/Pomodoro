@@ -406,17 +406,13 @@ extension MainViewController {
             }
             currentPomodoro = try? RealmService.read(Pomodoro.self).last
         }
-
+        setupUIWhenTimerStart(isStopped: false)
         pomodoroTimeManager.startTimer(timerBlock: { [self] timer, currentTime, maxTime in
-            setupUIWhenTimerStart(isStopped: false)
-
             let minutes = (maxTime - currentTime) / 60
             let seconds = (maxTime - currentTime) % 60
 
             if minutes == 0, seconds == 0 {
                 timer.invalidate()
-                setupUIWhenTimerStart(isStopped: true)
-
                 RealmService.update(currentPomodoro!) { updatedPomodoro in
                     updatedPomodoro.phase += 1
 
