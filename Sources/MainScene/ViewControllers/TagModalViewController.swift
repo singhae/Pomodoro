@@ -44,10 +44,6 @@ final class TagModalViewController: UIViewController {
         $0.distribution = .equalSpacing
     }
 
-    private let dimmedView = UIView().then {
-        $0.backgroundColor = .pomodoro.blackHigh.withAlphaComponent(0.2)
-    }
-
     private let titleView = UILabel().then {
         $0.text = "태그 설정"
         $0.font = .pomodoroFont.heading4()
@@ -73,28 +69,15 @@ final class TagModalViewController: UIViewController {
         setupViews()
         closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
         tagSettingCompletedButton.isEnabled = false // 첫 화면에는 설정완료 비활성화
+        view.backgroundColor = .pomodoro.background
     }
 
     private func setupViews() {
-        view.backgroundColor = .pomodoro.background
-        view.addSubview(dimmedView)
-
-        let contentView = UIView().then {
-            $0.backgroundColor = .pomodoro.background
-            $0.layer.cornerRadius = 20
-        }
-        dimmedView.addSubview(contentView)
-
-        contentView.addSubview(closeButton)
-        contentView.addSubview(titleView)
-        contentView.addSubview(tagSettingCompletedButton)
-        contentView.addSubview(tagsStackView)
-        contentView.addSubview(tagSettingCompletedButton)
-
-        contentView.snp.makeConstraints {
-            $0.leading.trailing.bottom.equalToSuperview()
-            $0.height.equalTo(view.frame.height * 0.8)
-        }
+        view.addSubview(closeButton)
+        view.addSubview(titleView)
+        view.addSubview(tagSettingCompletedButton)
+        view.addSubview(tagsStackView)
+        view.addSubview(tagSettingCompletedButton)
 
         closeButton.snp.makeConstraints {
             $0.top.trailing.equalToSuperview().inset(20)
@@ -105,11 +88,7 @@ final class TagModalViewController: UIViewController {
             $0.centerY.equalTo(closeButton.snp.centerY)
         }
 
-        dimmedView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-
-        contentView.addSubview(editTagButton)
+        view.addSubview(editTagButton)
         editTagButton.snp.makeConstraints { make in
             make.top.equalTo(titleView.snp.bottom).offset(20)
             make.trailing.equalTo(closeButton.snp.trailing)
@@ -120,8 +99,9 @@ final class TagModalViewController: UIViewController {
             make.leading.trailing.equalToSuperview().inset(45)
         }
         tagSettingCompletedButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(110)
             make.top.equalTo(tagsStackView.snp.bottom).offset(60)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(186)
             make.height.equalTo(60)
         }
     }
