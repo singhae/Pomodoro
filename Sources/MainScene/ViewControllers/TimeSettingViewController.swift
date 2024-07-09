@@ -25,16 +25,12 @@ final class TimeSettingViewController: UIViewController {
 
     private weak var delegate: TimeSettingViewControllerDelegate?
 
-    init(
-        isSelectedTime: Bool,
-        delegate: TimeSettingViewControllerDelegate
-    ) {
+    init(delegate: TimeSettingViewControllerDelegate) {
         super.init(nibName: nil, bundle: nil)
 
         let recent = try? RealmService.read(Pomodoro.self).last
         selectedTime = recent?.phaseTime ?? 25
 
-        self.isSelectedTime = isSelectedTime
         self.delegate = delegate
     }
 
@@ -53,7 +49,7 @@ final class TimeSettingViewController: UIViewController {
     }
 
     private lazy var closeButton = UIButton().then {
-        $0.setImage(UIImage(systemName: "xmark"), for: .normal)
+        $0.setImage(UIImage(named: "closeButton"), for: .normal)
         $0.tintColor = .pomodoro.blackMedium
         $0.addTarget(self, action: #selector(didTapCloseButton), for: .touchUpInside)
     }
@@ -107,10 +103,6 @@ final class TimeSettingViewController: UIViewController {
         setupConstraints()
     }
 
-    override func viewDidDisappear(_: Bool) {
-        delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
-    }
-
     private func setUpLayout() {
         view.addSubview(timeSettingTitleLabel)
         view.addSubview(closeButton)
@@ -128,7 +120,7 @@ final class TimeSettingViewController: UIViewController {
             make.top.equalToSuperview().offset(24)
         }
         closeButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(24)
+            make.centerY.equalTo(timeSettingTitleLabel)
             make.trailing.equalToSuperview().offset(-26)
             make.width.equalTo(15)
             make.height.equalTo(15)

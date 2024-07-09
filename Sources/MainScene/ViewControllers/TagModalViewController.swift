@@ -5,7 +5,6 @@
 //  Created by SonSinghae on 2023/11/17.
 //  Copyright © 2023 io.hgu. All rights reserved.
 //
-import OSLog
 import PomodoroDesignSystem
 import Realm
 import RealmSwift
@@ -17,7 +16,6 @@ protocol TagCreationDelegate: AnyObject {
     func createTag(tag: String, color: String, position: Int)
 }
 
-// TODO: 2.태그 모달뷰에서 선택한 태그 값이 메인뷰에서 보이게 값 전달.
 protocol TagModalViewControllerDelegate: AnyObject {
     func tagSelected(with tag: Tag)
     func tagDidRemoved(tagName: String)
@@ -25,6 +23,11 @@ protocol TagModalViewControllerDelegate: AnyObject {
 
 final class TagModalViewController: UIViewController {
     weak var selectionDelegate: TagModalViewControllerDelegate? // TODO: mainviewcontroller 에 태그 값들 전달
+    private var selectedTag: Tag? {
+        didSet {
+            tagSettingCompletedButton.isEnabled = selectedTag != nil
+        }
+    }
 
     private lazy var editTagButton = UIButton().then {
         $0.setTitle("Edit", for: .normal)
@@ -44,10 +47,6 @@ final class TagModalViewController: UIViewController {
         $0.distribution = .equalSpacing
     }
 
-    private let dimmedView = UIView().then {
-        $0.backgroundColor = .pomodoro.blackHigh.withAlphaComponent(0.2)
-    }
-
     private let titleView = UILabel().then {
         $0.text = "태그 설정"
         $0.font = .pomodoroFont.heading4()
@@ -61,6 +60,8 @@ final class TagModalViewController: UIViewController {
         title: "설정 완료",
         didTapHandler: didTapSettingCompleteButton
     )
+    
+    private var selectedTagButton: UIButton?
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -73,28 +74,15 @@ final class TagModalViewController: UIViewController {
         setupViews()
         closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
         tagSettingCompletedButton.isEnabled = false // 첫 화면에는 설정완료 비활성화
+        view.backgroundColor = .pomodoro.background
     }
 
     private func setupViews() {
-        view.backgroundColor = .pomodoro.background
-        view.addSubview(dimmedView)
-
-        let contentView = UIView().then {
-            $0.backgroundColor = .pomodoro.background
-            $0.layer.cornerRadius = 20
-        }
-        dimmedView.addSubview(contentView)
-
-        contentView.addSubview(closeButton)
-        contentView.addSubview(titleView)
-        contentView.addSubview(tagSettingCompletedButton)
-        contentView.addSubview(tagsStackView)
-        contentView.addSubview(tagSettingCompletedButton)
-
-        contentView.snp.makeConstraints {
-            $0.leading.trailing.bottom.equalToSuperview()
-            $0.height.equalTo(view.frame.height * 0.8)
-        }
+        view.addSubview(closeButton)
+        view.addSubview(titleView)
+        view.addSubview(tagSettingCompletedButton)
+        view.addSubview(tagsStackView)
+        view.addSubview(tagSettingCompletedButton)
 
         closeButton.snp.makeConstraints {
             $0.top.trailing.equalToSuperview().inset(20)
@@ -105,11 +93,7 @@ final class TagModalViewController: UIViewController {
             $0.centerY.equalTo(closeButton.snp.centerY)
         }
 
-        dimmedView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-
-        contentView.addSubview(editTagButton)
+        view.addSubview(editTagButton)
         editTagButton.snp.makeConstraints { make in
             make.top.equalTo(titleView.snp.bottom).offset(20)
             make.trailing.equalTo(closeButton.snp.trailing)
@@ -120,8 +104,9 @@ final class TagModalViewController: UIViewController {
             make.leading.trailing.equalToSuperview().inset(45)
         }
         tagSettingCompletedButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(110)
             make.top.equalTo(tagsStackView.snp.bottom).offset(60)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(186)
             make.height.equalTo(60)
         }
     }
@@ -217,7 +202,7 @@ final class TagModalViewController: UIViewController {
         }
         // 버튼 액션 설정
         button.addAction(UIAction { [weak self] _ in
-            self?.buttonTapped(tag: title, color: colorIndex)
+            self?.buttonTapped(tag: title, color: colorIndex, sender: button)
         }, for: .touchUpInside)
 
         // MARK: `-` 버튼 추가 -> 이미지로 넣는 게 더 괜찮아보임.
@@ -280,12 +265,50 @@ final class TagModalViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
 
-    @objc func buttonTapped(tag: String, color _: String) {
+    @objc func buttonTapped(tag: String, color _: String, sender: UIButton) {
         if let tag = try? RealmService.read(Tag.self).filter("tagName == %@", tag).first {
-            selectionDelegate?.tagSelected(with: tag)
-            tagSettingCompletedButton.isEnabled.toggle()
+            // TODO: 선택 UI 구현
+            if selectedTag == tag {
+                selectedTag = nil
+            } else {
+                selectedTag = tag
+            }
         } else {
             presentTagEditViewController()
+        }
+        
+        if let previousTagButton = selectedTagButton {
+            if previousTagButton == sender {
+                animateButtonFade(sender, fadeIn: false)
+                selectedTagButton = nil
+                updateSettingCompleteButtonState()
+                return
+            } else {
+                animateButtonFade(previousTagButton, fadeIn: false)
+            }
+        }
+        animateButtonFade(sender, fadeIn: true)
+
+        selectedTagButton = sender
+
+        updateSettingCompleteButtonState()
+    }
+    
+    private func animateButtonFade(_ button: UIButton, fadeIn: Bool) {
+        UIView.animate(withDuration: 0.3) {
+            if fadeIn {
+                button.alpha = 0.5
+            } else {
+                button.alpha = 1.0
+            }
+        }
+    }
+
+    private func updateSettingCompleteButtonState() {
+        if selectedTag != nil {
+            tagSettingCompletedButton.isEnabled = true
+        } else {
+            tagSettingCompletedButton.isEnabled = false
         }
     }
 
@@ -297,8 +320,10 @@ final class TagModalViewController: UIViewController {
     }
 
     @objc private func didTapSettingCompleteButton() {
-        tagSettingCompletedButton.isEnabled.toggle()
-        PomodoroPopupBuilder()
+        guard let selectedTag else {
+            return
+        }
+        selectionDelegate?.tagSelected(with: selectedTag)
         dismiss(animated: true)
     }
 
@@ -320,6 +345,7 @@ final class TagModalViewController: UIViewController {
                                 print("Tag at index \(tagIndex) deleted")
                                 selectionDelegate?.tagDidRemoved(tagName: tagToDelete.tagName)
                                 RealmService.delete(tagToDelete)
+                                self.tagSettingCompletedButton.isEnabled = true // 설정완료버튼 활성화
                             } else {
                                 print("No tag found at index \(tagIndex)")
                             }
