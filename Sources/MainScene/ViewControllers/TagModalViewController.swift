@@ -277,10 +277,6 @@ final class TagModalViewController: UIViewController {
             presentTagEditViewController()
         }
         
-        if let previousTag = selectedTagButton, previousTag != sender {
-            animateButtonFade(previousTag, fadeIn: false)
-        }
-        // 선택 해제 처리
         if let previousTagButton = selectedTagButton {
             if previousTagButton == sender {
                 animateButtonFade(sender, fadeIn: false)
@@ -288,7 +284,6 @@ final class TagModalViewController: UIViewController {
                 updateSettingCompleteButtonState()
                 return
             } else {
-                // 다른 버튼을 클릭한 경우 이전 버튼 fade out
                 animateButtonFade(previousTagButton, fadeIn: false)
             }
         }
