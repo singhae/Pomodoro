@@ -255,6 +255,10 @@ extension MainViewController {
     }
 
     @objc private func openTagModal() {
+        guard stepManager.router.pomodoroCount == .zero else {
+            return
+        }
+
         let tagViewController = TagModalViewController()
         tagViewController.selectionDelegate = self
 
@@ -329,7 +333,7 @@ extension MainViewController {
     @objc private func presentTimeSettingViewController() {
         Log.info("set pomodorotime")
 
-        let timeSettingViewController = TimeSettingViewController(isSelectedTime: false, delegate: self)
+        let timeSettingViewController = TimeSettingViewController(delegate: self)
 
         if let sheet = timeSettingViewController.sheetPresentationController {
             sheet.detents = [
@@ -402,17 +406,13 @@ extension MainViewController {
             }
             currentPomodoro = try? RealmService.read(Pomodoro.self).last
         }
-
+        setupUIWhenTimerStart(isStopped: false)
         pomodoroTimeManager.startTimer(timerBlock: { [self] timer, currentTime, maxTime in
-            setupUIWhenTimerStart(isStopped: false)
-
             let minutes = (maxTime - currentTime) / 60
             let seconds = (maxTime - currentTime) % 60
 
             if minutes == 0, seconds == 0 {
                 timer.invalidate()
-                setupUIWhenTimerStart(isStopped: true)
-
                 RealmService.update(currentPomodoro!) { updatedPomodoro in
                     updatedPomodoro.phase += 1
 

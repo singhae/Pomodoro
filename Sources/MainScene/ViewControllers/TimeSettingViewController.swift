@@ -25,16 +25,12 @@ final class TimeSettingViewController: UIViewController {
 
     private weak var delegate: TimeSettingViewControllerDelegate?
 
-    init(
-        isSelectedTime: Bool,
-        delegate: TimeSettingViewControllerDelegate
-    ) {
+    init(delegate: TimeSettingViewControllerDelegate) {
         super.init(nibName: nil, bundle: nil)
 
         let recent = try? RealmService.read(Pomodoro.self).last
         selectedTime = recent?.phaseTime ?? 25
 
-        self.isSelectedTime = isSelectedTime
         self.delegate = delegate
     }
 
@@ -105,10 +101,6 @@ final class TimeSettingViewController: UIViewController {
         collectionView.delegate = self
         setUpLayout()
         setupConstraints()
-    }
-
-    override func viewDidDisappear(_: Bool) {
-        delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
     }
 
     private func setUpLayout() {

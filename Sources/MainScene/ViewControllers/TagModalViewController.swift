@@ -25,6 +25,11 @@ protocol TagModalViewControllerDelegate: AnyObject {
 
 final class TagModalViewController: UIViewController {
     weak var selectionDelegate: TagModalViewControllerDelegate? // TODO: mainviewcontroller 에 태그 값들 전달
+    private var selectedTag: Tag? {
+        didSet {
+            tagSettingCompletedButton.isEnabled = selectedTag != nil
+        }
+    }
 
     private lazy var editTagButton = UIButton().then {
         $0.setTitle("Edit", for: .normal)
@@ -262,8 +267,12 @@ final class TagModalViewController: UIViewController {
 
     @objc func buttonTapped(tag: String, color _: String) {
         if let tag = try? RealmService.read(Tag.self).filter("tagName == %@", tag).first {
-            selectionDelegate?.tagSelected(with: tag)
-            tagSettingCompletedButton.isEnabled.toggle()
+            // TODO: 선택 UI 구현
+            if selectedTag == tag {
+                selectedTag = nil
+            } else {
+                selectedTag = tag
+            }
         } else {
             presentTagEditViewController()
         }
@@ -277,8 +286,10 @@ final class TagModalViewController: UIViewController {
     }
 
     @objc private func didTapSettingCompleteButton() {
-        tagSettingCompletedButton.isEnabled.toggle()
-        PomodoroPopupBuilder()
+        guard let selectedTag else {
+            return
+        }
+        selectionDelegate?.tagSelected(with: selectedTag)
         dismiss(animated: true)
     }
 
