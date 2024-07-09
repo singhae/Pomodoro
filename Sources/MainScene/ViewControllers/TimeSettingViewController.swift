@@ -53,7 +53,7 @@ final class TimeSettingViewController: UIViewController {
     }
 
     private lazy var closeButton = UIButton().then {
-        $0.setImage(UIImage(systemName: "xmark"), for: .normal)
+        $0.setImage(UIImage(named: "closeButton"), for: .normal)
         $0.tintColor = .pomodoro.blackMedium
         $0.addTarget(self, action: #selector(didTapCloseButton), for: .touchUpInside)
     }
@@ -128,7 +128,7 @@ final class TimeSettingViewController: UIViewController {
             make.top.equalToSuperview().offset(24)
         }
         closeButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(24)
+            make.centerY.equalTo(timeSettingTitleLabel)
             make.trailing.equalToSuperview().offset(-26)
             make.width.equalTo(15)
             make.height.equalTo(15)
@@ -180,13 +180,10 @@ final class TimeSettingViewController: UIViewController {
     private func didTapConfirmButton() {
         Log.debug("Selected Time: \(Int(centerIndexPath?.item ?? 0))")
         delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
-//        RealmService.createPomodoro(tag: "DEFAULT")
         dismiss(animated: true)
     }
 
     @objc private func didTapCloseButton() {
-//        Log.debug("Selected Time: \(Int(centerIndexPath?.item ?? 0))")
-//        delegate?.didSelectTime(time: Int(centerIndexPath?.item ?? 0))
         dismiss(animated: true)
     }
 }

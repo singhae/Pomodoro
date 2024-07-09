@@ -17,7 +17,7 @@ final class MainViewController: UIViewController {
     private var longPressTimer: Timer?
     private var longPressTime: Float = 0.0
     private var currentPomodoro: Pomodoro?
-    private var currentTagName: String = ""
+    private var currentTag: Tag = .init(tagName: "집중", colorIndex: "one", position: 0)
     private var needOnboarding = false
     private let longPressGestureRecognizer = UILongPressGestureRecognizer()
 
@@ -63,7 +63,6 @@ final class MainViewController: UIViewController {
     }
 
     private let tagButton = UIButton().then {
-        $0.setTitleColor(.black, for: .normal)
         $0.titleLabel?.font = .pomodoroFont.heading6()
         $0.layer.cornerRadius = 12
         $0.clipsToBounds = true
@@ -150,7 +149,6 @@ final class MainViewController: UIViewController {
         setupLongPressGestureRecognizer()
         setupTimeLabelTapGestureRecognizer()
 
-        // TODO: 가장 최근 뽀모도로 시간이 나타나야함.
         setupRecentPomodoroData()
     }
 
@@ -182,7 +180,9 @@ final class MainViewController: UIViewController {
             pomodoroTimeManager.setupMaxTime(time: 25 * 60)
         } else {
             Log.debug(recent)
-            tagButton.setTitle(recent?.currentTag, for: .normal)
+            tagButton.setTitle(recent?.currentTag?.tagName, for: .normal)
+            tagButton.setTitleColor(recent?.currentTag?.setupTagTypoColor(), for: .normal)
+            tagButton.backgroundColor = recent?.currentTag?.setupTagBackgroundColor()
             tagButton.setImage(nil, for: .normal)
             timeLabel.attributedText = nil
 
@@ -205,14 +205,16 @@ final class MainViewController: UIViewController {
         }
     }
 
-    private func setupTimeUI() {
+    private func setupTimeUI(isSettingTime: Bool) {
         let recent = try? RealmService.read(Pomodoro.self).last
 
-        if recent == nil {
+        if recent == nil, isSettingTime != true {
             tagButton.setTitle(nil, for: .normal)
             tagButton.setImage(UIImage(named: "onBoardingTag"), for: .normal)
         } else {
-            tagButton.setTitle(recent?.currentTag, for: .normal)
+            tagButton.setTitle(currentTag.tagName, for: .normal)
+            tagButton.setTitleColor(currentTag.setupTagTypoColor(), for: .normal)
+            tagButton.backgroundColor = currentTag.setupTagBackgroundColor()
             tagButton.setImage(nil, for: .normal)
         }
 
@@ -225,38 +227,6 @@ final class MainViewController: UIViewController {
                 pomodoroTimeManager.currentTime) % 60
         )
     }
-
-//    private func setupTimeAndTag(with currentPomodoro: Pomodoro) {
-//        if needOnboarding {
-//            tagButton.setTitle(nil, for: .normal)
-//            tagButton.setImage(UIImage(named: "onBoardingTag"), for: .normal)
-//            timeLabel.attributedText = .init(string: "25:00", attributes: [
-//                .font: UIFont.pomodoroFont.heading1(),
-//                .foregroundColor: UIColor.clear,
-//                .strokeColor: UIColor.pomodoro.blackHigh,
-//                .strokeWidth: 1,
-//            ])
-//            pomodoroTimeManager.setupMaxTime(time: 25 * 60)
-//            needOnboarding = false
-//        } else {
-//            tagButton.setTitle(currentPomodoro.currentTag, for: .normal)
-//            tagButton.setImage(nil, for: .normal)
-//            timeLabel.attributedText = nil
-//
-//            // FIXME: 삭제될 부분입니다..
-    ////            let option = try? RealmService.read(Option.self).first
-//            // 배포용
-    ////            pomodoroTimeManager.setupMaxTime(time: (option?.focusTime ?? 25) * 60)
-//            // 디버깅용
-//            // pomodoroTimeManager.setupMaxTime(time: (option?.focusTime ?? 25))
-//
-//            timeLabel.text = String(
-//                format: "%02d:%02d",
-//                (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60,
-//                (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) % 60
-//            )
-//        }
-//    }
 
     private func setupActions() {
         tagButton.addTarget(
@@ -285,10 +255,15 @@ extension MainViewController {
     }
 
     @objc private func openTagModal() {
-        let modalViewController = TagModalViewController()
-        modalViewController.modalPresentationStyle = .fullScreen
-        modalViewController.selectionDelegate = self // TODO: Delegate 설정
-        present(modalViewController, animated: true)
+        let tagViewController = TagModalViewController()
+        tagViewController.selectionDelegate = self
+
+        if let sheet = tagViewController.sheetPresentationController {
+            sheet.detents = [.custom { $0.maximumDetentValue * 0.95 }]
+            sheet.preferredCornerRadius = 35
+            sheet.prefersScrollingExpandsWhenScrolledToEdge = true
+        }
+        present(tagViewController, animated: true)
     }
 
     @objc private func handleLongPress(gestureRecognizer: UILongPressGestureRecognizer) {
@@ -420,7 +395,10 @@ extension MainViewController {
 
             // 이전 뽀모도로 끝난 경우
             if prevPomodoro?.phase == -1 || prevPomodoro?.isSuccess == true || prevPomodoro == nil {
-                RealmService.createPomodoro(tag: currentTagName, phaseTime: pomodoroTimeManager.maxTime)
+                RealmService.createPomodoro(
+                    tag: currentTag,
+                    phaseTime: pomodoroTimeManager.maxTime
+                )
             }
             currentPomodoro = try? RealmService.read(Pomodoro.self).last
         }
@@ -530,7 +508,7 @@ extension MainViewController {
         }
         longPressGuideLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(view.snp.bottom).offset(-50)
+            make.bottom.equalTo(view.snp.bottom).offset(-112)
         }
         stopTimeProgressBar.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -544,36 +522,25 @@ extension MainViewController: TimeSettingViewControllerDelegate {
     func didSelectTime(time: Int) {
         pomodoroTimeManager.setupMaxTime(time: time)
 
-        setupTimeUI()
-
-        // FIXME: 삭제될 녀석들입니다..
-//        guard let option = try? RealmService.read(Option.self).first else { return }
-//        RealmService.update(option) { opt in
-//            opt.focusTime = time
-//        }
+        setupTimeUI(isSettingTime: true)
     }
 }
 
 extension MainViewController: TagModalViewControllerDelegate {
-    func tagSelected(tagName: String, tagColor: String) {
-        let backgroundColor = TagCase(rawValue: tagColor)?.backgroundColor ?? .gray
-        let titleColor = TagCase(rawValue: tagColor)?.typoColor ?? .gray
-
-//        let data = (try? RealmService.read(Pomodoro.self).last) ?? Pomodoro()
-//        RealmService.update(data) { data in
-//            data.currentTag = tagName
-//        }
+    func tagSelected(with tag: Tag) {
+//        let backgroundColor = TagCase(rawValue: tagColor)?.backgroundColor ?? .gray
+//        let titleColor = TagCase(rawValue: tagColor)?.typoColor ?? .gray
 
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             self.tagButton.setImage(nil, for: .normal)
-            self.tagButton.setTitle(tagName, for: .normal)
-            self.tagButton.backgroundColor = titleColor
-            self.tagButton.setTitleColor(.white, for: .normal)
+            self.tagButton.setTitle(tag.tagName, for: .normal)
+            self.tagButton.backgroundColor = tag.setupTagBackgroundColor()
+            self.tagButton.setTitleColor(tag.setupTagTypoColor(), for: .normal)
         }
 
-        currentTagName = tagName
-        Log.info("Selected Tag: \(tagName), Color: \(tagColor)")
+        currentTag = tag
+        Log.info("Selected Tag: \(tag)")
     }
 
     func tagDidRemoved(tagName: String) {

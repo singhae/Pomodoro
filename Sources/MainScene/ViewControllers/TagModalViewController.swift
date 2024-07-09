@@ -17,7 +17,7 @@ protocol TagCreationDelegate: AnyObject {
 }
 
 protocol TagModalViewControllerDelegate: AnyObject {
-    func tagSelected(tagName: String, tagColor: String)
+    func tagSelected(with tag: Tag)
     func tagDidRemoved(tagName: String)
 }
 
@@ -40,10 +40,6 @@ final class TagModalViewController: UIViewController {
         $0.spacing = 16
         $0.alignment = .center
         $0.distribution = .equalSpacing
-    }
-
-    private let dimmedView = UIView().then {
-        $0.backgroundColor = .pomodoro.blackHigh.withAlphaComponent(0.2)
     }
 
     private let titleView = UILabel().then {
@@ -73,28 +69,15 @@ final class TagModalViewController: UIViewController {
         setupViews()
         closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
         tagSettingCompletedButton.isEnabled = false // 첫 화면에는 설정완료 비활성화
+        view.backgroundColor = .pomodoro.background
     }
 
     private func setupViews() {
-        view.backgroundColor = .pomodoro.background
-        view.addSubview(dimmedView)
-
-        let contentView = UIView().then {
-            $0.backgroundColor = .pomodoro.background
-            $0.layer.cornerRadius = 20
-        }
-        dimmedView.addSubview(contentView)
-
-        contentView.addSubview(closeButton)
-        contentView.addSubview(titleView)
-        contentView.addSubview(tagSettingCompletedButton)
-        contentView.addSubview(tagsStackView)
-        contentView.addSubview(tagSettingCompletedButton)
-
-        contentView.snp.makeConstraints {
-            $0.leading.trailing.bottom.equalToSuperview()
-            $0.height.equalTo(view.frame.height * 0.8)
-        }
+        view.addSubview(closeButton)
+        view.addSubview(titleView)
+        view.addSubview(tagSettingCompletedButton)
+        view.addSubview(tagsStackView)
+        view.addSubview(tagSettingCompletedButton)
 
         closeButton.snp.makeConstraints {
             $0.top.trailing.equalToSuperview().inset(20)
@@ -105,11 +88,7 @@ final class TagModalViewController: UIViewController {
             $0.centerY.equalTo(closeButton.snp.centerY)
         }
 
-        dimmedView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-
-        contentView.addSubview(editTagButton)
+        view.addSubview(editTagButton)
         editTagButton.snp.makeConstraints { make in
             make.top.equalTo(titleView.snp.bottom).offset(20)
             make.trailing.equalTo(closeButton.snp.trailing)
@@ -120,8 +99,9 @@ final class TagModalViewController: UIViewController {
             make.leading.trailing.equalToSuperview().inset(45)
         }
         tagSettingCompletedButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(110)
             make.top.equalTo(tagsStackView.snp.bottom).offset(60)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(186)
             make.height.equalTo(60)
         }
     }
@@ -267,8 +247,12 @@ final class TagModalViewController: UIViewController {
     }
 
     // TODO: 태그 값이 메인뷰에 전달하는 함수
-    func selectTag(tagName: String, tagColor: String) {
-        selectionDelegate?.tagSelected(tagName: tagName, tagColor: tagColor)
+    func selectTag(with tag: Tag) {
+        selectionDelegate?.tagSelected(with: tag)
+//        let data = (try? RealmService.read(Pomodoro.self).last) ?? Pomodoro()
+//        RealmService.update(data) { data in
+//            data.currentTag = tagName
+//        }
         dismiss(animated: true, completion: nil)
     }
 
@@ -278,7 +262,7 @@ final class TagModalViewController: UIViewController {
 
     @objc func buttonTapped(tag: String, color _: String, sender: UIButton) {
         if let tag = try? RealmService.read(Tag.self).filter("tagName == %@", tag).first {
-            selectionDelegate?.tagSelected(tagName: tag.tagName, tagColor: tag.colorIndex)
+            selectionDelegate?.tagSelected(with: tag)
             tagSettingCompletedButton.isEnabled.toggle()
         } else {
             presentTagEditViewController()
