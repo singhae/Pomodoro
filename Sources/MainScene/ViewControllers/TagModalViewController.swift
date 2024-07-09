@@ -61,7 +61,7 @@ final class TagModalViewController: UIViewController {
         didTapHandler: didTapSettingCompleteButton
     )
     
-    private var selectedTag: UIButton?
+    private var selectedTagButton: UIButton?
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -277,12 +277,12 @@ final class TagModalViewController: UIViewController {
             presentTagEditViewController()
         }
         
-        if let previousTag = selectedTag, previousTag != sender {
+        if let previousTag = selectedTagButton, previousTag != sender {
             animateButtonFade(previousTag, fadeIn: false)
         }
         animateButtonFade(sender, fadeIn: true)
 
-        selectedTag = sender
+        selectedTagButton = sender
 
         updateSettingCompleteButtonState()
     }
