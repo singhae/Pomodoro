@@ -22,7 +22,7 @@ protocol TagModalViewControllerDelegate: AnyObject {
 }
 
 final class TagModalViewController: UIViewController {
-    weak var selectionDelegate: TagModalViewControllerDelegate? // TODO: mainviewcontroller 에 태그 값들 전달
+    weak var selectionDelegate: TagModalViewControllerDelegate?
     private var selectedTag: Tag? {
         didSet {
             tagSettingCompletedButton.isEnabled = selectedTag != nil
@@ -205,11 +205,8 @@ final class TagModalViewController: UIViewController {
             self?.buttonTapped(tag: title, color: colorIndex, sender: button)
         }, for: .touchUpInside)
 
-        // MARK: `-` 버튼 추가 -> 이미지로 넣는 게 더 괜찮아보임.
         let minusButton = UIButton().then {
-            $0.setTitle("-", for: .normal)
-            $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20) // 볼드
-            $0.setTitleColor(.gray, for: .normal)
+            $0.setImage(UIImage(named: "minusButton"), for: .normal)
             $0.backgroundColor = .white
             $0.layer.borderColor = UIColor.gray.cgColor
             $0.layer.borderWidth = 1
@@ -218,11 +215,12 @@ final class TagModalViewController: UIViewController {
             $0.tag = tagIndex
             Log.info("마이너스 버튼의 태그 인덱스: \(tagIndex)")
         }
+
         button.addSubview(minusButton)
 
         minusButton.snp.makeConstraints { make in
-            make.top.equalTo(button.snp.top).offset(5)
-            make.right.equalTo(button.snp.right).offset(-5)
+            make.top.equalTo(button.snp.top).offset(2)
+            make.right.equalTo(button.snp.right).offset(-2)
             make.width.height.equalTo(20)
         }
 
@@ -234,7 +232,7 @@ final class TagModalViewController: UIViewController {
     private func createEmptyButton(borderColor: UIColor) -> UIButton {
         UIButton().then {
             $0.titleLabel?.font = .pomodoroFont.heading4()
-            $0.backgroundColor = .clear // TODO: change colo
+            $0.backgroundColor = .clear
             $0.layer.borderColor = borderColor.cgColor
             $0.layer.borderWidth = 1
             $0.layer.cornerRadius = 40
@@ -246,7 +244,6 @@ final class TagModalViewController: UIViewController {
         }
     }
 
-    // TODO: 태그 값이 메인뷰에 전달하는 함수
     func selectTag(with tag: Tag) {
         selectionDelegate?.tagSelected(with: tag)
         dismiss(animated: true, completion: nil)
@@ -349,13 +346,12 @@ final class TagModalViewController: UIViewController {
             .show(on: self)
     }
 
-    // TODO: Editbutton 클릭시 - 버튼 활성화 함수
     @objc private func createMinusButton() {
         tagSettingCompletedButton.isEnabled.toggle()
         for case let button as UIButton in tagsStackView.arrangedSubviews.flatMap(\.subviews) {
             if let minusButton = button.subviews.first(where: { subview in
                 guard let btn = subview as? UIButton else { return false }
-                return btn.title(for: .normal) == "-"
+                return btn.image(for: .normal) == UIImage(named: "minusButton")
             }) as? UIButton {
                 minusButton.isHidden.toggle()
                 button.bringSubviewToFront(minusButton)
