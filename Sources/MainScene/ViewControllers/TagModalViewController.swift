@@ -200,13 +200,12 @@ final class TagModalViewController: UIViewController {
                 make.size.equalTo(CGSize(width: 80, height: 80))
             }
         }
-        // 버튼 액션 설정
+
         button.addAction(UIAction { [weak self] _ in
             self?.buttonTapped(tag: title, color: colorIndex, sender: button)
         }, for: .touchUpInside)
 
         // MARK: `-` 버튼 추가 -> 이미지로 넣는 게 더 괜찮아보임.
-
         let minusButton = UIButton().then {
             $0.setTitle("-", for: .normal)
             $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20) // 볼드
@@ -221,15 +220,11 @@ final class TagModalViewController: UIViewController {
         }
         button.addSubview(minusButton)
 
-        // MARK: minusButton 위치 설정
-
         minusButton.snp.makeConstraints { make in
             make.top.equalTo(button.snp.top).offset(5)
             make.right.equalTo(button.snp.right).offset(-5)
-            make.width.height.equalTo(20) // 작은 버튼 크기
+            make.width.height.equalTo(20)
         }
-
-        // MARK: minusButton에 삭제 액션 추가
 
         minusButton.addTarget(self, action: #selector(deletTag(sender:)), for: .touchUpInside)
 
@@ -254,10 +249,6 @@ final class TagModalViewController: UIViewController {
     // TODO: 태그 값이 메인뷰에 전달하는 함수
     func selectTag(with tag: Tag) {
         selectionDelegate?.tagSelected(with: tag)
-//        let data = (try? RealmService.read(Pomodoro.self).last) ?? Pomodoro()
-//        RealmService.update(data) { data in
-//            data.currentTag = tagName
-//        }
         dismiss(animated: true, completion: nil)
     }
 
@@ -267,7 +258,6 @@ final class TagModalViewController: UIViewController {
 
     @objc func buttonTapped(tag: String, color _: String, sender: UIButton) {
         if let tag = try? RealmService.read(Tag.self).filter("tagName == %@", tag).first {
-            // TODO: 선택 UI 구현
             if selectedTag == tag {
                 selectedTag = nil
             } else {
@@ -329,7 +319,7 @@ final class TagModalViewController: UIViewController {
 
     @objc private func deletTag(sender: UIButton) {
         let tagIndex = sender.tag
-        print("Button with tag \(sender.tag) was clicked")
+        Log.info("Button with tag \(sender.tag) was clicked")
         PomodoroPopupBuilder()
             .add(title: "태그 삭제")
             .add(body: "태그를 정말 삭제하시겠습니까? 한 번 삭제한 태그는 다시 되돌릴 수 없습니다.")
@@ -342,15 +332,16 @@ final class TagModalViewController: UIViewController {
                         guard let self else { return }
                         do {
                             if let tagToDelete = try RealmService.read(Tag.self).filter("position == \(tagIndex)").first {
-                                print("Tag at index \(tagIndex) deleted")
+                                Log.info("Tag at index \(tagIndex) deleted")
                                 selectionDelegate?.tagDidRemoved(tagName: tagToDelete.tagName)
                                 RealmService.delete(tagToDelete)
-                                self.tagSettingCompletedButton.isEnabled = true // 설정완료버튼 활성화
+                                self.tagSettingCompletedButton.isEnabled = true
+                                self.addTagsToStackView()
                             } else {
-                                print("No tag found at index \(tagIndex)")
+                                Log.info("No tag found at index \(tagIndex)")
                             }
                         } catch {
-                            print("Error deleting tag: \(error)")
+                            Log.info("Error deleting tag: \(error)")
                         }
                     }
                 )
@@ -360,9 +351,8 @@ final class TagModalViewController: UIViewController {
 
     // TODO: Editbutton 클릭시 - 버튼 활성화 함수
     @objc private func createMinusButton() {
-        tagSettingCompletedButton.isEnabled.toggle() // 설정 완료 버튼의 활성화 상태 토글
+        tagSettingCompletedButton.isEnabled.toggle()
         for case let button as UIButton in tagsStackView.arrangedSubviews.flatMap(\.subviews) {
-            // 각 버튼의 서브뷰 중에서 UIButton 타입을 찾고, "-" 문자를 가진 버튼이면 minusButton
             if let minusButton = button.subviews.first(where: { subview in
                 guard let btn = subview as? UIButton else { return false }
                 return btn.title(for: .normal) == "-"
@@ -375,7 +365,6 @@ final class TagModalViewController: UIViewController {
 }
 
 // MARK: - TagCreationDelegate
-
 extension TagModalViewController: TagCreationDelegate {
     func createTag(tag: String, color: String, position: Int) {
         RealmService.write(Tag(tagName: tag, colorIndex: color, position: position))
