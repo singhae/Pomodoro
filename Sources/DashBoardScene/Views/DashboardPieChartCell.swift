@@ -300,7 +300,7 @@ final class DashboardPieChartCell: UICollectionViewCell {
                 $0.setAttributedTextFontandColor(
                     targetString: "합계",
                     font: .pomodoroFont.heading4(),
-                    color: .pomodoro.blackMedium
+                    color: .pomodoro.primary900
                 )
             }
         }
