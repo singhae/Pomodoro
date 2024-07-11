@@ -266,7 +266,7 @@ final class TagModalViewController: UIViewController {
         } else {
             presentTagEditViewController()
         }
-        
+
         if let previousTagButton = selectedTagButton {
             if previousTagButton == sender {
                 animateButtonFade(sender, fadeIn: false)
@@ -283,7 +283,7 @@ final class TagModalViewController: UIViewController {
 
         updateSettingCompleteButtonState()
     }
-    
+
     private func animateButtonFade(_ button: UIButton, fadeIn: Bool) {
         UIView.animate(withDuration: 0.3) {
             if fadeIn {
