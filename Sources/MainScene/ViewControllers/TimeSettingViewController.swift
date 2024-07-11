@@ -19,6 +19,7 @@ final class TimeSettingViewController: UIViewController {
     private var centerIndexPath: IndexPath?
     private let timeSelectRange = 5
     var selectedTime: Int = 0
+    private let pomodoroTimeManager = PomodoroTimeManager.shared
     private var endTime: String?
     private var isSelectedCellBiggerfive: Bool = true
     private let stepManager = PomodoroStepManger()
@@ -27,10 +28,7 @@ final class TimeSettingViewController: UIViewController {
 
     init(delegate: TimeSettingViewControllerDelegate) {
         super.init(nibName: nil, bundle: nil)
-
-        let recent = try? RealmService.read(Pomodoro.self).last
-        selectedTime = recent?.phaseTime ?? 25
-
+        selectedTime = pomodoroTimeManager.maxTime
         self.delegate = delegate
     }
 
@@ -103,6 +101,12 @@ final class TimeSettingViewController: UIViewController {
         setupConstraints()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let initialIndexPath = IndexPath(item: selectedTime, section: 0)
+        centerCell(at: initialIndexPath)
+    }
+
     private func setUpLayout() {
         view.addSubview(timeSettingTitleLabel)
         view.addSubview(closeButton)
@@ -152,6 +156,13 @@ final class TimeSettingViewController: UIViewController {
             make.bottom.equalToSuperview().offset(-170)
             make.width.equalTo(212)
             make.height.equalTo(60)
+        }
+    }
+
+    private func centerCell(at indexPath: IndexPath) {
+        DispatchQueue.main.async {
+            self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+            self.updateCellPositions()
         }
     }
 

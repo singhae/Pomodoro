@@ -20,7 +20,6 @@ final class MainViewController: UIViewController {
     private var currentTag: Tag = .init(tagName: "집중", colorIndex: "one", position: 0)
     private var needOnboarding = false
     private let longPressGestureRecognizer = UILongPressGestureRecognizer()
-
     var stepManager = PomodoroStepManger()
 
     private lazy var currentStepLabel = UILabel().then {
@@ -141,6 +140,13 @@ final class MainViewController: UIViewController {
             object: nil
         )
 
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(didEnterForeground),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
+
         view.backgroundColor = .pomodoro.background
 
         addSubviews()
@@ -190,7 +196,7 @@ final class MainViewController: UIViewController {
 //            pomodoroTimeManager.setupMaxTime(
 //                time: (recent?.phaseTime ?? 25) * 60
 //            )
-            // 디버깅용
+
             pomodoroTimeManager.setupMaxTime(
                 time: (recent?.phaseTime ?? 25)
             )
@@ -207,7 +213,6 @@ final class MainViewController: UIViewController {
 
     private func setupTimeUI(isSettingTime: Bool) {
         let recent = try? RealmService.read(Pomodoro.self).last
-
         if recent == nil, isSettingTime != true {
             tagButton.setTitle(nil, for: .normal)
             tagButton.setImage(UIImage(named: "onBoardingTag"), for: .normal)
@@ -242,11 +247,27 @@ final class MainViewController: UIViewController {
 // MARK: - Action
 
 extension MainViewController {
-    @objc func didEnterBackground() {
+    @objc private func didEnterBackground() {
+        pomodoroTimeManager.pauseTimer()
         Log.info("max: \(pomodoroTimeManager.maxTime), curr: \(pomodoroTimeManager.currentTime)")
     }
 
-    @objc func didEnterForeground() {
+    @objc private func didEnterForeground() {
+        pomodoroTimeManager.restoreTimerInfo()
+        pomodoroTimeManager.resumeTimer { [weak self] timer, currentTime, maxTime in
+            guard let self else { return }
+            let minutes = (maxTime - currentTime) / 60
+            let seconds = (maxTime - currentTime) % 60
+            self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
+            if currentTime >= maxTime {
+                timer.invalidate()
+                Log.info("Pomodoro session completed.")
+            }
+        }
+        updateUI()
+    }
+
+    private func updateUI() {
         timeLabel.text = String(
             format: "%02d:%02d",
             (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60,
@@ -258,7 +279,6 @@ extension MainViewController {
         guard stepManager.router.pomodoroCount == .zero else {
             return
         }
-
         let tagViewController = TagModalViewController()
         tagViewController.selectionDelegate = self
 
@@ -320,7 +340,6 @@ extension MainViewController {
             currentStepLabel.text = ""
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
 
-//            setupTimeAndTag()
             setupRecentPomodoroData()
 
             stopTimeProgressBar.isHidden = true
@@ -521,16 +540,12 @@ extension MainViewController {
 extension MainViewController: TimeSettingViewControllerDelegate {
     func didSelectTime(time: Int) {
         pomodoroTimeManager.setupMaxTime(time: time)
-
         setupTimeUI(isSettingTime: true)
     }
 }
 
 extension MainViewController: TagModalViewControllerDelegate {
     func tagSelected(with tag: Tag) {
-//        let backgroundColor = TagCase(rawValue: tagColor)?.backgroundColor ?? .gray
-//        let titleColor = TagCase(rawValue: tagColor)?.typoColor ?? .gray
-
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             self.tagButton.setImage(nil, for: .normal)
