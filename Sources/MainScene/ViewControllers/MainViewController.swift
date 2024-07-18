@@ -306,6 +306,7 @@ extension MainViewController {
             guard let current = try? RealmService.read(Pomodoro.self).last else { return }
             RealmService.update(current) { pomodoro in
                 pomodoro.phase = -1
+                pomodoro.isIng = false
             }
         }
     }
@@ -426,6 +427,7 @@ extension MainViewController {
 
                     if updatedPomodoro.phase == 5 {
                         updatedPomodoro.isSuccess = true
+                        updatedPomodoro.isIng = false
                         updatedPomodoro.phase = 0
                     }
                 }
