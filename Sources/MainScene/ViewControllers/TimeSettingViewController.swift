@@ -168,7 +168,7 @@ final class TimeSettingViewController: UIViewController {
 
     private func calculateEndTime(time selectedTime: Int) {
         let formatterTime = DateFormatter()
-        formatterTime.dateFormat = "mm:ss"
+        formatterTime.dateFormat = "hh:mm"
         let currentTime = Date()
 
         guard let endTime = Calendar.current.date(

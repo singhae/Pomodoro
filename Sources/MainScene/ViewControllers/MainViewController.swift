@@ -248,22 +248,11 @@ final class MainViewController: UIViewController {
 
 extension MainViewController {
     @objc private func didEnterBackground() {
-        pomodoroTimeManager.pauseTimer()
         Log.info("max: \(pomodoroTimeManager.maxTime), curr: \(pomodoroTimeManager.currentTime)")
     }
 
     @objc private func didEnterForeground() {
         pomodoroTimeManager.restoreTimerInfo()
-        pomodoroTimeManager.resumeTimer { [weak self] timer, currentTime, maxTime in
-            guard let self else { return }
-            let minutes = (maxTime - currentTime) / 60
-            let seconds = (maxTime - currentTime) % 60
-            self.timeLabel.text = String(format: "%02d:%02d", minutes, seconds)
-            if currentTime >= maxTime {
-                timer.invalidate()
-                Log.info("Pomodoro session completed.")
-            }
-        }
         updateUI()
     }
 

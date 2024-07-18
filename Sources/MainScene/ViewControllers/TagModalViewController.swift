@@ -332,8 +332,8 @@ final class TagModalViewController: UIViewController {
                                 Log.info("Tag at index \(tagIndex) deleted")
                                 selectionDelegate?.tagDidRemoved(tagName: tagToDelete.tagName)
                                 RealmService.delete(tagToDelete)
-                                self.tagSettingCompletedButton.isEnabled = true
-                                self.addTagsToStackView()
+                                tagSettingCompletedButton.isEnabled = true
+                                addTagsToStackView()
                             } else {
                                 Log.info("No tag found at index \(tagIndex)")
                             }
