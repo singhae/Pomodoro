@@ -105,7 +105,7 @@ final class TagConfigurationViewController: UIViewController, UITextFieldDelegat
                 .show(on: self)
             return
         }
-        guard let selectedColorIndex = selectedColorIndex else {
+        guard let selectedColorIndex else {
             PomodoroPopupBuilder()
                 .add(body: "태그 색상을 선택해주세요.")
                 .add(button: .confirm(title: "확인", action: {}))
