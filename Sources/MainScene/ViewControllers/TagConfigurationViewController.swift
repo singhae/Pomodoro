@@ -353,6 +353,10 @@ extension TagConfigurationViewController: UITextFieldDelegate {
             textField.text = fixedText
         }
     }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
 }
 
 extension String {
