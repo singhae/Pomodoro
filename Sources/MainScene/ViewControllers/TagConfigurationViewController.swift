@@ -12,6 +12,10 @@ import SnapKit
 import Then
 import UIKit
 
+protocol TagConfigurationViewControllerDelegate: AnyObject {
+    func didAddNewTag()
+}
+
 final class TagConfigurationViewController: UIViewController {
     // TODO: Realm Tag write
 
@@ -80,7 +84,7 @@ final class TagConfigurationViewController: UIViewController {
         $0.setImage(UIImage(named: "closeButton"), for: .normal)
     }
 
-    weak var delegate: TagCreationDelegate?
+    weak var delegate: TagConfigurationViewControllerDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -128,8 +132,18 @@ final class TagConfigurationViewController: UIViewController {
                     position: calculateNextPosition()
                 )
                 RealmService.write(newTag)
-                delegate?.createTag(tag: tagText, color: selectedColorIndex, position: newTag.position)
-                dismiss(animated: true, completion: nil)
+                RealmService.write(
+                    Tag(
+                        tagName: tagText,
+                        colorIndex: selectedColorIndex,
+                        position: newTag.position
+                    )
+                )
+                Log.info(
+                    "New tag created ==> Name: \(tagText), Color Index: \(selectedColorIndex), Position: \(newTag.position)"
+                )
+                delegate?.didAddNewTag()
+                dismiss(animated: true)
             }
         } catch {
             Log.info("태그 조회 실패: \(error)")

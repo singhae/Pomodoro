@@ -12,10 +12,6 @@ import SnapKit
 import Then
 import UIKit
 
-protocol TagCreationDelegate: AnyObject {
-    func createTag(tag: String, color: String, position: Int)
-}
-
 protocol TagModalViewControllerDelegate: AnyObject {
     func tagSelected(with tag: Tag)
     func tagDidRemoved(tagName: String)
@@ -177,6 +173,11 @@ final class TagModalViewController: UIViewController {
         tagsStackView.addArrangedSubview(firstRow)
         tagsStackView.addArrangedSubview(secondRow)
         tagsStackView.addArrangedSubview(thirdRow)
+        tagsStackView.layoutIfNeeded()
+
+        if isEditing {
+            updateRemoveButton()
+        }
     }
 
     private func createRoundButton(title: String, colorIndex: String, tagIndex: Int) -> UIButton {
@@ -302,6 +303,7 @@ final class TagModalViewController: UIViewController {
         }
 
         let configureTagViewController = TagConfigurationViewController()
+        configureTagViewController.delegate = self
         if let sheet = configureTagViewController.sheetPresentationController {
             sheet.detents = [.custom { $0.maximumDetentValue * 0.95 }]
             sheet.preferredCornerRadius = 35
@@ -336,7 +338,6 @@ final class TagModalViewController: UIViewController {
                                 Log.info("Tag at index \(tagIndex) deleted")
                                 selectionDelegate?.tagDidRemoved(tagName: tagToDelete.tagName)
                                 RealmService.delete(tagToDelete)
-                                tagSettingCompletedButton.isEnabled = true
                                 addTagsToStackView()
                             } else {
                                 Log.info("No tag found at index \(tagIndex)")
@@ -353,6 +354,10 @@ final class TagModalViewController: UIViewController {
     @objc private func didTapEditButton() {
         tagSettingCompletedButton.isEnabled = false
         isEditing.toggle()
+        updateRemoveButton()
+    }
+
+    private func updateRemoveButton() {
         for case let button as UIButton in tagsStackView.arrangedSubviews.flatMap(\.subviews) {
             if let minusButton = button.subviews.first(where: { subview in
                 guard let btn = subview as? UIButton else {
@@ -369,9 +374,8 @@ final class TagModalViewController: UIViewController {
 
 // MARK: - TagCreationDelegate
 
-extension TagModalViewController: TagCreationDelegate {
-    func createTag(tag: String, color: String, position: Int) {
-        RealmService.write(Tag(tagName: tag, colorIndex: color, position: position))
-        Log.info("New tag created ==> Name: \(tag), Color Index: \(color), Position: \(position)")
+extension TagModalViewController: TagConfigurationViewControllerDelegate {
+    func didAddNewTag() {
+        addTagsToStackView()
     }
 }
