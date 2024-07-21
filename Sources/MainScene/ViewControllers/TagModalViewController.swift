@@ -37,7 +37,7 @@ final class TagModalViewController: UIViewController {
         $0.backgroundColor = .pomodoro.background
         $0.layer.cornerRadius = 15
         $0.clipsToBounds = true
-        $0.addTarget(self, action: #selector(createMinusButton), for: .touchUpInside)
+        $0.addTarget(self, action: #selector(didTapEditButton), for: .touchUpInside)
     }
 
     private let tagsStackView = UIStackView().then {
@@ -131,12 +131,8 @@ final class TagModalViewController: UIViewController {
             ]
 
             for tag in defaultTags {
-                do {
-                    RealmService.write(tag)
-                    Log.info("Added tag: \(tag.tagName)")
-                } catch {
-                    Log.info("Error preloading tag \(tag.tagName): \(error)")
-                }
+                RealmService.write(tag)
+                Log.info("Added tag: \(tag.tagName)")
             }
 
             UserDefaults.standard.set(false, forKey: "isFirstVisit")
@@ -244,16 +240,14 @@ final class TagModalViewController: UIViewController {
         }
     }
 
-    func selectTag(with tag: Tag) {
-        selectionDelegate?.tagSelected(with: tag)
-        dismiss(animated: true, completion: nil)
-    }
-
     @objc private func dismissModal() {
         dismiss(animated: true, completion: nil)
     }
 
     @objc func buttonTapped(tag: String, color _: String, sender: UIButton) {
+        if isEditing {
+            return
+        }
         if let tag = try? RealmService.read(Tag.self).filter("tagName == %@", tag).first {
             if selectedTag == tag {
                 selectedTag = nil
@@ -300,10 +294,20 @@ final class TagModalViewController: UIViewController {
     }
 
     @objc func presentTagEditViewController() {
+        selectedTag = nil
+        if let selectedTagButton {
+            animateButtonFade(selectedTagButton, fadeIn: false)
+            self.selectedTagButton = nil
+            updateSettingCompleteButtonState()
+        }
+
         let configureTagViewController = TagConfigurationViewController()
-        configureTagViewController.modalPresentationStyle = .fullScreen
+        if let sheet = configureTagViewController.sheetPresentationController {
+            sheet.detents = [.custom { $0.maximumDetentValue * 0.95 }]
+            sheet.preferredCornerRadius = 35
+            sheet.prefersScrollingExpandsWhenScrolledToEdge = true
+        }
         present(configureTagViewController, animated: true)
-        tagSettingCompletedButton.isEnabled.toggle()
     }
 
     @objc private func didTapSettingCompleteButton() {
@@ -346,11 +350,14 @@ final class TagModalViewController: UIViewController {
             .show(on: self)
     }
 
-    @objc private func createMinusButton() {
-        tagSettingCompletedButton.isEnabled.toggle()
+    @objc private func didTapEditButton() {
+        tagSettingCompletedButton.isEnabled = false
+        isEditing.toggle()
         for case let button as UIButton in tagsStackView.arrangedSubviews.flatMap(\.subviews) {
             if let minusButton = button.subviews.first(where: { subview in
-                guard let btn = subview as? UIButton else { return false }
+                guard let btn = subview as? UIButton else {
+                    return false
+                }
                 return btn.image(for: .normal) == UIImage(named: "minusButton")
             }) as? UIButton {
                 minusButton.isHidden.toggle()
