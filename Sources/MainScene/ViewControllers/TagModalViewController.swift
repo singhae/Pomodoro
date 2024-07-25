@@ -121,9 +121,9 @@ final class TagModalViewController: UIViewController {
             guard let tagCount = try? RealmService.read(Tag.self).count, tagCount == 0 else { return }
 
             let defaultTags = [
-                Tag(tagName: "공부", colorIndex: "one", position: 1),
-                Tag(tagName: "수영", colorIndex: "two", position: 2),
-                Tag(tagName: "독서", colorIndex: "three", position: 3),
+                Tag(tagName: "공부", colorIndex: "one", position: 0),
+                Tag(tagName: "수영", colorIndex: "two", position: 1),
+                Tag(tagName: "독서", colorIndex: "three", position: 2),
             ]
 
             for tag in defaultTags {
