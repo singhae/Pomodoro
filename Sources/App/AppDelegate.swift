@@ -32,10 +32,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UINavigationBar.appearance().titleTextAttributes = attributes
         }
 
-        if UserDefaults.standard.bool(forKey: "isFirstVisit") {
-            UserDefaults.standard.set(false, forKey: "isFirstVisit")
-        }
-
         pomodoroTimeManager.restoreTimerInfo()
         return true
     }
