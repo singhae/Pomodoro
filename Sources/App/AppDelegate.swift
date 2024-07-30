@@ -31,12 +31,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let attributes = [NSAttributedString.Key.font: defaultFont]
             UINavigationBar.appearance().titleTextAttributes = attributes
         }
+        pomodoroTimeManager.restoreTimerInfo()
 
-        if UserDefaults.standard.bool(forKey: "isFirstVisit") {
-            UserDefaults.standard.set(false, forKey: "isFirstVisit")
+        if UserDefaults.standard.object(forKey: "isFirstVisit") == nil {
+            UserDefaults.standard.set(true, forKey: "isFirstVisit")
+            Log.info("Setting isFirstVisit to true for the first time")
+            Log.info(UserDefaults.standard.bool(forKey: "isFirstVisit"))
+        } else {
+            Log.info("Setting isFirstVisit")
+            Log.info(UserDefaults.standard.bool(forKey: "isFirstVisit"))
         }
 
-        pomodoroTimeManager.restoreTimerInfo()
         return true
     }
 

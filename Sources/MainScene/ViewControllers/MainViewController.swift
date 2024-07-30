@@ -18,7 +18,8 @@ final class MainViewController: UIViewController {
     private var longPressTime: Float = 0.0
     private var currentPomodoro: Pomodoro?
     private var currentTag: Tag = .init(tagName: "집중", colorIndex: "one", position: 0)
-    private var needOnboarding = false
+    private var needOnboarding: Bool = UserDefaults.standard.bool(forKey: "isFirstVisit")
+
     private let longPressGestureRecognizer = UILongPressGestureRecognizer()
     var stepManager = PomodoroStepManger()
 
@@ -121,7 +122,7 @@ final class MainViewController: UIViewController {
 
         if UserDefaults.standard.object(forKey: "needOnboarding") == nil {
             UserDefaults.standard.set(true, forKey: "needOnboarding")
-            needOnboarding = true
+            needOnboarding = UserDefaults.standard.bool(forKey: "isFirstVisit")
             RealmService.write(
                 Option(
                     shortBreakTime: 5,
@@ -154,27 +155,49 @@ final class MainViewController: UIViewController {
         setupActions()
         setupLongPressGestureRecognizer()
         setupTimeLabelTapGestureRecognizer()
-
         setupRecentPomodoroData()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if pomodoroTimeManager.isRestored == true {
+        handleOnboardingAndTimer()
+    }
+
+    private func handleOnboardingAndTimer() {
+        do {
+            let recent = try RealmService.read(Pomodoro.self).last
+            checkOnboarding(recent: recent)
+            checkAndRestorePomodoroTimer(recent: recent)
+        } catch {
+            checkOnboarding(recent: nil)
+        }
+    }
+
+    private func checkOnboarding(recent: Pomodoro?) {
+        if needOnboarding, recent == nil {
+            needOnboarding = false
+        }
+    }
+
+    private func checkAndRestorePomodoroTimer(recent: Pomodoro?) {
+        guard recent != nil else { return }
+
+        if pomodoroTimeManager.isRestored {
             pomodoroTimeManager.setupIsRestored(bool: false)
-            // 다시 정보 불러왔을 때 타이머가 진행 중이라면 가장 마지막 뽀모도로 불러오기
-            currentPomodoro = try? RealmService.read(Pomodoro.self).last
             startTimer()
         }
     }
 
     private func setupRecentPomodoroData() {
         let recent = try? RealmService.read(Pomodoro.self).last
-        if recent == nil {
-            needOnboarding = true
+        let isFirst = UserDefaults.standard.bool(forKey: "isFirstVisit")
+        if isFirst == false {
+            UserDefaults.standard.setValue(true, forKey: "isFirstVisit")
+            needOnboarding = UserDefaults.standard.bool(forKey: "isFirstVisit")
         }
 
-        if needOnboarding {
+        if needOnboarding, recent == nil {
+            Log.info("needOnboarding -> \(needOnboarding)")
             tagButton.setTitle(nil, for: .normal)
             tagButton.setImage(UIImage(named: "onBoardingTag"), for: .normal)
             timeLabel.attributedText = .init(string: "25:00", attributes: [
