@@ -23,19 +23,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UNUserNotificationCenter.current().delegate = self
 
         UNUserNotificationCenter.current().requestAuthorization(
-            options: [.alert, .sound, .badge],
-            completionHandler: { _, _ in }
-        )
+            options: [.alert, .sound, .badge]
+        ) { granted, error in
+            if granted {
+            } else if let error {
+                print("Notification authorization error: \(error.localizedDescription)")
+            }
+        }
 
         if let defaultFont = UIFont(name: "BMHANNA11yrsoldOTF", size: 17) {
             let attributes = [NSAttributedString.Key.font: defaultFont]
             UINavigationBar.appearance().titleTextAttributes = attributes
         }
-        pomodoroTimeManager.restoreTimerInfo()
+
+        let resentRealmData = try? RealmService.read(Pomodoro.self).last
+        if resentRealmData != nil {
+            pomodoroTimeManager.restoreTimerInfo()
+        }
 
         if UserDefaults.standard.object(forKey: "isFirstVisit") == nil {
             UserDefaults.standard.set(true, forKey: "isFirstVisit")
-            Log.info("Setting isFirstVisit to true for the first time")
             Log.info(UserDefaults.standard.bool(forKey: "isFirstVisit"))
         } else {
             Log.info("Setting isFirstVisit")
