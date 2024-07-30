@@ -10,11 +10,9 @@ import UserNotifications
 
 final class PomodoroTimeManager {
     static let shared = PomodoroTimeManager()
-
     private init() {}
 
     private var pomodoroTimer: Timer?
-
     private let userDefaults = UserDefaults.standard
     private let notificationId = UUID().uuidString
 
@@ -67,12 +65,16 @@ final class PomodoroTimeManager {
     }
 
     func saveTimerInfo() {
-        let lastSavedDate = Date.now
-        isRestored = false
+        if UserDefaults.standard.bool(forKey: "isFirstVisit") {
+            UserDefaults.standard.set(false, forKey: "isFirstVisit")
+        } else {
+            let lastSavedDate = Date.now
+            isRestored = false
 
-        userDefaults.set(lastSavedDate, forKey: "realTime")
-        userDefaults.set(currentTime, forKey: "currentTime")
-        userDefaults.set(maxTime, forKey: "maxTime")
+            userDefaults.set(lastSavedDate, forKey: "realTime")
+            userDefaults.set(currentTime, forKey: "currentTime")
+            userDefaults.set(maxTime, forKey: "maxTime")
+        }
     }
 
 //    func restoreTimerInfo() {
