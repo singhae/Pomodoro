@@ -160,11 +160,16 @@ final class MainViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if pomodoroTimeManager.isRestored == true {
-            pomodoroTimeManager.setupIsRestored(bool: false)
-            // 다시 정보 불러왔을 때 타이머가 진행 중이라면 가장 마지막 뽀모도로 불러오기
-            currentPomodoro = try? RealmService.read(Pomodoro.self).last
-            startTimer()
+        if needOnboarding {
+            Log.info("needOnboarding: \(needOnboarding)")
+
+        } else {
+            if pomodoroTimeManager.isRestored == true {
+                pomodoroTimeManager.setupIsRestored(bool: false)
+                // 다시 정보 불러왔을 때 타이머가 진행 중이라면 가장 마지막 뽀모도로 불러오기
+                currentPomodoro = try? RealmService.read(Pomodoro.self).last
+                startTimer()
+            }
         }
     }
 
