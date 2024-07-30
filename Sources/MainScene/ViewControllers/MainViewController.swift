@@ -265,9 +265,9 @@ extension MainViewController {
     }
 
     @objc private func openTagModal() {
-//        guard stepManager.router.pomodoroCount == .zero else {
-//            return
-//        }
+        guard stepManager.router.pomodoroCount == .zero else {
+            return
+        }
 
         let tagViewController = TagModalViewController()
         tagViewController.selectionDelegate = self

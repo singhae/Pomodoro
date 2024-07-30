@@ -103,6 +103,7 @@ final class PomodoroRouter {
                 currentStep = .focus(count: pomodoroCount)
             } else {
                 currentStep = .end
+                pomodoroCount = 0
                 currentStep = .start
             }
         case .end:
