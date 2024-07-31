@@ -77,7 +77,6 @@ final class PomodoroTimeManager {
         }
     }
 
-
     func restoreTimerInfo() {
         guard let previousTime = userDefaults.object(forKey: "realTime") as? Date,
               let existCurrentTime = userDefaults.object(forKey: "currentTime") as? Int,
