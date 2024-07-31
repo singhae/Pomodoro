@@ -35,9 +35,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let attributes = [NSAttributedString.Key.font: defaultFont]
             UINavigationBar.appearance().titleTextAttributes = attributes
         }
-        
-        let resentRealmData = try? RealmService.read(Pomodoro.self).last
-        if resentRealmData != nil {
+
+        let resentRealmData = try? RealmService.read(Pomodoro.self)
+        guard let resentRealmData else {
+            return true
+        }
+
+        if resentRealmData.last != nil || resentRealmData.first != nil {
             pomodoroTimeManager.restoreTimerInfo()
         }
 

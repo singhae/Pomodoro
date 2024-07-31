@@ -276,16 +276,7 @@ extension MainViewController {
 
     @objc private func didEnterForeground() {
         pomodoroTimeManager.restoreTimerInfo()
-//        updateUI()
     }
-
-//    private func updateUI() {
-//        timeLabel.text = String(
-//            format: "%02d:%02d",
-//            (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) / 60,
-//            (pomodoroTimeManager.maxTime - pomodoroTimeManager.currentTime) % 60
-//        )
-//    }
 
     @objc private func openTagModal() {
         guard stepManager.router.pomodoroCount == .zero else {
