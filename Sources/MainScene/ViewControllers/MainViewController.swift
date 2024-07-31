@@ -106,14 +106,17 @@ final class MainViewController: UIViewController {
             target: self,
             action: #selector(presentTimeSettingViewController)
         )
+
         timeLabel.addGestureRecognizer(timeLabelTapGestureRecognizer)
-        timeLabel.isUserInteractionEnabled = true
+//        timeLabel.isUserInteractionEnabled = true
+        updateTimeLabelUI()
         tagButton.isUserInteractionEnabled = true
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         stepManager.setRouterObservers()
+        updateTimeLabelUI()
         setUpPomodoroCurrentStepLabel()
         let documentsDirectory = NSSearchPathForDirectoriesInDomains(
             .documentDirectory, .userDomainMask,
@@ -277,6 +280,20 @@ extension MainViewController {
     @objc private func didEnterForeground() {
         pomodoroTimeManager.restoreTimerInfo()
     }
+    
+    private func updateTimeLabelUI() {
+        let resentDataInRealm = try? RealmService.read(Pomodoro.self).last
+        guard let resentDataInRealm else {
+            timeLabel.isUserInteractionEnabled = true
+            return
+        }
+
+        if resentDataInRealm.phase == 3 || resentDataInRealm.phase == -1 {
+            timeLabel.isUserInteractionEnabled = true
+        } else {
+            timeLabel.isUserInteractionEnabled = false
+        }
+    }
 
     @objc private func openTagModal() {
         guard stepManager.router.pomodoroCount == .zero else {
@@ -349,8 +366,7 @@ extension MainViewController {
 
             stopTimeProgressBar.isHidden = true
             longPressGuideLabel.isHidden = true
-            timeLabel.isUserInteractionEnabled = true
-            tagButton.isUserInteractionEnabled = true
+            updateTimeLabelUI()
         }
     }
 
