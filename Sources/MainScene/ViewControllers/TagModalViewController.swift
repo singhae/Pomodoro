@@ -69,7 +69,7 @@ final class TagModalViewController: UIViewController {
         loadDefaultTagsIfNeeded()
         setupViews()
         closeButton.addTarget(self, action: #selector(dismissModal), for: .touchUpInside)
-        tagSettingCompletedButton.isEnabled = false // 첫 화면에는 설정완료 비활성화
+        tagSettingCompletedButton.isEnabled = false
         view.backgroundColor = .pomodoro.background
     }
 
@@ -117,7 +117,7 @@ final class TagModalViewController: UIViewController {
     }
 
     private func loadDefaultTagsIfNeeded() {
-        if UserDefaults.standard.bool(forKey: "isFirstVisit") {
+        if UserDefaults.standard.bool(forKey: "needOnboarding") {
             guard let tagCount = try? RealmService.read(Tag.self).count, tagCount == 0 else { return }
 
             let defaultTags = [
@@ -131,7 +131,7 @@ final class TagModalViewController: UIViewController {
                 Log.info("Added tag: \(tag.tagName)")
             }
 
-            UserDefaults.standard.set(false, forKey: "isFirstVisit")
+            UserDefaults.standard.set(false, forKey: "needOnboarding")
         }
     }
 

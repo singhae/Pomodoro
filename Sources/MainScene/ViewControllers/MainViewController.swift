@@ -291,6 +291,7 @@ extension MainViewController {
         guard stepManager.router.pomodoroCount == .zero else {
             return
         }
+
         let tagViewController = TagModalViewController()
         tagViewController.selectionDelegate = self
 
