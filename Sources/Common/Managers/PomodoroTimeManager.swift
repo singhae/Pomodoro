@@ -28,12 +28,6 @@ final class PomodoroTimeManager {
         maxTime = time
     }
 
-    private(set) var isRestored: Bool = false
-
-    func setupIsRestored(bool: Bool) {
-        isRestored = bool
-    }
-
     private(set) var isStarted: Bool = false
 
     func setupIsStarted(bool: Bool) {
@@ -62,52 +56,5 @@ final class PomodoroTimeManager {
         maxTime = (recent?.phaseTime ?? 25) * 60
 
         completion()
-    }
-
-    func saveTimerInfo() {
-        if UserDefaults.standard.bool(forKey: "isFirstVisit") {
-            UserDefaults.standard.set(false, forKey: "isFirstVisit")
-        } else {
-            let lastSavedDate = Date.now
-            isRestored = false
-
-            userDefaults.set(lastSavedDate, forKey: "realTime")
-            userDefaults.set(currentTime, forKey: "currentTime")
-            userDefaults.set(maxTime, forKey: "maxTime")
-        }
-    }
-
-    func restoreTimerInfo() {
-        guard let previousTime = userDefaults.object(forKey: "realTime") as? Date,
-              let existCurrentTime = userDefaults.object(forKey: "currentTime") as? Int,
-              let existMaxTime = userDefaults.object(forKey: "maxTime") as? Int
-        else {
-            // 사용자 기본값이 없는 경우, 초기 설정을 합니다.
-            maxTime = 25 * 60 // 기본 최대 시간을 25분으로 설정
-            currentTime = 0
-            isRestored = false
-            return
-        }
-
-        let realTime = Date.now
-
-        // 이전 시간과 현재 시간 간의 차이 계산
-        let elapsedTime = Int(realTime.timeIntervalSince(previousTime))
-        let updatedCurrTime = existCurrentTime + elapsedTime
-
-        // 최대 시간과 현재 시간 업데이트
-        maxTime = existMaxTime
-
-        // 최대 시간이 현재 시간보다 크면 복원
-        if maxTime > updatedCurrTime {
-            isRestored = true
-            currentTime = updatedCurrTime
-        } else {
-            // 최대 시간이 현재 시간보다 작으면 타이머를 초기화
-            let recent = try? RealmService.read(Pomodoro.self).last
-            maxTime = (recent?.phaseTime ?? 25) * 60
-            currentTime = 0
-            isRestored = false // 복원이 실패했으므로 false로 설정
-        }
     }
 }

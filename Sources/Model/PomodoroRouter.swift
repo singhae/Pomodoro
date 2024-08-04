@@ -43,7 +43,7 @@ final class PomodoroRouter {
 
     func moveToNextStep(navigationController: UINavigationController) {
         currentStep = checkCurrentStep()
-        Log.info(currentStep)
+        Log.info("\(currentStep) <- CHECK")
         navigatorToCurrentStep(
             currentStep: currentStep,
             navigationController: navigationController
@@ -68,14 +68,24 @@ final class PomodoroRouter {
         let pomodoroMainPageViewController = MainPageViewController()
         let breakTimerViewController = BreakTimerViewController()
 
+        let isVibrate = try? RealmService.read(Option.self).first?.isVibrate
+
         switch currentStep {
         case .start:
             pomodoroMainViewController.stepManager.router = self
             navigationController.pushViewController(pomodoroMainPageViewController, animated: true)
         case .focus:
+            if isVibrate ?? false {
+                HapticService.hapticNotification(type: .success)
+            }
+
             pomodoroMainViewController.stepManager.router = self
             navigationController.pushViewController(pomodoroMainPageViewController, animated: true)
         case .rest:
+            if isVibrate ?? false {
+                HapticService.hapticNotification(type: .warning)
+            }
+
             if maxStep < pomodoroCount {
                 breakTimerViewController.stepManager.router = self
                 navigationController.popToRootViewController(animated: true)

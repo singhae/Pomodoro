@@ -170,7 +170,7 @@ final class MainViewController: UIViewController {
         do {
             let recent = try RealmService.read(Pomodoro.self).last
             checkOnboarding(recent: recent)
-            checkAndRestorePomodoroTimer(recent: recent)
+//            checkAndRestorePomodoroTimer(recent: recent)
         } catch {
             checkOnboarding(recent: nil)
         }
@@ -179,15 +179,6 @@ final class MainViewController: UIViewController {
     private func checkOnboarding(recent: Pomodoro?) {
         if needOnboarding, recent == nil {
             needOnboarding = false
-        }
-    }
-
-    private func checkAndRestorePomodoroTimer(recent: Pomodoro?) {
-        guard recent != nil else { return }
-
-        if pomodoroTimeManager.isRestored {
-            pomodoroTimeManager.setupIsRestored(bool: false)
-            startTimer()
         }
     }
 
@@ -200,7 +191,6 @@ final class MainViewController: UIViewController {
         }
 
         if needOnboarding, recent == nil {
-            Log.info("needOnboarding -> \(needOnboarding)")
             tagButton.setTitle(nil, for: .normal)
             tagButton.setImage(UIImage(named: "onBoardingTag"), for: .normal)
             timeLabel.attributedText = .init(string: "25:00", attributes: [
@@ -211,7 +201,6 @@ final class MainViewController: UIViewController {
             ])
             pomodoroTimeManager.setupMaxTime(time: 25 * 60)
         } else {
-            Log.debug(recent)
             tagButton.setTitle(recent?.currentTag?.tagName, for: .normal)
             tagButton.setTitleColor(recent?.currentTag?.setupTagTypoColor(), for: .normal)
             tagButton.backgroundColor = recent?.currentTag?.setupTagBackgroundColor()
@@ -274,13 +263,11 @@ final class MainViewController: UIViewController {
 
 extension MainViewController {
     @objc private func didEnterBackground() {
-        Log.info("max: \(pomodoroTimeManager.maxTime), curr: \(pomodoroTimeManager.currentTime)")
+        Log.info("Enter Background")
     }
 
-    @objc private func didEnterForeground() {
-        pomodoroTimeManager.restoreTimerInfo()
-    }
-    
+    @objc private func didEnterForeground() {}
+
     private func updateTimeLabelUI() {
         let resentDataInRealm = try? RealmService.read(Pomodoro.self).last
         guard let resentDataInRealm else {
@@ -359,7 +346,6 @@ extension MainViewController {
             }
 
             stepManager.timeSetting.initPomodoroStep()
-            currentStepLabel.text = ""
             UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
 
             setupRecentPomodoroData()
@@ -405,7 +391,7 @@ extension MainViewController {
             .add(request)
     }
 
-    private func setupUIWhenTimerStart(isStopped: Bool) {
+    func setupUIWhenTimerStart(isStopped: Bool) {
         if isStopped == false {
             startButtonTitleLabel.isHidden = true
             startButton.isHidden = true
@@ -414,18 +400,20 @@ extension MainViewController {
             startButtonTitleLabel.isHidden = false
             startButton.isHidden = false
             timeSettingGuideButton.isHidden = false
+            currentStepLabel.text = ""
         }
     }
 
     @objc private func startTimer() {
-        Log.debug("maxTime: \(pomodoroTimeManager.maxTime)")
         guard pomodoroTimeManager.maxTime != 0 else {
             return
         }
+
         needOnboarding = false
         if timeLabel.attributedText != nil {
             timeLabel.attributedText = nil
         }
+
         longPressTime = 0.0
         stopTimeProgressBar.progress = 0.0
         longPressGuideLabel.isHidden = false
@@ -433,19 +421,16 @@ extension MainViewController {
         timeLabel.isUserInteractionEnabled = false
         tagButton.isUserInteractionEnabled = false
 
-        // 강제종료 이후 정보 불러온 상황이 아닐때 (클릭 상황)
-        if pomodoroTimeManager.isRestored == false {
-            let prevPomodoro = try? RealmService.read(Pomodoro.self).last
+        let prevPomodoro = try? RealmService.read(Pomodoro.self).last
 
-            // 이전 뽀모도로 끝난 경우
-            if prevPomodoro?.phase == -1 || prevPomodoro?.isSuccess == true || prevPomodoro == nil {
-                RealmService.createPomodoro(
-                    tag: currentTag,
-                    phaseTime: pomodoroTimeManager.maxTime
-                )
-            }
-            currentPomodoro = try? RealmService.read(Pomodoro.self).last
+        if prevPomodoro?.phase == -1 || prevPomodoro?.isSuccess == true || prevPomodoro == nil {
+            RealmService.createPomodoro(
+                tag: currentTag,
+                phaseTime: pomodoroTimeManager.maxTime
+            )
         }
+        currentPomodoro = try? RealmService.read(Pomodoro.self).last
+
         setupUIWhenTimerStart(isStopped: false)
         pomodoroTimeManager.startTimer(timerBlock: { [self] timer, currentTime, maxTime in
             let minutes = (maxTime - currentTime) / 60
@@ -463,11 +448,6 @@ extension MainViewController {
                     }
                 }
 
-                let isVibrate = try? RealmService.read(Option.self).first?.isVibrate
-                if isVibrate ?? false {
-                    HapticService.hapticNotification(type: .warning)
-                }
-
                 setUpPomodoroCurrentStep()
                 longPressGestureRecognizer.isEnabled = false
                 timeLabel.isUserInteractionEnabled = true
@@ -481,7 +461,6 @@ extension MainViewController {
 
     private func setUpPomodoroCurrentStep() {
         guard let navigationController else {
-//            assertionFailure("navigationController should exist")
             return
         }
         stepManager.router.moveToNextStep(

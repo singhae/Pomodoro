@@ -84,7 +84,6 @@ final class BreakTimerViewController: UIViewController, TimeSettingViewControlle
         super.viewDidAppear(animated)
         updateTimeLabel()
         navigationController?.isNavigationBarHidden = true
-        // FIXME: Remove startTimer() after implementing time setup
     }
 
     private func updateTimeLabel() {
@@ -148,7 +147,6 @@ extension BreakTimerViewController {
         stepManager.router.moveToNextStep(
             navigationController: navigationController ?? UINavigationController()
         )
-        // - TODO: do pomodoroStep initialize
         stepManager.timeSetting.initPomodoroStep()
         longPressGuideLabel.isHidden = true
     }
@@ -175,10 +173,6 @@ extension BreakTimerViewController {
 
             if currentTime > maxTime {
                 Log.debug("Break Finish")
-                let isVibrate = try? RealmService.read(Option.self).first?.isVibrate
-                if isVibrate ?? false {
-                    HapticService.hapticNotification(type: .success)
-                }
 
                 timer.invalidate()
                 stepManager.router.moveToNextStep(
