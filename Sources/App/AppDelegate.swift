@@ -41,10 +41,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return true
         }
 
-        if resentRealmData.last != nil || resentRealmData.first != nil {
-            pomodoroTimeManager.restoreTimerInfo()
-        }
-
         if UserDefaults.standard.object(forKey: "isFirstVisit") == nil {
             UserDefaults.standard.set(true, forKey: "isFirstVisit")
             Log.info(UserDefaults.standard.bool(forKey: "isFirstVisit"))
@@ -58,7 +54,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: 앱이 종료될 때 함수
 
     func applicationWillTerminate(_: UIApplication) {
-        pomodoroTimeManager.saveTimerInfo()
+        Log.debug("Application Terminate")
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
     }
 
     func application(

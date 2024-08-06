@@ -208,7 +208,7 @@ final class TagModalViewController: UIViewController {
             $0.layer.borderColor = UIColor.gray.cgColor
             $0.layer.borderWidth = 1
             $0.layer.cornerRadius = 10
-            $0.isHidden = true // 기본적으로 숨김
+            $0.isHidden = true
             $0.tag = tagIndex
             Log.info("마이너스 버튼의 태그 인덱스: \(tagIndex)")
         }
