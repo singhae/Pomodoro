@@ -25,7 +25,7 @@ protocol PomodoroBreakShortSelectionDelegate: AnyObject {
 
 final class SettingViewController: UIViewController, BreakTimeDelegate {
     private enum SettingOption: CaseIterable {
-//        case shortBreak, longBreak, completionVibrate, dataReset, timerEffect, serviceReview, OSLicense
+// FIXME:       case shortBreak, longBreak, completionVibrate, dataReset, timerEffect, serviceReview, OSLicense
         case shortBreak, longBreak, completionVibrate, dataReset, timerEffect, OSLicense
 
         var title: String {
@@ -40,7 +40,7 @@ final class SettingViewController: UIViewController, BreakTimeDelegate {
                 return "데이터 초기화하기"
             case .timerEffect:
                 return "타이머 특수효과"
-//            case .serviceReview:
+// FIXME:   case .serviceReview:
 //                return "서비스 평가하러 가기"
             case .OSLicense:
                 return "오픈 소스 라이센스"
@@ -209,8 +209,8 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
 //            // TODO: body에 넣을 값이 아직 정의가 안되어 있음
 //            showCancellablePopup(title: "서비스 평가하기", body: "")
         case .OSLicense:
-            // TODO: body에 넣을 값이 아직 정의가 안되어 있음
-            showCancellablePopup(title: "오픈소스 라이센스", body: "")
+                let licenseViewController = LicenseViewController()
+                navigationController?.pushViewController(licenseViewController, animated: true)
         }
 
         tableView.deselectRow(at: indexPath, animated: true)

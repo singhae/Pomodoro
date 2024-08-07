@@ -54,6 +54,7 @@
 		CEDCA1242B67D18C005C18EA /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA1232B67D18C005C18EA /* SnapKit */; };
 		CEDCA1292B67D1E4005C18EA /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = CEDCA1282B67D1E4005C18EA /* DGCharts */; };
 		CEE9C35D2BC8D1570084D218 /* OSLog+PrettyPrint.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE9C35C2BC8D1570084D218 /* OSLog+PrettyPrint.swift */; };
+		ED81B98F2C637F40001AA1B6 /* LicenseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED81B98E2C637F40001AA1B6 /* LicenseViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -113,6 +114,7 @@
 		CEDCA0FC2B67D015005C18EA /* DashBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashBoard.swift; sourceTree = "<group>"; };
 		CEDCA1332B67E11D005C18EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CEE9C35C2BC8D1570084D218 /* OSLog+PrettyPrint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OSLog+PrettyPrint.swift"; sourceTree = "<group>"; };
+		ED81B98E2C637F40001AA1B6 /* LicenseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -256,6 +258,7 @@
 				CEDCA0DB2B67D015005C18EA /* SettingViewController.swift */,
 				CEDCA0DC2B67D015005C18EA /* ShortBreakModalViewController.swift */,
 				CEDCA0DD2B67D015005C18EA /* LongBreakModalViewController.swift */,
+				ED81B98E2C637F40001AA1B6 /* LicenseViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -545,6 +548,7 @@
 				4DC3FBA32B846E40002566F9 /* ColorPaletteViewController.swift in Sources */,
 				CEDCA10A2B67D015005C18EA /* TagModalViewController.swift in Sources */,
 				CEE9C35D2BC8D1570084D218 /* OSLog+PrettyPrint.swift in Sources */,
+				ED81B98F2C637F40001AA1B6 /* LicenseViewController.swift in Sources */,
 				CEDCA1092B67D015005C18EA /* TagCollectionView.swift in Sources */,
 				CEDCA10B2B67D015005C18EA /* TagCollectionViewCell.swift in Sources */,
 				0DF629662B691ABA00BFE39F /* TimerCollectionViewCell.swift in Sources */,
