@@ -10,7 +10,6 @@ import SnapKit
 import Then
 import UIKit
 
-// TODO: TagModalViewController 에서 선택된 값들 메인뷰컨트롤러에 표시
 final class MainViewController: UIViewController {
     private let pomodoroTimeManager = PomodoroTimeManager.shared
     private let notificationId = UUID().uuidString
