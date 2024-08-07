@@ -527,7 +527,6 @@
 				CEDCA10A2B67D015005C18EA /* TagModalViewController.swift in Sources */,
 				CEE9C35D2BC8D1570084D218 /* OSLog+PrettyPrint.swift in Sources */,
 				ED81B98F2C637F40001AA1B6 /* LicenseViewController.swift in Sources */,
-				CEDCA1092B67D015005C18EA /* TagCollectionView.swift in Sources */,
 				CEDCA10B2B67D015005C18EA /* TagCollectionViewCell.swift in Sources */,
 				0DF629662B691ABA00BFE39F /* TimerCollectionViewCell.swift in Sources */,
 				CEDCA1072B67D015005C18EA /* TimeSettingViewController.swift in Sources */,
