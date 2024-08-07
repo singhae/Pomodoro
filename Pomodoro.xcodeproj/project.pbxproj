@@ -38,14 +38,11 @@
 		CEDCA1062B67D015005C18EA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0E12B67D015005C18EA /* SceneDelegate.swift */; };
 		CEDCA1072B67D015005C18EA /* TimeSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0E42B67D015005C18EA /* TimeSettingViewController.swift */; };
 		CEDCA1082B67D015005C18EA /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0E52B67D015005C18EA /* MainViewController.swift */; };
-		CEDCA1092B67D015005C18EA /* TagCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0E62B67D015005C18EA /* TagCollectionView.swift */; };
 		CEDCA10A2B67D015005C18EA /* TagModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0E72B67D015005C18EA /* TagModalViewController.swift */; };
 		CEDCA10B2B67D015005C18EA /* TagCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0E82B67D015005C18EA /* TagCollectionViewCell.swift */; };
-		CEDCA10C2B67D015005C18EA /* TagCollectionViewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0E92B67D015005C18EA /* TagCollectionViewData.swift */; };
 		CEDCA10D2B67D015005C18EA /* MainPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0EA2B67D015005C18EA /* MainPageViewController.swift */; };
 		CEDCA10E2B67D015005C18EA /* UIColor+HexCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0ED2B67D015005C18EA /* UIColor+HexCode.swift */; };
 		CEDCA1102B67D015005C18EA /* DashBoardTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0F12B67D015005C18EA /* DashBoardTabViewController.swift */; };
-		CEDCA1142B67D015005C18EA /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0F62B67D015005C18EA /* MockData.swift */; };
 		CEDCA1162B67D015005C18EA /* Pomodoro.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0F92B67D015005C18EA /* Pomodoro.swift */; };
 		CEDCA1172B67D015005C18EA /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0FA2B67D015005C18EA /* Tag.swift */; };
 		CEDCA1182B67D015005C18EA /* Option.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA0FB2B67D015005C18EA /* Option.swift */; };
@@ -78,8 +75,6 @@
 		2123A9812BA9803C009C60BF /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
 		213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardPieChartCell.swift; sourceTree = "<group>"; };
 		213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStatusCell.swift; sourceTree = "<group>"; };
-		217651622B94CB5900121AB2 /* BMHANNA_11yrs_otf.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = BMHANNA_11yrs_otf.otf; sourceTree = "<group>"; };
-		217651682B94D9EE00121AB2 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
 		21B21B832B73E050008FFDCB /* DashboardBaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardBaseViewController.swift; sourceTree = "<group>"; };
 		21D85CCC2B831E5B00E2FAA8 /* BreakViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakViewController.swift; sourceTree = "<group>"; };
 		21D85CD72B84C05A00E2FAA8 /* BreakTimerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BreakTimerViewController.swift; sourceTree = "<group>"; };
@@ -100,14 +95,11 @@
 		CEDCA0E12B67D015005C18EA /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		CEDCA0E42B67D015005C18EA /* TimeSettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeSettingViewController.swift; sourceTree = "<group>"; };
 		CEDCA0E52B67D015005C18EA /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
-		CEDCA0E62B67D015005C18EA /* TagCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagCollectionView.swift; sourceTree = "<group>"; };
 		CEDCA0E72B67D015005C18EA /* TagModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagModalViewController.swift; sourceTree = "<group>"; };
 		CEDCA0E82B67D015005C18EA /* TagCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagCollectionViewCell.swift; sourceTree = "<group>"; };
-		CEDCA0E92B67D015005C18EA /* TagCollectionViewData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagCollectionViewData.swift; sourceTree = "<group>"; };
 		CEDCA0EA2B67D015005C18EA /* MainPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainPageViewController.swift; sourceTree = "<group>"; };
 		CEDCA0ED2B67D015005C18EA /* UIColor+HexCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+HexCode.swift"; sourceTree = "<group>"; };
 		CEDCA0F12B67D015005C18EA /* DashBoardTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashBoardTabViewController.swift; sourceTree = "<group>"; };
-		CEDCA0F62B67D015005C18EA /* MockData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
 		CEDCA0F92B67D015005C18EA /* Pomodoro.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pomodoro.swift; sourceTree = "<group>"; };
 		CEDCA0FA2B67D015005C18EA /* Tag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
 		CEDCA0FB2B67D015005C18EA /* Option.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Option.swift; sourceTree = "<group>"; };
@@ -146,7 +138,6 @@
 			children = (
 				0DF629652B691ABA00BFE39F /* TimerCollectionViewCell.swift */,
 				CEDCA0E82B67D015005C18EA /* TagCollectionViewCell.swift */,
-				CEDCA0E62B67D015005C18EA /* TagCollectionView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -167,15 +158,6 @@
 				21D85CD72B84C05A00E2FAA8 /* BreakTimerViewController.swift */,
 			);
 			path = BreakScene;
-			sourceTree = "<group>";
-		};
-		21DA85782B9CC8AA00495408 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				217651622B94CB5900121AB2 /* BMHANNA_11yrs_otf.otf */,
-				217651682B94D9EE00121AB2 /* Pretendard-Regular.otf */,
-			);
-			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		CEA734012B8CA9B600145301 /* Managers */ = {
@@ -206,7 +188,6 @@
 				CEDCA0D82B67D015005C18EA /* Sources */,
 				CEB721922B6DECC7001AB9C1 /* PomodoroTests */,
 				CEDCA0BC2B67CFD8005C18EA /* Products */,
-				21DA85782B9CC8AA00495408 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -287,7 +268,6 @@
 				CEDCA0E42B67D015005C18EA /* TimeSettingViewController.swift */,
 				CEDCA0E52B67D015005C18EA /* MainViewController.swift */,
 				CEDCA0E72B67D015005C18EA /* TagModalViewController.swift */,
-				CEDCA0E92B67D015005C18EA /* TagCollectionViewData.swift */,
 				CEDCA0EA2B67D015005C18EA /* MainPageViewController.swift */,
 				4DC229892B7E2C0900D06ABB /* TagConfigurationViewController.swift */,
 				4DC3FBA22B846E40002566F9 /* ColorPaletteViewController.swift */,
@@ -335,7 +315,6 @@
 		CEDCA0F52B67D015005C18EA /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				CEDCA0F62B67D015005C18EA /* MockData.swift */,
 				213F30542B6BE73900FAF5F2 /* DashboardStatusCell.swift */,
 				213F30522B6BE72300FAF5F2 /* DashboardPieChartCell.swift */,
 			);
@@ -530,7 +509,6 @@
 				21D85CCD2B831E5B00E2FAA8 /* BreakViewController.swift in Sources */,
 				21B21B842B73E050008FFDCB /* DashboardBaseViewController.swift in Sources */,
 				CEDCA1172B67D015005C18EA /* Tag.swift in Sources */,
-				CEDCA10C2B67D015005C18EA /* TagCollectionViewData.swift in Sources */,
 				CEDCA1182B67D015005C18EA /* Option.swift in Sources */,
 				21D85CD82B84C05A00E2FAA8 /* BreakTimerViewController.swift in Sources */,
 				CEDCA1052B67D015005C18EA /* AppDelegate.swift in Sources */,
@@ -555,7 +533,6 @@
 				CEDCA1072B67D015005C18EA /* TimeSettingViewController.swift in Sources */,
 				213F30552B6BE73900FAF5F2 /* DashboardStatusCell.swift in Sources */,
 				4DC2298A2B7E2C0900D06ABB /* TagConfigurationViewController.swift in Sources */,
-				CEDCA1142B67D015005C18EA /* MockData.swift in Sources */,
 				CEDCA1102B67D015005C18EA /* DashBoardTabViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

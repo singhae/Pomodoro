@@ -10,11 +10,9 @@ import UserNotifications
 
 final class PomodoroTimeManager {
     static let shared = PomodoroTimeManager()
-
     private init() {}
 
     private var pomodoroTimer: Timer?
-
     private let userDefaults = UserDefaults.standard
     private let notificationId = UUID().uuidString
 
@@ -30,12 +28,6 @@ final class PomodoroTimeManager {
         maxTime = time
     }
 
-    private(set) var isRestored: Bool = false
-
-    func setupIsRestored(bool: Bool) {
-        isRestored = bool
-    }
-
     private(set) var isStarted: Bool = false
 
     func setupIsStarted(bool: Bool) {
@@ -43,6 +35,11 @@ final class PomodoroTimeManager {
     }
 
     func startTimer(timerBlock: @escaping ((Timer, Int, Int) -> Void)) {
+        guard maxTime > 0 else {
+            print("Error: maxTime must be greater than 0. Current maxTime: \(maxTime)")
+            return
+        }
+
         pomodoroTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             timerBlock(timer, self.currentTime + 1, self.maxTime)
             self.currentTime += 1
@@ -52,43 +49,12 @@ final class PomodoroTimeManager {
 
     func stopTimer(completion: () -> Void) {
         pomodoroTimer?.invalidate()
+        pomodoroTimer = nil
         currentTime = 0
 
         let recent = try? RealmService.read(Pomodoro.self).last
         maxTime = (recent?.phaseTime ?? 25) * 60
 
         completion()
-    }
-
-    func saveTimerInfo() {
-        let lastSavedDate = Date.now
-        isRestored = false
-
-        userDefaults.set(lastSavedDate, forKey: "realTime")
-        userDefaults.set(currentTime, forKey: "currentTime")
-        userDefaults.set(maxTime, forKey: "maxTime")
-    }
-
-    func restoreTimerInfo() {
-        guard let previousTime = userDefaults.object(forKey: "realTime") as? Date,
-              let existCurrentTime = userDefaults.object(forKey: "currentTime") as? Int,
-              let existMaxTime = userDefaults.object(forKey: "maxTime") as? Int
-        else {
-            return
-        }
-
-        let realTime = Date.now
-
-        let updatedCurrTime = existCurrentTime + Int(realTime.timeIntervalSince(previousTime))
-        maxTime = existMaxTime
-
-        if maxTime > updatedCurrTime {
-            isRestored = true
-            currentTime = updatedCurrTime
-        } else {
-            let recent = try? RealmService.read(Pomodoro.self).last
-            maxTime = (recent?.phaseTime ?? 25) * 60
-            currentTime = 0
-        }
     }
 }

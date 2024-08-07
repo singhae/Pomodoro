@@ -17,8 +17,6 @@ protocol TagConfigurationViewControllerDelegate: AnyObject {
 }
 
 final class TagConfigurationViewController: UIViewController {
-    // TODO: Realm Tag write
-
     private var selectedColorIndex: String?
     private var selectedPosition: Int?
 
